@@ -1,0 +1,134 @@
+# =========================================================
+# Kotlin / Gradle
+# =========================================================
+
+.gradle/
+.kotlin/
+build/
+**/build/
+
+# Gradle cache
+.gradle-cache/
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+
+# Local config
+local.properties
+
+# Kotlin Native
+.konan/
+
+# KSP / KAPT
+generated/
+ksp/
+kapt/
+
+# Logs
+*.log
+
+# =========================================================
+# Android
+# =========================================================
+
+captures/
+.externalNativeBuild/
+.cxx/
+
+# APK / AAB
+*.apk
+*.aab
+
+# Keystore / signing
+*.jks
+*.keystore
+
+# Firebase / Google services
+google-services.json
+GoogleService-Info.plist
+
+# =========================================================
+# iOS / Xcode
+# =========================================================
+
+# Xcode user data
+xcuserdata/
+DerivedData/
+
+# Xcode workspace
+*.xcworkspace
+
+# Xcode project
+*.xcodeproj/
+
+# Swift Package Manager
+.build/
+Packages/
+
+# CocoaPods
+Pods/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# Workspace settings
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+# =========================================================
+# Angular
+# =========================================================
+
+# Dependencies
+node_modules/
+
+# Angular build output
+dist/
+.angular/
+out-tsc/
+
+# Angular cache
+.angular/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Package manager
+.pnpm-store/
+
+# Environment files (optionnel)
+src/environments/environment*.local.ts
+
+# Coverage
+coverage/
+
+# ESLint cache
+.eslintcache
+
+# =========================================================
+# VS Code
+# =========================================================
+
+.vscode/
+
+# =========================================================
+# OS files
+# =========================================================
+
+.DS_Store
+Thumbs.db
+
+# =========================================================
+# Temporary files
+# =========================================================
+
+*.tmp
+*.swp
+*.swo
+*~
