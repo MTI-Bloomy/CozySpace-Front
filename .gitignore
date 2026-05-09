@@ -111,6 +111,11 @@ coverage/
 # ESLint cache
 .eslintcache
 
+# cache
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
 # =========================================================
 # VS Code
 # =========================================================

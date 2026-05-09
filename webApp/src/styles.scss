@@ -1,0 +1,20 @@
+/* Global styles copied from React webApp to match initial layout/animation */
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	height: 100vh;
+	margin: 0;
+	padding: 50px 0 0 0;
+	background-color: #f5f5f5;
+}
+
+/* Spinner container (keeps same look as React index.html) */
+#root {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}

@@ -1,0 +1,10 @@
+<div class="greeting-container">
+    <button (click)="toggleVisibility()" class="greeting-button">Click me!</button>
+
+    @if (isVisible) {
+        <div [ngClass]="{ 'greeting-content': true, 'fade-out': isAnimating }" (animationend)="onAnimationEnd($event)">
+            <app-jslogo></app-jslogo>
+            <div>Angular: {{ greeting.greet() }}</div>
+        </div>
+    }
+</div>

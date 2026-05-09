@@ -16,7 +16,7 @@ This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM
   The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
   can add code to the platform-specific folders here too.
 
-* [/webApp](./webApp) contains web React application. It uses the Kotlin/JS library produced
+* [/webApp](./webApp) contains web Angular application. It uses the Kotlin/JS library produced
   by the [shared](./shared) module.
 
 ### Build and Run Android Application
