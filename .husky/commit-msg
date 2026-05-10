@@ -1,0 +1,2 @@
+echo "📝 Checking commit message..."
+npx --no-install commitlint --edit "$1" || exit 1

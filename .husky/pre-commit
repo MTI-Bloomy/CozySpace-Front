@@ -1,0 +1,7 @@
+echo "🔍 Running Angular lint..."
+npm run lint || exit 1
+
+echo "🔍 Running KtLint..."
+./gradlew ktlintCheck || exit 1
+
+echo "✅ All checks passed"

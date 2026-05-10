@@ -10,6 +10,12 @@
     "build": "cd webApp && npm run build",
     "start": "cd webApp && npm run start",
     "lint": "cd webApp && npm run lint",
-    "lint:fix": "cd webApp && npm run lint:fix"
+    "lint:fix": "cd webApp && npm run lint:fix",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
+    "husky": "^9.1.7"
   }
 }
