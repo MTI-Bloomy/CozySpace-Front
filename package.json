@@ -8,6 +8,8 @@
   ],
   "scripts": {
     "build": "cd webApp && npm run build",
-    "start": "cd webApp && npm run start"
+    "start": "cd webApp && npm run start",
+    "lint": "cd webApp && npm run lint",
+    "lint:fix": "cd webApp && npm run lint:fix"
   }
 }
