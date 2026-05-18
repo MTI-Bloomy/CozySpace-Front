@@ -31,9 +31,6 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: gradle
-      
-      - name: 🗲 Make gradlew executable
-        run: chmod +x ./gradlew
 
       - name: 🧹 Kotlin lint (ktlint)
         run: ./gradlew ktlintCheck
@@ -73,9 +70,6 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: gradle
-      
-      - name: 🗲 Make gradlew executable
-        run: chmod +x ./gradlew
 
       - name: 🏗️ Build Desktop JVM
         run: ./gradlew :composeApp:packageDistributionForCurrentOS
@@ -95,9 +89,6 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: gradle
-      
-      - name: 🗲 Make gradlew executable
-        run: chmod +x ./gradlew
 
       - name: 🏗️ Build shared Kotlin/JS lib
         run: ./gradlew :shared:jsBrowserDevelopmentLibraryDistribution

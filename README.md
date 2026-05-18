@@ -6,16 +6,17 @@
 
 ## 📋 Table des matières
 
-- [Architecture du projet](#architecture-du-projet)
-- [Prérequis](#prérequis)
-- [Installation](#installation)
-- [Commandes de développement](#commandes-de-développement)
+- [Architecture du projet](#️-architecture-du-projet)
+- [Prérequis](#-prérequis)
+- [Installation](#-installation)
+- [Commandes de développement](#-commandes-de-développement)
   - [Android](#android)
   - [Desktop (JVM)](#desktop-jvm)
   - [Web (Angular)](#web-angular)
-  - [iOS](#ios)
-- [Linting et Qualité du code](#linting-et-qualité-du-code)
-- [Ressources utiles](#ressources-utiles)
+  - [iOS](#ios-macos-uniquement)
+- [Linting et Qualité du code](#-linting-et-qualité-du-code)
+- [Développement](#-développement)
+- [Ressources utiles](#-ressources-utiles)
 
 ---
 
@@ -28,7 +29,7 @@ Ce projet Kotlin Multiplatform est organisé en plusieurs modules :
 | Dossier | Description |
 |---------|-------------|
 | **`/composeApp`** | Code partagé pour toutes les applications Compose Multiplatform (Android, Desktop, iOS) |
-| **`/shared`** | Code partagé entre tous les targets incluant le code Kotlin/JS pour le web |
+| **`/shared`** | Code partagé entre toutes les targets incluant le code Kotlin/JS pour le web |
 | **`/webApp`** | Application web Angular (utilise la librairie Kotlin/JS du module `shared`) |
 | **`/iosApp`** | Point d'entrée pour l'application iOS (SwiftUI) |
 | **`/gradle`** | Configuration Gradle et versions des dépendances |
@@ -36,13 +37,13 @@ Ce projet Kotlin Multiplatform est organisé en plusieurs modules :
 ### Structure du code partagé
 
 #### Dans `/composeApp/src`
-- **`commonMain`** → Code partagé pour tous les targets
+- **`commonMain`** → Code partagé pour toutes les targets
 - **`androidMain`** → Code spécifique Android
 - **`iosMain`** → Code spécifique iOS
 - **`jvmMain`** → Code spécifique Desktop (JVM)
 
 #### Dans `/shared/src`
-- **`commonMain`** → Code partagé entre tous les targets
+- **`commonMain`** → Code partagé entre toutes les targets
 - **`jsMain`** → Code spécifique pour la compilation Kotlin/JS (web)
 - **`androidMain`**, **`iosMain`**, **`jvmMain`** → Code spécifique aux platforms
 
@@ -52,10 +53,40 @@ Ce projet Kotlin Multiplatform est organisé en plusieurs modules :
 
 Avant de commencer, assurez-vous d'avoir installé :
 
-- **Java Development Kit (JDK)** 11 ou plus récent
+- **Java Development Kit (JDK) 21**
 - **Node.js** (pour les applications web et npm)
 - **Xcode** (pour le développement iOS sur macOS)
 - **Android Studio** ou **Android SDK** (pour Android)
+
+> ⚠️ **Important :** Ce projet doit être exécuté avec **Java 21**.
+
+### Configuration de `JAVA_HOME` (si plusieurs versions de Java sont installées)
+
+Si vous avez plusieurs JDK installés, assurez-vous que `JAVA_HOME` pointe vers le **JDK 21** avant d'exécuter les commandes Gradle.
+
+Exemples :
+
+```bash
+# macOS / Linux
+export JAVA_HOME=/chemin/vers/jdk-21
+export PATH="$JAVA_HOME/bin:$PATH"
+java -version
+./gradlew --version
+```
+
+```powershell
+# Windows PowerShell
+$env:JAVA_HOME="C:\\Program Files\\Java\\jdk-21"
+$env:Path="$env:JAVA_HOME\\bin;$env:Path"
+java -version
+.\\gradlew.bat --version
+```
+
+Vous pouvez aussi le faire uniquement pour chaque commande (sans changer la configuration globale) :
+
+```bash
+JAVA_HOME=/chemin/vers/jdk-21 ./gradlew ...
+```
 
 ---
 
@@ -174,7 +205,6 @@ KTLint force un style de code uniforme dans tous les fichiers Kotlin.
 ```
 
 #### Configuration KTLint
-- ✅ Support Android activé
 - ✅ Les fichiers `**/generated/**` sont ignorés
 - ✅ Les erreurs arrêtent le build (pas d'indulgence)
 
@@ -199,7 +229,7 @@ build/reports/detekt/detekt.html
 
 #### Configuration Detekt
 - Utilise la configuration par défaut avec des personnalisations
-- Tous les règles recommandées sont appliquées
+- Toutes les règles recommandées sont appliquées
 
 ### **ESLint** - Linting Angular
 
@@ -247,12 +277,12 @@ Pour construire l'application en s'assurant que tout le code respecte les standa
 Cette commande va :
 - ✅ Exécuter KTLint
 - ✅ Exécuter Detekt
-- ✅ Compiler tous les targets
+- ✅ Compiler toutes les targets
 - ✅ Exécuter les tests
 
 ---
 
-## 💡 Conseils de développement
+## 💡 Développement
 
 ### Avant de commiter
 
@@ -273,6 +303,26 @@ npm run lint || exit 1
 
 **Commit-msg hook :**
 - Valide le format du message de commit (Commitlint)
+
+##### Commitlint
+
+Nous utilisons Commitlint pour valider le format des messages de commit (Conventional Commits).
+
+Exemples de messages valides :
+
+- `feat(auth): ajouter l'authentification JWT`
+- `fix: corriger l'alignement du bouton`
+- `chore(deps): mettre à jour les dépendances`
+
+Règles principales : `type(scope): sujet` — où `type` est par exemple `feat`, `fix`, `chore`, `docs`, `style`, `refactor`, `perf`, `test`, `ci`.
+
+Documentation et vérification locale :
+
+- Site officiel : https://commitlint.js.org/
+- Vérifier le dernier message de commit localement : `npx commitlint --edit`
+- Vérifier une fourchette de commits : `npx commitlint --from=HEAD~1 --to=HEAD`
+
+La configuration du projet se trouve dans [commitlint.config.js](commitlint.config.js) (et peut aussi être référencée depuis [package.json](package.json)).
 
 #### ⚠️ Prérequis critiques pour que Husky fonctionne
 
@@ -315,4 +365,4 @@ npm run lint:fix
 
 ---
 
-**Creez le refuge que vous méritez !**
+**Créez le refuge que vous méritez !**
