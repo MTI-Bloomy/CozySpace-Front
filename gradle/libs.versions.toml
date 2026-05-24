@@ -17,8 +17,10 @@ kotlinx-coroutines = "1.10.2"
 material3 = "1.10.0-alpha05"
 ktlint = "12.1.1"
 detekt = "1.23.6"
+navigationCompose = "2.9.8"
 
 [libraries]
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
