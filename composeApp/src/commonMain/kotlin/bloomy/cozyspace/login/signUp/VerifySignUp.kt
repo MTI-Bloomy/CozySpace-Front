@@ -21,16 +21,24 @@ fun isCreatedEmailValid(email: String): Boolean {
 }
 
 fun isCreatedUsernameValid(username: String): Boolean {
-    return username.isNotBlank() && username.length > 1 && username.length < 20
+    return username.length > 1 && username.length < 20 && username.isNotBlank() && username.all { it.isLetter() }
     // TODO => change if needed the max length
+    // Maybe show errors
 }
 
-fun isCreatedPasswordValid(password: String) = runCatching {
-    require(password.length >= 6) { ERR_LEN }
-    require(password.none { it.isWhitespace() }) { ERR_WHITESPACE }
-    require(password.any { it.isDigit() }) { ERR_DIGIT }
-    require(password.any { it.isUpperCase() }) { ERR_UPPER }
-    require(password.any { !it.isLetterOrDigit() }) { ERR_SPECIAL }
+fun getPasswordError(password: String): String? {
+    return when {
+        password.length < 6 -> ERR_LEN
+        password.any { it.isWhitespace() } -> ERR_WHITESPACE
+        password.none { it.isDigit() } -> ERR_DIGIT
+        password.none { it.isUpperCase() } -> ERR_UPPER
+        password.none { !it.isLetterOrDigit() } -> ERR_SPECIAL
+        else -> null
+    }
+}
+
+fun isCreatedPasswordValid(password: String): Boolean {
+    return getPasswordError(password) == null
 }
 
 fun isCreatedPasswordConfirmationValid(password: String, passwordConfirmation: String): Boolean {

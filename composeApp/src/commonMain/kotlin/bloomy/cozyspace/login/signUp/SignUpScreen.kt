@@ -36,9 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.login.signUp.getPasswordError
 import bloomy.cozyspace.login.signUp.isCreatedEmailValid
 import bloomy.cozyspace.login.signUp.isCreatedPasswordConfirmationValid
 import bloomy.cozyspace.login.signUp.isCreatedPasswordValid
+import bloomy.cozyspace.login.signUp.isCreatedUsernameValid
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.Res
@@ -61,6 +63,14 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
 
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isPasswordConfirmationVisible by remember { mutableStateOf(false) }
+    var isPasswordTouched by remember { mutableStateOf(false) }
+    val passwordError = if (isPasswordTouched) getPasswordError(password) else null
+
+    val isFormValid =
+        username.isNotBlank() &&
+        isCreatedEmailValid(email) &&
+        isCreatedPasswordValid(password) &&
+        isCreatedPasswordConfirmationValid(password, passwordConfirmation)
 
     Column(modifier = Modifier.fillMaxSize().background(WhiteBackground).padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -102,13 +112,13 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
                 leadingIcon = {
                     Icon(
                         painter = painterResource(
-                            if (isCreatedPasswordValid(password).isSuccess)
+                            if (isCreatedUsernameValid(username))
                                 Res.drawable.createAccount_check
                             else
                                 Res.drawable.signIn_person
                         ),
                         contentDescription = "",
-                        tint = if (isCreatedPasswordConfirmationValid(password, passwordConfirmation))
+                        tint = if (isCreatedUsernameValid(username))
                             DarkGreen
                         else
                             Color.Black
@@ -156,31 +166,41 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
                 )
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // PASSWORD
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = {
+                    password = it
+                    isPasswordTouched = true
+                },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Password") },
+                supportingText = {
+                    if (passwordError != null) {
+                        Text(
+                            text = passwordError,
+                            color = Color.Red
+                        )
+                    }
+                },
                 visualTransformation =
                     if (isPasswordVisible)
                         VisualTransformation.None
                     else
                         PasswordVisualTransformation(),
-
                 leadingIcon = {
                     Icon(
                         painter = painterResource(
-                            if (isCreatedPasswordValid(password).isSuccess)
+                            if (isCreatedPasswordValid(password))
                                 Res.drawable.createAccount_check
                             else
                                 Res.drawable.signIn_lock
                         ),
                         contentDescription = "",
-                        tint = if (isCreatedPasswordValid(password).isSuccess)
+                        tint = if (isCreatedPasswordValid(password))
                             DarkGreen
                         else
                             Color.Black
@@ -208,8 +228,6 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
                     cursorColor = DarkGreen
                 )
             )
-
-            Spacer(modifier = Modifier.height(10.dp))
 
             // PASSWORD CONFIRMATION
             OutlinedTextField(
@@ -265,7 +283,10 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = onSignUpSuccess,
+                onClick = {
+                    if (isFormValid) onSignUpSuccess()
+                },
+                enabled = isFormValid,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
