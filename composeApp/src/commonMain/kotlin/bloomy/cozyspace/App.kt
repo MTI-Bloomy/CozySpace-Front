@@ -2,38 +2,12 @@ package bloomy.cozyspace
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.navigation.NavGraph
 
 @Composable
 @Preview
 fun App() {
-    InitScreen(
-        onLoginSuccess = {},
-        onLoginFailed = {}
-    )
-
-//    MaterialTheme {
-//        var showContent by remember { mutableStateOf(false) }
-//        Column(
-//            modifier =
-//                Modifier
-//                    .background(MaterialTheme.colorScheme.primaryContainer)
-//                    .safeContentPadding()
-//                    .fillMaxSize(),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//        ) {
-//            Button(onClick = { showContent = !showContent }) {
-//                Text("Click me!")
-//            }
-//            AnimatedVisibility(showContent) {
-//                val greeting = remember { Greeting().greet() }
-//                Column(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                ) {
-//                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-//                    Text("Compose: $greeting")
-//                }
-//            }
-//        }
-//    }
+    val navController = rememberNavController()
+    NavGraph(navController)
 }
