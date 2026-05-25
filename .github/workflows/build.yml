@@ -46,6 +46,9 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v5
 
+      - name: 📄 Create Environment.kt
+        run: cp shared/src/commonMain/kotlin/bloomy/cozyspace/config/EnvironmentExample.kt shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+
       - name: ☕ Setup JDK 21
         uses: actions/setup-java@v5
         with:
@@ -66,6 +69,9 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v5
+
+      - name: 📄 Create Environment.kt
+        run: cp shared/src/commonMain/kotlin/bloomy/cozyspace/config/EnvironmentExample.kt shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
 
       - name: ☕ Setup JDK 21
         uses: actions/setup-java@v5
@@ -88,6 +94,9 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v5
+
+      - name: 📄 Create Environment.kt
+        run: cp shared/src/commonMain/kotlin/bloomy/cozyspace/config/EnvironmentExample.kt shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
 
       - name: ☕ Setup JDK 21
         uses: actions/setup-java@v5
