@@ -1,32 +1,55 @@
 package bloomy.cozyspace
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.compose_multiplatform
-import org.jetbrains.compose.resources.painterResource
+import bloomy.cozyspace.data.JokeRepository
+import bloomy.cozyspace.network.ApiService
+import bloomy.cozyspace.network.createHttpClient
+import bloomy.cozyspace.store.JokeStore
+import bloomy.cozyspace.store.JokeStoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
+        val jokeStore =
+            remember {
+                JokeStoreFactory(
+                    JokeRepository(
+                        ApiService(
+                            createHttpClient()
+                        )
+                    )
+                ).create().also { it.init() }
+            }
+        val scope = rememberCoroutineScope()
+        val jokeFlow = remember(jokeStore, scope) { jokeStore.stateFlow(scope) }
+        val joke by jokeFlow.collectAsState()
+
+        DisposableEffect(jokeStore) {
+            onDispose {
+                jokeStore.dispose()
+            }
+        }
+
         Column(
             modifier =
                 Modifier
@@ -35,18 +58,29 @@ fun App() {
                     .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+            Button(
+                onClick = {
+                    jokeStore.accept(JokeStore.Intent.LoadJoke)
                 }
+            ) {
+                Text("Load joke")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    jokeStore.accept(JokeStore.Intent.LoadDevJoke)
+                }
+            ) {
+                Text("Load dev joke")
+            }
+
+            Text(text = if (joke.loading) "Loading..." else joke.joke.text)
+            Text(text = if (joke.loading) "" else joke.joke.answer)
+
+            joke.error?.let { error ->
+                Text(text = error)
             }
         }
     }
