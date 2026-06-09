@@ -1,4 +1,4 @@
-package bloomy.cozyspace.login
+package bloomy.cozyspace.login.signUp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -33,14 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bloomy.cozyspace.login.signUp.getPasswordError
-import bloomy.cozyspace.login.signUp.isCreatedEmailValid
-import bloomy.cozyspace.login.signUp.isCreatedPasswordConfirmationValid
-import bloomy.cozyspace.login.signUp.isCreatedPasswordValid
-import bloomy.cozyspace.login.signUp.isCreatedUsernameValid
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.Res
@@ -54,7 +51,6 @@ import cozyspace.composeapp.generated.resources.signIn_visibility_off
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-@Preview
 fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit = {}) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -72,9 +68,13 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
         isCreatedPasswordValid(password) &&
         isCreatedPasswordConfirmationValid(password, passwordConfirmation)
 
-    Column(modifier = Modifier.fillMaxSize().background(WhiteBackground).padding(20.dp),
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+        .background(WhiteBackground)
+        .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly) {
+    ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -83,7 +83,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
                 contentDescription = "CozySpace Logo",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.size(250.dp)
-                    .clip(RoundedCornerShape(24.dp))
+                    .clip(RoundedCornerShape(30.dp))
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -98,7 +98,10 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
             Spacer(modifier = Modifier.height(32.dp))
         }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier
+            .widthIn(max = 500.dp)
+            .fillMaxWidth()
+        ) {
 
             // USERNAME
             OutlinedTextField(
