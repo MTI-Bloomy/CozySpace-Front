@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import bloomy.cozyspace.login.signIn.SignInScreen
-import bloomy.cozyspace.login.signUp.SignUpScreen
+import bloomy.cozyspace.auth.signIn.SignInScreen
+import bloomy.cozyspace.auth.signUp.SignUpScreen
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 
 @Composable

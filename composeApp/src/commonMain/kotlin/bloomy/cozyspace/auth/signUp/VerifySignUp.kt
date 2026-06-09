@@ -1,4 +1,4 @@
-package bloomy.cozyspace.login.signUp
+package bloomy.cozyspace.auth.signUp
 
 const val ERR_LEN = "Password must have at least eight characters !"
 const val ERR_WHITESPACE = "Password must not contain whitespace !"
