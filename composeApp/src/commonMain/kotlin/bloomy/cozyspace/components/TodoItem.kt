@@ -45,6 +45,7 @@ fun TodoItem(task: Task, clicked: () -> Unit) {
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,6 +66,7 @@ fun TodoItem(task: Task, clicked: () -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
 
+                // Task name
                 Text(
                     text = task.name,
                     color = Color.White,
@@ -75,12 +77,15 @@ fun TodoItem(task: Task, clicked: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(2.dp))
 
+                // Task category
                 Text(
                     text = task.type,
                     color = Color(0xFF8EC5FF),
                     fontSize = 14.sp,
                     maxLines = 1
                 )
+
+                TodoItemCategory(task.type)
             }
 
             Spacer(modifier = Modifier.width(8.dp))
