@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -53,6 +54,7 @@ fun AuthLayout(isCompact: Boolean, isSignUp: Boolean = false, headerWeight: Floa
                 .weight(1f)
                 .widthIn(max = 500.dp)
                 .fillMaxWidth()
+                .imePadding()
             ) {
                 content()
             }
@@ -81,6 +83,7 @@ fun AuthLayout(isCompact: Boolean, isSignUp: Boolean = false, headerWeight: Floa
                 .weight(1f)
                 .widthIn(max = 500.dp)
                 .fillMaxWidth()
+                .imePadding()
             ) {
                 content()
             }

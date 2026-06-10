@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.theme.DarkGreen
@@ -23,13 +25,13 @@ import cozyspace.composeapp.generated.resources.cozyspace_logo
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun AuthHeader(title: String, imageWidth: Float) {
+fun AuthHeader(title: String, imageWidth: Dp) {
     Image(
         painter = painterResource(Res.drawable.cozyspace_logo),
         contentDescription = "CozySpace Logo",
         contentScale = ContentScale.Inside,
         modifier = Modifier
-            .fillMaxWidth(imageWidth)
+            .width(imageWidth)
             .aspectRatio(1f)
             .clip(RoundedCornerShape(30.dp))
     )

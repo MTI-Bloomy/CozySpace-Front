@@ -19,8 +19,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit =
             header = {
                 AuthHeader(
                     title = "Welcome to CozySpace !",
-                    imageWidth =
-                        if (maxWidth < 600.dp) 0.4f else 0.6f
+                    imageWidth = maxWidth * 0.4f
                 )
             },
             content = {

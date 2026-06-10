@@ -14,8 +14,7 @@ fun SignInScreen(onLoginSuccess: () -> Unit = {}, onSignUp: () -> Unit = {}) {
             header = {
                 AuthHeader(
                     title = "Welcome back !",
-                    imageWidth =
-                        if (maxWidth < 600.dp) 0.8f else 0.6f
+                    imageWidth = maxWidth * 0.4f
                 )
             },
             content = {
