@@ -8,6 +8,10 @@ val MidDarkGreen = Color(0xFF3B8362)
 val MidLightGreen = Color(0xFF549772)
 val LightGreen = Color(0xFF60A17A)
 
+// Password strength bar
+var Red = Color.Red
+var Orange = Color(0xFFFFA000)
+
 // TodoList Bubbles
 val DarkYellowBubble = Color(0xFFFCC419)
 val LightYellowBubble = Color(0xFFF6EAC5)

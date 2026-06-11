@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.auth.component.PasswordStrengthBar
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.WhiteBackground
@@ -31,7 +32,6 @@ fun SignUpForm(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit = {
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isPasswordConfirmationVisible by remember { mutableStateOf(false) }
     var isPasswordTouched by remember { mutableStateOf(false) }
-    val passwordError = if (isPasswordTouched) getPasswordError(password) else null
 
     val isFormValid =
         username.isNotBlank() &&
@@ -153,14 +153,6 @@ fun SignUpForm(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit = {
                     Text("Password")
                 },
                 textStyle = TextStyle.Default.copy(fontSize = 20.sp),
-                supportingText = {
-                    if (passwordError != null) {
-                        Text(
-                            text = passwordError,
-                            color = Color.Red
-                        )
-                    }
-                },
                 visualTransformation =
                     if (isPasswordVisible)
                         VisualTransformation.None
@@ -214,6 +206,12 @@ fun SignUpForm(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit = {
                     cursorColor = DarkGreen
                 )
             )
+
+            Spacer(Modifier.height(8.dp))
+
+            PasswordStrengthBar(password)
+
+            Spacer(Modifier.height(8.dp))
 
             // PASSWORD CONFIRMATION
             TextField(
