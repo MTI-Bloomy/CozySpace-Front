@@ -1,4 +1,4 @@
-package bloomy.cozyspace.utils
+package bloomy.cozyspace.todoList.utils
 
 import bloomy.cozyspace.theme.DarkBlueBubble
 import bloomy.cozyspace.theme.DarkGreenBubble

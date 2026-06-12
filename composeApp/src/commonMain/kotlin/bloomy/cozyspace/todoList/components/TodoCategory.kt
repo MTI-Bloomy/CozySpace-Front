@@ -1,7 +1,7 @@
-package bloomy.cozyspace.components
+package bloomy.cozyspace.todoList.components
 
 import androidx.compose.runtime.Composable
-import bloomy.cozyspace.domain.Task
+import bloomy.cozyspace.todoList.domain.Task
 
 @Composable
 fun TodoCategory(task: Task, clicked: () -> Unit) {

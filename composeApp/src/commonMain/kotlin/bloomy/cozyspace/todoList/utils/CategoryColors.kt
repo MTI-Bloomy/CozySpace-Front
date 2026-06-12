@@ -1,4 +1,4 @@
-package bloomy.cozyspace.utils
+package bloomy.cozyspace.todoList.utils
 
 import androidx.compose.ui.graphics.Color
 

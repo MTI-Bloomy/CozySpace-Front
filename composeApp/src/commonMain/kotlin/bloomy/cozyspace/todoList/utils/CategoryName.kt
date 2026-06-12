@@ -1,4 +1,4 @@
-package bloomy.cozyspace.utils
+package bloomy.cozyspace.todoList.utils
 
 enum class CategoryName {
     Kitchen,

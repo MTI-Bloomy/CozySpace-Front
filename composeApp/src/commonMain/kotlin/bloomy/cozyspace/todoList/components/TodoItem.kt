@@ -1,4 +1,4 @@
-package bloomy.cozyspace.components
+package bloomy.cozyspace.todoList.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bloomy.cozyspace.domain.Task
+import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import cozyspace.composeapp.generated.resources.Res
@@ -65,7 +65,6 @@ fun TodoItem(task: Task, clicked: () -> Unit) {
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-
                 // Task name
                 Text(
                     text = task.name,
@@ -78,13 +77,6 @@ fun TodoItem(task: Task, clicked: () -> Unit) {
                 Spacer(modifier = Modifier.height(2.dp))
 
                 // Task category
-                Text(
-                    text = task.type,
-                    color = Color(0xFF8EC5FF),
-                    fontSize = 14.sp,
-                    maxLines = 1
-                )
-
                 TodoItemCategory(task.type)
             }
 

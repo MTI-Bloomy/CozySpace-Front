@@ -1,6 +1,6 @@
-package bloomy.cozyspace.domain
+package bloomy.cozyspace.todoList.domain
 
-import bloomy.cozyspace.utils.CategoryName
+import bloomy.cozyspace.todoList.utils.CategoryName
 import kotlinx.serialization.Serializable
 
 @Serializable
