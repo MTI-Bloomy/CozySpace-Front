@@ -19,21 +19,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import bloomy.cozyspace.data.JokeRepository
+import bloomy.cozyspace.data.AuthentificationRepository
+import bloomy.cozyspace.data.LoginRequestDto
+import bloomy.cozyspace.data.RegisterRequestDto
 import bloomy.cozyspace.network.ApiService
 import bloomy.cozyspace.network.createHttpClient
-import bloomy.cozyspace.store.JokeStore
-import bloomy.cozyspace.store.JokeStoreFactory
+import bloomy.cozyspace.store.UserStore
+import bloomy.cozyspace.store.UserStoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        val jokeStore =
+        val userStore =
             remember {
-                JokeStoreFactory(
-                    JokeRepository(
+                UserStoreFactory(
+                    AuthentificationRepository(
                         ApiService(
                             createHttpClient()
                         )
@@ -41,12 +43,12 @@ fun App() {
                 ).create().also { it.init() }
             }
         val scope = rememberCoroutineScope()
-        val jokeFlow = remember(jokeStore, scope) { jokeStore.stateFlow(scope) }
-        val joke by jokeFlow.collectAsState()
+        val userFlow = remember(userStore, scope) { userStore.stateFlow(scope) }
+        val user by userFlow.collectAsState()
 
-        DisposableEffect(jokeStore) {
+        DisposableEffect(userStore) {
             onDispose {
-                jokeStore.dispose()
+                userStore.dispose()
             }
         }
 
@@ -60,26 +62,36 @@ fun App() {
         ) {
             Button(
                 onClick = {
-                    jokeStore.accept(JokeStore.Intent.LoadJoke)
+                    userStore.accept(UserStore.Intent.Register(
+                        RegisterRequestDto(
+                            email = "user@example.com",
+                            password = "password"
+                        )
+                    ))
                 }
             ) {
-                Text("Load joke")
+                Text("Register")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
-                    jokeStore.accept(JokeStore.Intent.LoadDevJoke)
+                    userStore.accept(UserStore.Intent.Login(
+                        LoginRequestDto(
+                            email = "user@example.com",
+                            password = "password"
+                        )
+                    ))
                 }
             ) {
-                Text("Load dev joke")
+                Text("Login")
             }
 
-            Text(text = if (joke.loading) "Loading..." else joke.joke.text)
-            Text(text = if (joke.loading) "" else joke.joke.answer)
+            Text(text = if (user.loading) "Loading..." else user.token?.idToken.orEmpty())
+            Text(text = if (user.loading) "" else user.error ?: "")
 
-            joke.error?.let { error ->
+            user.error?.let { error ->
                 Text(text = error)
             }
         }
