@@ -15,9 +15,18 @@ import bloomy.cozyspace.theme.TransparentGreenBubble
 import bloomy.cozyspace.theme.TransparentPurpleBubble
 import bloomy.cozyspace.theme.TransparentRedBubble
 import bloomy.cozyspace.theme.TransparentYellowBubble
+import cozyspace.composeapp.generated.resources.Res
+import cozyspace.composeapp.generated.resources.todoCategoryBathroom
+import cozyspace.composeapp.generated.resources.todoCategoryBedroom
+import cozyspace.composeapp.generated.resources.todoCategoryGarden
+import cozyspace.composeapp.generated.resources.todoCategoryKitchen
+import cozyspace.composeapp.generated.resources.todoCategoryWork
+import cozyspace.composeapp.generated.resources.todoItem_More
+import org.jetbrains.compose.resources.DrawableResource
 
 enum class Category(
-    val colors: CategoryColors
+    val colors: CategoryColors,
+    val icon : DrawableResource
 ) {
 
     Kitchen(
@@ -25,7 +34,8 @@ enum class Category(
             dark = DarkYellowBubble,
             light = LightYellowBubble,
             transparent = TransparentYellowBubble
-        )
+        ),
+        Res.drawable.todoCategoryKitchen
     ),
 
     Work(
@@ -33,7 +43,8 @@ enum class Category(
             dark = DarkBlueBubble,
             light = LightBlueBubble,
             transparent = TransparentBlueBubble
-        )
+        ),
+        Res.drawable.todoCategoryWork
     ),
 
     Bedroom(
@@ -41,7 +52,8 @@ enum class Category(
             dark = DarkRedBubble,
             light = LightRedBubble,
             transparent = TransparentRedBubble
-        )
+        ),
+        Res.drawable.todoCategoryBedroom
     ),
 
     Garden(
@@ -49,7 +61,8 @@ enum class Category(
             dark = DarkGreenBubble,
             light = LightGreenBubble,
             transparent = TransparentGreenBubble
-        )
+        ),
+        Res.drawable.todoCategoryGarden
     ),
 
     Bathroom(
@@ -57,6 +70,7 @@ enum class Category(
             dark = DarkPurpleBubble,
             light = LightPurpleBubble,
             transparent = TransparentPurpleBubble
-        )
+        ),
+        Res.drawable.todoCategoryBathroom
     )
 }

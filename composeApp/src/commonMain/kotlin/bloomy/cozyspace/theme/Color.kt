@@ -8,6 +8,9 @@ val MidDarkGreen = Color(0xFF3B8362)
 val MidLightGreen = Color(0xFF549772)
 val LightGreen = Color(0xFF60A17A)
 
+// Drop shadow
+val ShadowColor = Color(0x40000000)
+
 // TodoList Bubbles
 // Kitchen
 val DarkYellowBubble = Color(0xFFFCC419)

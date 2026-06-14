@@ -9,5 +9,6 @@ data class Task (
     val name: String,
     val frequency: Int,
     val type: CategoryName, // Saved as String in db
-    val startDate: String
+    val startDate: String,
+    val isDone: Boolean
 )

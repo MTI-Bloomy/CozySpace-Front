@@ -18,6 +18,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,12 +32,14 @@ import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
+import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.todoItem_More
+import cozyspace.composeapp.generated.resources.todoItem_Tick
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun TodoItem(task: Task, clicked: () -> Unit) {
+fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,11 +59,24 @@ fun TodoItem(task: Task, clicked: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(42.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(MidDarkGreen)
-            )
+                    .clickable {
+                        onTaskChecked(!task.isDone)
+                    }
+            ) {
+                if (task.isDone) {
+                    Icon(
+                        painter = painterResource(Res.drawable.todoItem_Tick),
+                        contentDescription = "More",
+                        tint = WhiteBackground,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -95,13 +114,13 @@ fun TodoItem(task: Task, clicked: () -> Unit) {
                         fontWeight = FontWeight.Medium
                     )
 
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = "16:00",
-                        color = Color.White.copy(alpha = 0.85f),
-                        fontSize = 11.sp
-                    )
+//                    Spacer(modifier = Modifier.height(4.dp))
+//
+//                    Text(
+//                        text = "16:00",
+//                        color = Color.White.copy(alpha = 0.85f),
+//                        fontSize = 11.sp
+//                    )
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))

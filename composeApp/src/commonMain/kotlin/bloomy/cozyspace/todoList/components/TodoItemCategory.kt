@@ -24,7 +24,6 @@ import bloomy.cozyspace.todoList.utils.CategoryName
 @Composable
 fun TodoItemCategory(type: CategoryName) {
     val colors = Category.valueOf(type.name).colors
-    val shape = RoundedCornerShape(60)
 
     Surface(
         shape = RoundedCornerShape(50),
