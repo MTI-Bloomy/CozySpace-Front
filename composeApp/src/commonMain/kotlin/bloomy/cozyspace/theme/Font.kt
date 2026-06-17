@@ -2,6 +2,8 @@ package bloomy.cozyspace.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.nunito_black
 import cozyspace.composeapp.generated.resources.nunito_blackitalic
@@ -24,21 +26,21 @@ import org.jetbrains.compose.resources.Font
 @Composable
 fun appFontFamily(): FontFamily {
     return FontFamily(
-        Font(Res.font.nunito_black),
-        Font(Res.font.nunito_blackitalic),
-        Font(Res.font.nunito_bold),
-        Font(Res.font.nunito_bolditalic),
-        Font(Res.font.nunito_extrabold),
-        Font(Res.font.nunito_extrabolditalic),
-        Font(Res.font.nunito_extralight),
-        Font(Res.font.nunito_extralightitalic),
-        Font(Res.font.nunito_italic),
-        Font(Res.font.nunito_light),
-        Font(Res.font.nunito_lightitalic),
-        Font(Res.font.nunito_medium),
-        Font(Res.font.nunito_mediumitalic),
-        Font(Res.font.nunito_regular),
-        Font(Res.font.nunito_semibold),
-        Font(Res.font.nunito_semibolditalic),
+        Font(Res.font.nunito_black, weight = FontWeight.Black),
+        Font(Res.font.nunito_blackitalic, weight = FontWeight.Black, style = FontStyle.Italic),
+        Font(Res.font.nunito_bold, weight = FontWeight.Bold),
+        Font(Res.font.nunito_bolditalic, weight = FontWeight.Bold, style = FontStyle.Italic),
+        Font(Res.font.nunito_extrabold, weight = FontWeight.ExtraBold),
+        Font(Res.font.nunito_extrabolditalic, weight = FontWeight.ExtraBold, style = FontStyle.Italic),
+        Font(Res.font.nunito_extralight, weight = FontWeight.ExtraLight),
+        Font(Res.font.nunito_extralightitalic, weight = FontWeight.ExtraLight, style = FontStyle.Italic),
+        Font(Res.font.nunito_italic, style = FontStyle.Italic),
+        Font(Res.font.nunito_light, weight = FontWeight.Light),
+        Font(Res.font.nunito_lightitalic, weight = FontWeight.Light, style = FontStyle.Italic),
+        Font(Res.font.nunito_medium, weight = FontWeight.Medium),
+        Font(Res.font.nunito_mediumitalic, weight = FontWeight.Medium, style = FontStyle.Italic),
+        Font(Res.font.nunito_regular, weight = FontWeight.Normal),
+        Font(Res.font.nunito_semibold, weight = FontWeight.SemiBold),
+        Font(Res.font.nunito_semibolditalic, weight = FontWeight.SemiBold, style = FontStyle.Italic),
     )
 }
