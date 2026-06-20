@@ -1,4 +1,4 @@
-package bloomy.cozyspace.todoList.components
+package bloomy.cozyspace.todoList.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -33,12 +33,7 @@ import bloomy.cozyspace.todoList.utils.CategoryName
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun TodoCategory(type: CategoryName, nbTasks: Int, isSelected: Boolean = false) {
-    var isSelected by remember {
-        mutableStateOf(false)
-    } // TODO => remove in this part, only to test
-
-    val category = Category.valueOf(type.name)
+fun TodoCategory(category: Category, nbTasks: Int, isSelected: Boolean = false, onClick: () -> Unit) {
     val colors = category.colors
 
     Card(
@@ -54,9 +49,7 @@ fun TodoCategory(type: CategoryName, nbTasks: Int, isSelected: Boolean = false) 
                     offset = DpOffset(x = 0.dp, 4.dp)
                 )
             )
-            .clickable{
-                isSelected = !isSelected
-            },
+            .clickable{ onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = colors.light
@@ -80,7 +73,7 @@ fun TodoCategory(type: CategoryName, nbTasks: Int, isSelected: Boolean = false) 
             )
 
             Text(
-                text = "$nbTasks ${type.name}",
+                text = "$nbTasks ${category.name}",
                 color = DarkGreen,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp

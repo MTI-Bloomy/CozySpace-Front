@@ -7,5 +7,3 @@ enum class CategoryName {
     Garden,
     Work
 }
-
-
