@@ -2,16 +2,15 @@ package bloomy.cozyspace.store
 
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.LoginDto
-import bloomy.cozyspace.data.LoginRequestDto
 import bloomy.cozyspace.data.RegisterDto
-import bloomy.cozyspace.data.RegisterRequestDto
-import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.domain.Token
+import bloomy.cozyspace.interfaces.ApiResult
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import kotlinx.coroutines.launch
+import kotlin.String
 
 class UserStoreFactory(
     private val repository: AuthentificationRepository,
@@ -65,23 +64,26 @@ class UserStoreFactory(
                     dispatch(Msg.Loading)
 
                     scope.launch {
-                        try {
-
-                            val response = repository.register(intent.request)
-
-                            dispatch(
-                                Msg.Register(
-                                    response
+                        when (val result = repository.register(intent.request)) {
+                            is ApiResult.Success -> {
+                                dispatch(
+                                    Msg.Register(
+                                        result.data
+                                    )
                                 )
-                            )
+                            }
 
-                        } catch (exception: Exception) {
-
-                            dispatch(
-                                Msg.Error(
-                                    exception.message ?: "Unknown error"
+                            is ApiResult.Error -> {
+                                dispatch(
+                                    Msg.Error(result.message)
                                 )
-                            )
+                            }
+
+                            ApiResult.Empty -> {
+                                dispatch(
+                                    Msg.Error("Réponse vide du serveur")
+                                )
+                            }
                         }
                     }
                 }
@@ -91,24 +93,26 @@ class UserStoreFactory(
                     dispatch(Msg.Loading)
 
                     scope.launch {
-
-                        try {
-
-                            val response = repository.login(intent.request)
-
-                            dispatch(
-                                Msg.Login(
-                                    response
+                        when (val result = repository.login(intent.request)) {
+                            is ApiResult.Success -> {
+                                dispatch(
+                                    Msg.Login(
+                                        result.data
+                                    )
                                 )
-                            )
+                            }
 
-                        } catch (exception: Exception) {
-
-                            dispatch(
-                                Msg.Error(
-                                    exception.message ?: "Unknown error"
+                            is ApiResult.Error -> {
+                                dispatch(
+                                    Msg.Error(result.message)
                                 )
-                            )
+                            }
+
+                            ApiResult.Empty -> {
+                                dispatch(
+                                    Msg.Error("Réponse vide du serveur")
+                                )
+                            }
                         }
                     }
                 }

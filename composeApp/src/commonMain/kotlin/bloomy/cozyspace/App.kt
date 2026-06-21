@@ -88,8 +88,7 @@ fun App() {
                 Text("Login")
             }
 
-            Text(text = if (user.loading) "Loading..." else user.token?.idToken.orEmpty())
-            Text(text = if (user.loading) "" else user.error ?: "")
+            Text(text = if (user.loading) "Loading..." else user.token.idToken)
 
             user.error?.let { error ->
                 Text(text = error)
