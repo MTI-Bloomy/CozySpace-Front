@@ -1,5 +1,6 @@
 package bloomy.cozyspace.todoList.component
 
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -34,9 +35,10 @@ import cozyspace.composeapp.generated.resources.todoItem_More
 import cozyspace.composeapp.generated.resources.todoItem_Tick
 import jdk.internal.net.http.common.Log
 import org.jetbrains.compose.resources.painterResource
+import java.time.LocalDateTime
 
 @Composable
-fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> Unit = {}) {
+fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -103,21 +105,29 @@ fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> U
                 Column(
                     horizontalAlignment = Alignment.End
                 ) {
+                    // Ex: 2026-05-04T18:00:00
+                    // Only keeps the first 5 characters after T
+                    val date = task.startDate.substringBefore('T').take(10)
 
                     Text(
-                        text = task.startDate,
+                        text = date,
                         color = Color.White,
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Bold
                     )
 
-//                    Spacer(modifier = Modifier.height(4.dp))
-//
-//                    Text(
-//                        text = "16:00",
-//                        color = Color.White.copy(alpha = 0.85f),
-//                        fontSize = 11.sp
-//                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Ex: 2026-05-04T18:00:00
+                    // Only keeps the first 5 characters after T
+                    val time = task.startDate.substringAfter('T').take(5)
+
+                    Text(
+                        text = time,
+                        color = Color.White.copy(alpha = 0.85f),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))

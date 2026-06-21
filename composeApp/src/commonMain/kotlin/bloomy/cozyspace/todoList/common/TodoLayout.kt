@@ -22,7 +22,7 @@ import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
 
 @Composable
-fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, header: @Composable () -> Unit) {
+fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, header: @Composable () -> Unit) {
     val filteredTasks = if (selectedCategory == null) {
         tasks.values.flatten()
     } else {
@@ -57,6 +57,7 @@ fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, L
                     items(filteredTasks) { task ->
                         TodoItem(
                             task,
+                            onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
                         )
                     }
                 }
@@ -88,7 +89,10 @@ fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, L
             ) {
                 LazyColumn {
                     items(filteredTasks) { task ->
-                        TodoItem(task)
+                        TodoItem(
+                            task,
+                            onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
+                        )
                     }
                 }
             }

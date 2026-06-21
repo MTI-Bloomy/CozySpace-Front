@@ -22,70 +22,79 @@ import bloomy.cozyspace.todoList.utils.CategoryName
 @Composable
 fun TodoDoneScreen() {
     // TODO => remove
-    val tasks: Map<Category, List<Task>> = mapOf(
+    var tasks: Map<Category, List<Task>> by remember {
+        mutableStateOf(
+            mapOf(
+                Category.Kitchen to listOf(
+                    Task(
+                        id = "1",
+                        name = "Do the dishes",
+                        frequency = 1,
+                        type = CategoryName.Kitchen,
+                        startDate = "04/05/2026 18:00",
+                        isDone = false
+                    ),
+                    Task(
+                        id = "2",
+                        name = "Clean fridge",
+                        frequency = 7,
+                        type = CategoryName.Kitchen,
+                        startDate = "05/05/2026 09:00",
+                        isDone = true
+                    )
+                ),
 
-        Category.Kitchen to listOf(
-            Task(
-                id = "1",
-                name = "Do the dishes",
-                frequency = 1,
-                type = CategoryName.Kitchen,
-                startDate = "04/05/2026 18:00",
-                isDone = false
-            ),
-            Task(
-                id = "2",
-                name = "Clean fridge",
-                frequency = 7,
-                type = CategoryName.Kitchen,
-                startDate = "05/05/2026 09:00",
-                isDone = true
-            )
-        ),
+                Category.Work to listOf(
+                    Task(
+                        id = "3",
+                        name = "Finish report",
+                        frequency = 1,
+                        type = CategoryName.Work,
+                        startDate = "04/05/2026 14:00",
+                        isDone = false
+                    )
+                ),
 
-        Category.Work to listOf(
-            Task(
-                id = "3",
-                name = "Finish report",
-                frequency = 1,
-                type = CategoryName.Work,
-                startDate = "04/05/2026 14:00",
-                isDone = false
-            )
-        ),
+                Category.Bedroom to listOf(
+                    Task(
+                        id = "4",
+                        name = "Change sheets",
+                        frequency = 14,
+                        type = CategoryName.Bedroom,
+                        startDate = "06/05/2026 10:00",
+                        isDone = false
+                    ),
+                    Task(
+                        id = "5",
+                        name = "Vacuum room",
+                        frequency = 7,
+                        type = CategoryName.Bedroom,
+                        startDate = "06/05/2026 11:00",
+                        isDone = false
+                    )
+                ),
 
-        Category.Bedroom to listOf(
-            Task(
-                id = "4",
-                name = "Change sheets",
-                frequency = 14,
-                type = CategoryName.Bedroom,
-                startDate = "06/05/2026 10:00",
-                isDone = false
-            ),
-            Task(
-                id = "5",
-                name = "Vacuum room",
-                frequency = 7,
-                type = CategoryName.Bedroom,
-                startDate = "06/05/2026 11:00",
-                isDone = false
-            )
-        ),
+                Category.Garden to emptyList(),
 
-        Category.Garden to emptyList(),
-
-        Category.Bathroom to listOf(
-            Task(
-                id = "6",
-                name = "Clean mirror",
-                frequency = 7,
-                type = CategoryName.Bathroom,
-                startDate = "07/05/2026 08:00",
-                isDone = true
+                Category.Bathroom to listOf(
+                    Task(
+                        id = "6",
+                        name = "Clean mirror",
+                        frequency = 7,
+                        type = CategoryName.Bathroom,
+                        startDate = "07/05/2026 08:00",
+                        isDone = true
+                    )
+                )
             )
         )
-    )
+    }
+
+    fun onTaskChecked(taskId: String, isDone: Boolean) {
+        tasks = tasks.mapValues { (_, list) ->
+            list.map { t -> if (t.id == taskId) t.copy(isDone = isDone) else t }
+        }
+    }
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
@@ -102,14 +111,13 @@ fun TodoDoneScreen() {
             keyboardOpen = keyboardOpen,
             tasks = tasks,
             selectedCategory = selectedCategory,
+            onTaskChecked = ::onTaskChecked,
             header = {
                 TodoHeader(
-                    isTodoList = false,
+                    isTodoList = true,
                     tasks = tasks,
                     selectedCategory = selectedCategory,
-                    onCategorySelected = {
-                        selectedCategory = it
-                    }
+                    onCategorySelected = { selectedCategory = it }
                 )
             }
         )

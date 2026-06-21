@@ -22,7 +22,7 @@ import kotlin.collections.Map
 @Composable
 fun TodoListScreen() {
     // TODO => remove
-    val tasks: Map<Category, List<Task>> by remember {
+    var tasks: Map<Category, List<Task>> by remember {
         mutableStateOf(
             mapOf(
                 Category.Kitchen to listOf(
@@ -90,6 +90,13 @@ fun TodoListScreen() {
         )
     }
 
+    // Copies isDone for the modified task
+    fun onTaskChecked(taskId: String, isDone: Boolean) {
+        tasks = tasks.mapValues { (_, list) ->
+            list.map { t -> if (t.id == taskId) t.copy(isDone = isDone) else t }
+        }
+    }
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -105,14 +112,13 @@ fun TodoListScreen() {
             keyboardOpen = keyboardOpen,
             tasks = tasks,
             selectedCategory = selectedCategory,
+            onTaskChecked = ::onTaskChecked,
             header = {
                 TodoHeader(
                     isTodoList = true,
                     tasks = tasks,
                     selectedCategory = selectedCategory,
-                    onCategorySelected = {
-                        selectedCategory = it
-                    }
+                    onCategorySelected = { selectedCategory = it }
                 )
             }
         )
