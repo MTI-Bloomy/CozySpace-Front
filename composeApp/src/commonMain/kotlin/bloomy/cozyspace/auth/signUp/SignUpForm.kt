@@ -15,7 +15,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import bloomy.cozyspace.auth.component.PasswordStrengthBar
+import bloomy.cozyspace.data.AuthentificationRepository
+import bloomy.cozyspace.data.RegisterRequestDto
+import bloomy.cozyspace.navigation.screenRoutes.Screen
+import bloomy.cozyspace.network.ApiService
+import bloomy.cozyspace.network.createHttpClient
+import bloomy.cozyspace.store.UserStore
+import bloomy.cozyspace.store.UserStoreFactory
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.WhiteBackground
@@ -23,7 +31,7 @@ import cozyspace.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun SignUpForm(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit = {}) {
+fun SignUpForm(navController: NavHostController) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -38,6 +46,17 @@ fun SignUpForm(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit = {
             isCreatedEmailValid(email) &&
             isCreatedPasswordValid(password) &&
             isCreatedPasswordConfirmationValid(password, passwordConfirmation)
+
+    val userStore =
+        remember {
+            UserStoreFactory(
+                AuthentificationRepository(
+                    ApiService(
+                        createHttpClient()
+                    )
+                )
+            ).create().also { it.init() }
+        }
 
     Card(
         modifier = Modifier
@@ -282,7 +301,14 @@ fun SignUpForm(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit = {
 
             Button(
                 onClick = {
-                    if (isFormValid) onSignUpSuccess()
+                    if (!isFormValid) return@Button
+                    userStore.accept(
+                        UserStore.Intent.Register(
+                            RegisterRequestDto(
+                                email = "user@example.com",
+                                password = "password"
+                            )
+                    ))
                 },
                 enabled = isFormValid,
                 modifier = Modifier
@@ -303,7 +329,9 @@ fun SignUpForm(onSignUpSuccess: () -> Unit = {}, onSignInSuccess: () -> Unit = {
             Spacer(modifier = Modifier.height(10.dp))
 
             TextButton(
-                onClick = onSignInSuccess,
+                onClick = {
+                    navController.navigate(Screen.SignIn.route)
+                },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(

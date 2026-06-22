@@ -16,27 +16,11 @@ fun NavGraph (navController: NavHostController) {
         startDestination = Screen.SignIn.route
     ) {
         composable(Screen.SignIn.route) {
-            SignInScreen(
-                onLoginSuccess = {
-                    navController.navigate(Screen.SignIn.route)
-                    // TODO => should lead to main screen
-                },
-                onSignUp = {
-                    navController.navigate(Screen.CreateAccount.route)
-                }
-            )
+            SignInScreen(navController)
         }
 
         composable(Screen.CreateAccount.route) {
-            SignUpScreen(
-                onSignUpSuccess = {
-                    navController.navigate(Screen.SignIn.route)
-                    // TODO => verify user successfully created before changing screen
-                },
-                onSignInSuccess = {
-                    navController.navigate(Screen.SignIn.route)
-                }
-            )
+            SignUpScreen(navController)
         }
     }
 }

@@ -1,18 +1,10 @@
 package bloomy.cozyspace.auth.signIn
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,8 +14,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -35,33 +25,47 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import bloomy.cozyspace.data.AuthentificationRepository
+import bloomy.cozyspace.data.LoginRequestDto
+import bloomy.cozyspace.navigation.screenRoutes.Screen
+import bloomy.cozyspace.network.ApiService
+import bloomy.cozyspace.network.createHttpClient
+import bloomy.cozyspace.store.UserStore
+import bloomy.cozyspace.store.UserStoreFactory
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.cozyspace_logo
 import cozyspace.composeapp.generated.resources.signIn_lock
 import cozyspace.composeapp.generated.resources.signIn_person
 import cozyspace.composeapp.generated.resources.signIn_visibility
 import cozyspace.composeapp.generated.resources.signIn_visibility_off
 import org.jetbrains.compose.resources.painterResource
-import java.awt.TextField
 
 @Composable
-fun SignInForm(onLoginSuccess: () -> Unit = {}, onSignUp: () -> Unit = {}) {
+fun SignInForm(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    val userStore =
+        remember {
+            UserStoreFactory(
+                AuthentificationRepository(
+                    ApiService(
+                        createHttpClient()
+                    )
+                )
+            ).create().also { it.init() }
+        }
 
     Card(
         modifier = Modifier
@@ -171,7 +175,15 @@ fun SignInForm(onLoginSuccess: () -> Unit = {}, onSignUp: () -> Unit = {}) {
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = onLoginSuccess,
+                onClick = {
+                    userStore.accept(
+                        UserStore.Intent.Login(
+                            LoginRequestDto(
+                                email = email,
+                                password = password
+                            )
+                    ))
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -190,7 +202,9 @@ fun SignInForm(onLoginSuccess: () -> Unit = {}, onSignUp: () -> Unit = {}) {
             Spacer(modifier = Modifier.height(20.dp))
 
             TextButton(
-                onClick = onSignUp,
+                onClick = {
+                    navController.navigate(Screen.CreateAccount.route)
+                },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(
