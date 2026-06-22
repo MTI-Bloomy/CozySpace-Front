@@ -104,12 +104,7 @@ fun AuthLayout(
                     .widthIn(max = 500.dp)
                     .fillMaxWidth()
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    content()
-                }
+                content()
             }
         }
     }
