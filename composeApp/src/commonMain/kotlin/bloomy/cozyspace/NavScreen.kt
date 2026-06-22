@@ -64,13 +64,13 @@ sealed interface NavDestination {
 
 @Serializable
 data object Home : NavDestination {
-    override val navIndex: Int = 0
+    override val navIndex: Int = 1
     override val navTitle: String = "Home"
 }
 
 @Serializable
 data object Timers : NavDestination {
-    override val navIndex: Int = 1
+    override val navIndex: Int = 0
     override val navTitle: String = "Timers"
 }
 
@@ -142,12 +142,12 @@ fun NavScreen() {
             startDestination = Home,
             modifier = Modifier.padding(padding),
         ) {
-            composable<Home> {
-                HomeTabScreen()
-            }
-
             composable<Timers> {
                 TimersTabScreen()
+            }
+
+            composable<Home> {
+                HomeTabScreen()
             }
 
             composable<Todo> {
@@ -181,6 +181,15 @@ fun NavBar(
             label = "Indicator Offset",
         )
 
+        val indicatorSize by animateDpAsState(
+            targetValue = if (selectedIndex == Home.navIndex) 68.dp else 56.dp,
+            animationSpec = spring(
+                dampingRatio = 0.6f,
+                stiffness = Spring.StiffnessLow,
+            ),
+            label = "Indicator Size"
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -199,8 +208,11 @@ fun NavBar(
         ) {
             Box(
                 modifier = Modifier
-                    .size(56.dp)
-                    .background(MaterialTheme.colorScheme.onPrimary, shape = CircleShape),
+                    .size(indicatorSize)
+                    .background(
+                        MaterialTheme.colorScheme.onPrimary,
+                        shape = CircleShape
+                    )
             )
         }
 
@@ -220,6 +232,20 @@ fun NavBar(
                     ),
                 )
 
+                val iconSize by animateDpAsState(
+                    targetValue = when {
+                        item == Home && selectedIndex == index -> 36.dp
+                        item == Home -> 32.dp
+                        selectedIndex == index -> 28.dp
+                        else -> 24.dp
+                    },
+                    animationSpec = spring(
+                        dampingRatio = 0.6f,
+                        stiffness = Spring.StiffnessLow,
+                    ),
+                    label = "Icon Size"
+                )
+
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -232,9 +258,10 @@ fun NavBar(
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        painter = navIcon(NavDestination.entries[index]),
+                        painter = navIcon(item),
                         contentDescription = null,
-                        tint = iconTint
+                        tint = iconTint,
+                        modifier = Modifier.size(iconSize)
                     )
                 }
             }
