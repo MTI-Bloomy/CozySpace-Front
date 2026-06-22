@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -20,6 +23,7 @@ import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.component.TodoItem
 import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
+import bloomy.cozyspace.todoList.utils.Spacing
 
 @Composable
 fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, header: @Composable () -> Unit) {
@@ -34,15 +38,16 @@ fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, L
             modifier = Modifier
                 .fillMaxSize()
                 .background(WhiteBackground)
+                .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(horizontal = 20.dp)
                 .imePadding(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg)
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(if (keyboardOpen) 0.4f else 1f),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter
             ) {
                 header()
             }
@@ -53,7 +58,9 @@ fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, L
                     .weight(1f),
                 contentAlignment = Alignment.TopCenter
             ) {
-                LazyColumn {
+                LazyColumn (
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs)
+                ) {
                     items(filteredTasks) { task ->
                         TodoItem(
                             task,
@@ -67,9 +74,10 @@ fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, L
         Row (modifier = Modifier
             .fillMaxSize()
             .background(WhiteBackground)
+            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(20.dp)
             .imePadding(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.xl, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -87,7 +95,9 @@ fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, L
                     .widthIn(max = 500.dp)
                     .fillMaxWidth()
             ) {
-                LazyColumn {
+                LazyColumn (
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs)
+                ) {
                     items(filteredTasks) { task ->
                         TodoItem(
                             task,

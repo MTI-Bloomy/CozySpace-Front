@@ -18,6 +18,7 @@ import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.todoList.component.TodoCategory
 import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
+import bloomy.cozyspace.todoList.utils.Spacing
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -26,7 +27,9 @@ fun TodoHeader(isTodoList: Boolean, tasks: Map<Category, List<Task>>, selectedCa
     val sdf = SimpleDateFormat("dd MMMM")
     val currentDate = sdf.format(Date())
 
-    Column {
+    Column (
+        verticalArrangement = Arrangement.spacedBy(Spacing.sm)
+    ) {
         Text(
             text = if (isTodoList) "Tasks" else "Completed tasks",
             color = DarkGreen,
