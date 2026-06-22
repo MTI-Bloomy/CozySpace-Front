@@ -87,13 +87,13 @@ compose.desktop {
             packageVersion = "1.0.0"
 
             windows {
-                iconFile.set(project.file("src/jvmMain/jvmResources/icon.ico"))
+                iconFile.set(project.file("src/jvmMain/jvmResources/logo.ico"))
             }
 //            macOS {
-//                iconFile.set(project.file("src/jvmMain/jvmResources/icon.icns"))
+//                iconFile.set(project.file("src/jvmMain/jvmResources/logo.icns"))
 //            }
             linux {
-                iconFile.set(project.file("src/jvmMain/jvmResources/icon.png"))
+                iconFile.set(project.file("src/jvmMain/jvmResources/logo.png"))
             }
         }
     }
