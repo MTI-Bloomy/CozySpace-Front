@@ -20,8 +20,10 @@ detekt = "1.23.6"
 serialization = "1.7.1"
 ktor = "2.3.12"
 mvikotlin = "4.2.0"
+navigationCompose = "2.9.2"
 
 [libraries]
+androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

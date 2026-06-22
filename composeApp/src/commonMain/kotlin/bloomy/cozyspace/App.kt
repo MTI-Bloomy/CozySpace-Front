@@ -1,37 +1,42 @@
 package bloomy.cozyspace
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+// import androidx.compose.foundation.background
+// import androidx.compose.foundation.layout.Column
+// import androidx.compose.foundation.layout.Spacer
+// import androidx.compose.foundation.layout.fillMaxSize
+// import androidx.compose.foundation.layout.height
+// import androidx.compose.foundation.layout.safeContentPadding
+// import androidx.compose.material3.Button
+// import androidx.compose.material3.MaterialTheme
+// import androidx.compose.material3.Text
+// import androidx.compose.runtime.Composable
+// import androidx.compose.runtime.DisposableEffect
+// import androidx.compose.runtime.collectAsState
+// import androidx.compose.runtime.getValue
+// import androidx.compose.runtime.remember
+// import androidx.compose.runtime.rememberCoroutineScope
+// import androidx.compose.ui.Alignment
+// import androidx.compose.ui.Modifier
+// import androidx.compose.ui.unit.dp
+// import androidx.compose.ui.tooling.preview.Preview
+// import bloomy.cozyspace.data.AuthentificationRepository
+// import bloomy.cozyspace.data.LoginRequestDto
+// import bloomy.cozyspace.data.RegisterRequestDto
+// import bloomy.cozyspace.network.ApiService
+// import bloomy.cozyspace.network.createHttpClient
+// import bloomy.cozyspace.store.UserStore
+// import bloomy.cozyspace.store.UserStoreFactory
+// import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import bloomy.cozyspace.data.AuthentificationRepository
-import bloomy.cozyspace.data.LoginRequestDto
-import bloomy.cozyspace.data.RegisterRequestDto
-import bloomy.cozyspace.network.ApiService
-import bloomy.cozyspace.network.createHttpClient
-import bloomy.cozyspace.store.UserStore
-import bloomy.cozyspace.store.UserStoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.navigation.NavGraph
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+/*     MaterialTheme {
         val userStore =
             remember {
                 UserStoreFactory(
@@ -94,5 +99,7 @@ fun App() {
                 Text(text = error)
             }
         }
-    }
+    } */
+    val navController = rememberNavController()
+    NavGraph(navController)
 }
