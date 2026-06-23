@@ -88,6 +88,16 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "bloomy.cozyspace"
             packageVersion = "1.0.0"
+
+            windows {
+                iconFile.set(project.file("src/jvmMain/jvmResources/logo.ico"))
+            }
+//            macOS {
+//                iconFile.set(project.file("src/jvmMain/jvmResources/logo.icns"))
+//            }
+            linux {
+                iconFile.set(project.file("src/jvmMain/jvmResources/logo.png"))
+            }
         }
     }
 }

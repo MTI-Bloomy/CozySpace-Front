@@ -137,3 +137,10 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# =========================================================
+# Environment files
+# =========================================================
+
+Environment.kt
+!shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
