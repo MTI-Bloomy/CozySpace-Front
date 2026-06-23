@@ -28,14 +28,23 @@ package bloomy.cozyspace
 // import bloomy.cozyspace.store.UserStoreFactory
 // import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.navigation.NavGraph
@@ -163,9 +172,22 @@ fun App() {
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .windowInsetsPadding(WindowInsets.statusBars)
+        .windowInsetsPadding(WindowInsets.navigationBars)
     ) {
-        NavGraph(navController, userStore)
+
+        NavGraph(
+            navController = navController,
+            userStore = userStore
+        )
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 16.dp)
+        )
     }
 }

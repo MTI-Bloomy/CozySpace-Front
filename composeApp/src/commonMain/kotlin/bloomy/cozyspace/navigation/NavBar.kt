@@ -33,6 +33,8 @@ import bloomy.cozyspace.navigation.screenRoutes.Home
 import bloomy.cozyspace.navigation.screenRoutes.NavDestination
 import bloomy.cozyspace.navigation.screenRoutes.Timers
 import bloomy.cozyspace.navigation.screenRoutes.Todo
+import bloomy.cozyspace.theme.DarkGreen
+import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.home
 import cozyspace.composeapp.generated.resources.schedule
@@ -85,7 +87,7 @@ fun NavBar(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    MaterialTheme.colorScheme.primary,
+                    DarkGreen,
                     shape = CircleShape,
                 ),
         )
@@ -101,7 +103,7 @@ fun NavBar(
                 modifier = Modifier
                     .size(indicatorSize)
                     .background(
-                        MaterialTheme.colorScheme.onPrimary,
+                        WhiteBackground,
                         shape = CircleShape
                     )
             )
@@ -116,7 +118,7 @@ fun NavBar(
             items.forEachIndexed { index, item ->
                 val iconTint by animateColorAsState(
                     targetValue = if (selectedIndex == index)
-                        MaterialTheme.colorScheme.primary else Color.White,
+                        DarkGreen else WhiteBackground,
                     animationSpec = spring(
                         dampingRatio = 0.6f,
                         stiffness = Spring.StiffnessLow,

@@ -22,6 +22,8 @@ import bloomy.cozyspace.navigation.screenRoutes.Home
 import bloomy.cozyspace.navigation.screenRoutes.Timers
 import bloomy.cozyspace.navigation.screenRoutes.Todo
 import bloomy.cozyspace.navigation.screenRoutes.NavDestination
+import bloomy.cozyspace.theme.DarkGreen
+import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.timers.TimersMain
 import bloomy.cozyspace.todoList.TodoMain
 
@@ -40,15 +42,16 @@ fun MainApp() {
 
     Scaffold(
         topBar = {
+            // TODO: To put the save button
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         "CozySpace",
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = WhiteBackground,
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = DarkGreen,
                     scrolledContainerColor = Color.Unspecified,
                     navigationIconContentColor = Color.Unspecified,
                     titleContentColor = Color.Unspecified,
