@@ -143,3 +143,4 @@ Thumbs.db
 # =========================================================
 
 Environment.kt
+!shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt

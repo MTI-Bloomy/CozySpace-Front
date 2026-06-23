@@ -45,8 +45,7 @@ jobs:
 
       - name: 📄 Create Environment.kt
         run: |
-          mkdir -p shared/src/commonMain/kotlin/bloomy/cozyspace/config
-          cat << 'EOF' > shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+          cat << 'EOF' > shared/src/androidMain/kotlin/bloomy/cozyspace/config/Environment.kt
           ${{ secrets.ENV_KT }}
           EOF
 
@@ -73,8 +72,7 @@ jobs:
 
       - name: 📄 Create Environment.kt
         run: |
-          mkdir -p shared/src/commonMain/kotlin/bloomy/cozyspace/config
-          cat << 'EOF' > shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+          cat << 'EOF' > shared/src/jvmMain/kotlin/bloomy/cozyspace/config/Environment.kt
           ${{ secrets.ENV_KT }}
           EOF
 
@@ -99,8 +97,7 @@ jobs:
 
       - name: 📄 Create Environment.kt
         run: |
-          mkdir -p shared/src/commonMain/kotlin/bloomy/cozyspace/config
-          cat << 'EOF' > shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+          cat << 'EOF' > shared/src/jsMain/kotlin/bloomy/cozyspace/config/Environment.kt
           ${{ secrets.ENV_KT }}
           EOF
 
