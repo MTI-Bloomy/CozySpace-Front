@@ -28,11 +28,26 @@ package bloomy.cozyspace
 // import bloomy.cozyspace.store.UserStoreFactory
 // import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.navigation.NavGraph
+import bloomy.cozyspace.navigation.screenRoutes.Screen
+import bloomy.cozyspace.network.ApiService
+import bloomy.cozyspace.network.createHttpClient
+import bloomy.cozyspace.store.UserStore
+import bloomy.cozyspace.store.UserStoreFactory
+import com.arkivanov.mvikotlin.core.rx.observer
+import kotlinx.coroutines.launch
 
+@Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 @Preview
 fun App() {
@@ -101,5 +116,58 @@ fun App() {
         }
     } */
     val navController = rememberNavController()
-    NavGraph(navController)
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val userStore =
+        remember {
+            UserStoreFactory(
+                AuthentificationRepository(
+                    ApiService(
+                        createHttpClient()
+                    )
+                )
+            ).create().also { it.init() }
+        }
+
+    val scope = rememberCoroutineScope()
+
+    DisposableEffect(userStore) {
+
+        val disposable = userStore.labels(
+            observer { label ->
+                when (label) {
+
+                    is UserStore.Label.ShowError -> {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(label.message)
+                        }
+                    }
+
+                    UserStore.Label.LoginSuccess -> {
+                        // TODO: Change this to go to main page
+                        navController.navigate(Screen.SignIn.route) {
+                            popUpTo(Screen.SignIn.route) { inclusive = true }
+                        }
+                    }
+
+                    UserStore.Label.RegisterSuccess -> {
+                        // TODO: Change this to go to main page
+                        navController.navigate(Screen.SignIn.route) {
+                            popUpTo(Screen.SignIn.route) { inclusive = true }
+                        }
+                    }
+                }
+            }
+        )
+
+        onDispose {
+            disposable.dispose()
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) {
+        NavGraph(navController, userStore)
+    }
 }

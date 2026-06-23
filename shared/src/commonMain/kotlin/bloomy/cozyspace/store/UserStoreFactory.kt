@@ -6,6 +6,7 @@ import bloomy.cozyspace.data.RegisterDto
 import bloomy.cozyspace.domain.Token
 import bloomy.cozyspace.interfaces.ApiResult
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
@@ -19,10 +20,10 @@ class UserStoreFactory(
 
     fun create(): UserStore =
         object : UserStore,
-            com.arkivanov.mvikotlin.core.store.Store<
+            Store<
                 UserStore.Intent,
                 UserStore.State,
-                Nothing
+                UserStore.Label
                 > by storeFactory.create(
                 name = "UserStore",
                 initialState = UserStore.State(),
@@ -52,7 +53,7 @@ class UserStoreFactory(
             Unit,
             UserStore.State,
             Msg,
-            Nothing>() {
+            UserStore.Label>() {
 
         override fun executeIntent(
             intent: UserStore.Intent
@@ -71,11 +72,21 @@ class UserStoreFactory(
                                         result.data
                                     )
                                 )
+
+                                publish(
+                                    UserStore.Label.RegisterSuccess
+                                )
                             }
 
                             is ApiResult.Error -> {
                                 dispatch(
                                     Msg.Error(result.message)
+                                )
+
+                                publish(
+                                    UserStore.Label.ShowError(
+                                        result.message
+                                    )
                                 )
                             }
 
@@ -83,6 +94,8 @@ class UserStoreFactory(
                                 dispatch(
                                     Msg.Error("Réponse vide du serveur")
                                 )
+
+                                publish(UserStore.Label.ShowError("Réponse vide du serveur"))
                             }
                         }
                     }
@@ -100,11 +113,21 @@ class UserStoreFactory(
                                         result.data
                                     )
                                 )
+
+                                publish(
+                                    UserStore.Label.LoginSuccess
+                                )
                             }
 
                             is ApiResult.Error -> {
                                 dispatch(
                                     Msg.Error(result.message)
+                                )
+
+                                publish(
+                                    UserStore.Label.ShowError(
+                                        result.message
+                                    )
                                 )
                             }
 
@@ -112,6 +135,8 @@ class UserStoreFactory(
                                 dispatch(
                                     Msg.Error("Réponse vide du serveur")
                                 )
+
+                                publish(UserStore.Label.ShowError("Réponse vide du serveur"))
                             }
                         }
                     }

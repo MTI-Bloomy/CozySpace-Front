@@ -33,13 +33,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.LoginRequestDto
 import bloomy.cozyspace.navigation.screenRoutes.Screen
-import bloomy.cozyspace.network.ApiService
-import bloomy.cozyspace.network.createHttpClient
 import bloomy.cozyspace.store.UserStore
-import bloomy.cozyspace.store.UserStoreFactory
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.WhiteBackground
@@ -51,21 +47,10 @@ import cozyspace.composeapp.generated.resources.signIn_visibility_off
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun SignInForm(navController: NavHostController) {
+fun SignInForm(navController: NavHostController, userStore: UserStore) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-
-    val userStore =
-        remember {
-            UserStoreFactory(
-                AuthentificationRepository(
-                    ApiService(
-                        createHttpClient()
-                    )
-                )
-            ).create().also { it.init() }
-        }
 
     Card(
         modifier = Modifier

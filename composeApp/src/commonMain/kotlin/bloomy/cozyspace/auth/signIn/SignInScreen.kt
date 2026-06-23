@@ -11,9 +11,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import bloomy.cozyspace.auth.common.AuthHeader
 import bloomy.cozyspace.auth.common.AuthLayout
+import bloomy.cozyspace.store.UserStore
 
 @Composable
-fun SignInScreen(navController: NavHostController) {
+fun SignInScreen(navController: NavHostController, userStore: UserStore) {
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -35,7 +36,7 @@ fun SignInScreen(navController: NavHostController) {
                 )
             },
             content = {
-                SignInForm(navController)
+                SignInForm(navController, userStore)
             }
         )
     }
