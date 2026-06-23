@@ -1,5 +1,5 @@
 package bloomy.cozyspace.config
 
-object Environment {
+object EnvironmentExample {
     const val API_URL = "https://my-api.com/api"
 }

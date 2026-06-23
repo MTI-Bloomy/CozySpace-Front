@@ -44,7 +44,11 @@ jobs:
         uses: actions/checkout@v5
 
       - name: 📄 Create Environment.kt
-        run: cp shared/src/commonMain/kotlin/bloomy/cozyspace/config/EnvironmentExample.kt shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+        run: |
+          mkdir -p shared/src/commonMain/kotlin/bloomy/cozyspace/config
+          cat << 'EOF' > shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+          ${{ secrets.ENV_KT }}
+          EOF
 
       - name: ☕ Setup JDK 21
         uses: actions/setup-java@v5
@@ -68,7 +72,11 @@ jobs:
         uses: actions/checkout@v5
 
       - name: 📄 Create Environment.kt
-        run: cp shared/src/commonMain/kotlin/bloomy/cozyspace/config/EnvironmentExample.kt shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+        run: |
+          mkdir -p shared/src/commonMain/kotlin/bloomy/cozyspace/config
+          cat << 'EOF' > shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+          ${{ secrets.ENV_KT }}
+          EOF
 
       - name: ☕ Setup JDK 21
         uses: actions/setup-java@v5
@@ -90,7 +98,11 @@ jobs:
         uses: actions/checkout@v5
 
       - name: 📄 Create Environment.kt
-        run: cp shared/src/commonMain/kotlin/bloomy/cozyspace/config/EnvironmentExample.kt shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+        run: |
+          mkdir -p shared/src/commonMain/kotlin/bloomy/cozyspace/config
+          cat << 'EOF' > shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
+          ${{ secrets.ENV_KT }}
+          EOF
 
       - name: ☕ Setup JDK 21
         uses: actions/setup-java@v5
