@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.theme.WhiteBackground
+import bloomy.cozyspace.todoList.component.AddTodoButton
 import bloomy.cozyspace.todoList.component.TodoDoneItem
 import bloomy.cozyspace.todoList.component.TodoItem
 import bloomy.cozyspace.todoList.domain.Task
@@ -77,6 +78,8 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                         }
                     }
                 }
+
+                AddTodoButton(modifier = Modifier.align(Alignment.BottomEnd))
             }
         }
     } else {
