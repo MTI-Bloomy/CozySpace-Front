@@ -20,13 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.theme.WhiteBackground
+import bloomy.cozyspace.todoList.component.TodoDoneItem
 import bloomy.cozyspace.todoList.component.TodoItem
 import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Spacing
 
 @Composable
-fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, header: @Composable () -> Unit) {
+fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, header: @Composable () -> Unit) {
     val filteredTasks = if (selectedCategory == null) {
         tasks.values.flatten()
     } else {
@@ -62,10 +63,18 @@ fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, L
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs)
                 ) {
                     items(filteredTasks) { task ->
-                        TodoItem(
-                            task,
-                            onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
-                        )
+                        if (isTodoList) {
+                            TodoItem(
+                                task,
+                                onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
+                            )
+                        }
+                        else {
+                            TodoDoneItem(
+                                task,
+                                onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
+                            )
+                        }
                     }
                 }
             }
@@ -99,10 +108,18 @@ fun TodoLayout(isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, L
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs)
                 ) {
                     items(filteredTasks) { task ->
-                        TodoItem(
-                            task,
-                            onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
-                        )
+                        if (isTodoList) {
+                            TodoItem(
+                                task,
+                                onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
+                            )
+                        }
+                        else {
+                            TodoDoneItem(
+                                task,
+                                onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
+                            )
+                        }
                     }
                 }
             }

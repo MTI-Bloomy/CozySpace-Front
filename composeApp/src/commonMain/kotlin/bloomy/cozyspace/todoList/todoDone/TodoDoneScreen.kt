@@ -31,7 +31,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         name = "Do the dishes",
                         frequency = 1,
                         type = CategoryName.Kitchen,
-                        startDate = "04/05/2026 18:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = false
                     ),
                     Task(
@@ -39,7 +39,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         name = "Clean fridge",
                         frequency = 7,
                         type = CategoryName.Kitchen,
-                        startDate = "05/05/2026 09:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = true
                     )
                 ),
@@ -50,7 +50,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         name = "Finish report",
                         frequency = 1,
                         type = CategoryName.Work,
-                        startDate = "04/05/2026 14:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = false
                     )
                 ),
@@ -61,7 +61,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         name = "Change sheets",
                         frequency = 14,
                         type = CategoryName.Bedroom,
-                        startDate = "06/05/2026 10:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = false
                     ),
                     Task(
@@ -69,7 +69,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         name = "Vacuum room",
                         frequency = 7,
                         type = CategoryName.Bedroom,
-                        startDate = "06/05/2026 11:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = false
                     )
                 ),
@@ -84,6 +84,22 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         type = CategoryName.Bathroom,
                         startDate = "07/05/2026 08:00",
                         isDone = true
+                    ),
+                    Task(
+                        id = "7",
+                        name = "Clean the bathtub",
+                        frequency = 7,
+                        type = CategoryName.Bathroom,
+                        startDate = "07/05/2026 08:00",
+                        isDone = false
+                    ),
+                    Task(
+                        id = "8",
+                        name = "Clean the sink",
+                        frequency = 7,
+                        type = CategoryName.Bathroom,
+                        startDate = "07/05/2026 08:00",
+                        isDone = false
                     )
                 )
             )
@@ -108,6 +124,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
         }
 
         TodoLayout(
+            isTodoList = false,
             isCompact = isCompact,
             keyboardOpen = keyboardOpen,
             tasks = tasks,

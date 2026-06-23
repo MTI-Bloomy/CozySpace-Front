@@ -31,7 +31,7 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
                         name = "Do the dishes",
                         frequency = 1,
                         type = CategoryName.Kitchen,
-                        startDate = "04/05/2026 18:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = false
                     ),
                     Task(
@@ -39,7 +39,7 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
                         name = "Clean fridge",
                         frequency = 7,
                         type = CategoryName.Kitchen,
-                        startDate = "05/05/2026 09:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = true
                     )
                 ),
@@ -50,7 +50,7 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
                         name = "Finish report",
                         frequency = 1,
                         type = CategoryName.Work,
-                        startDate = "04/05/2026 14:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = false
                     )
                 ),
@@ -61,7 +61,7 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
                         name = "Change sheets",
                         frequency = 14,
                         type = CategoryName.Bedroom,
-                        startDate = "06/05/2026 10:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = false
                     ),
                     Task(
@@ -69,7 +69,7 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
                         name = "Vacuum room",
                         frequency = 7,
                         type = CategoryName.Bedroom,
-                        startDate = "06/05/2026 11:00",
+                        startDate = "2026-05-04T18:00:00",
                         isDone = false
                     )
                 ),
@@ -125,6 +125,7 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
 
         TodoLayout(
             isCompact = isCompact,
+            isTodoList = true,
             keyboardOpen = keyboardOpen,
             tasks = tasks,
             selectedCategory = selectedCategory,
