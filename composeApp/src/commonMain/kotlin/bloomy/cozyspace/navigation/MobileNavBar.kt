@@ -20,38 +20,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.navigation.screenRoutes.Home
 import bloomy.cozyspace.navigation.screenRoutes.NavDestination
-import bloomy.cozyspace.navigation.screenRoutes.Timers
-import bloomy.cozyspace.navigation.screenRoutes.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.home
-import cozyspace.composeapp.generated.resources.schedule
-import cozyspace.composeapp.generated.resources.select_check_box
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun navIcon(destination: NavDestination): Painter {
-    return when (destination) {
-        Home -> painterResource(Res.drawable.home)
-        Timers -> painterResource(Res.drawable.schedule)
-        Todo -> painterResource(Res.drawable.select_check_box)
-    }
-}
-
-@Composable
-fun NavBar(
+fun MobileNavBar(
     items: List<NavDestination>,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
