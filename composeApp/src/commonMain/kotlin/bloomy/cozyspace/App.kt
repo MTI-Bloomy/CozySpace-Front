@@ -144,14 +144,12 @@ fun App() {
                     }
 
                     UserStore.Label.LoginSuccess -> {
-                        // TODO: Change this to go to main page
-                        navController.navigate(Screen.SignIn.route) {
+                        navController.navigate(Screen.Main.route) {
                             popUpTo(Screen.SignIn.route) { inclusive = true }
                         }
                     }
 
                     UserStore.Label.RegisterSuccess -> {
-                        // TODO: Change this to go to main page
                         navController.navigate(Screen.SignIn.route) {
                             popUpTo(Screen.SignIn.route) { inclusive = true }
                         }

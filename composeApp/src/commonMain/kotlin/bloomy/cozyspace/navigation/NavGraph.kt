@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import bloomy.cozyspace.MainApp
 import bloomy.cozyspace.auth.signIn.SignInScreen
 import bloomy.cozyspace.auth.signUp.SignUpScreen
 import bloomy.cozyspace.navigation.screenRoutes.Screen
@@ -22,6 +23,10 @@ fun NavGraph (navController: NavHostController, userStore: UserStore) {
 
         composable(Screen.CreateAccount.route) {
             SignUpScreen(navController, userStore)
+        }
+
+        composable(Screen.Main.route) {
+            MainApp()
         }
     }
 }

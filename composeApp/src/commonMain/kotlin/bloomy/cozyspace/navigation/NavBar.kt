@@ -1,4 +1,4 @@
-package bloomy.cozyspace
+package bloomy.cozyspace.navigation
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
@@ -19,66 +19,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import kotlinx.serialization.Serializable
-
 import androidx.compose.ui.graphics.painter.Painter
-import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.unit.dp
+import bloomy.cozyspace.navigation.screenRoutes.Home
+import bloomy.cozyspace.navigation.screenRoutes.NavDestination
+import bloomy.cozyspace.navigation.screenRoutes.Timers
+import bloomy.cozyspace.navigation.screenRoutes.Todo
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.home
 import cozyspace.composeapp.generated.resources.schedule
 import cozyspace.composeapp.generated.resources.select_check_box
-
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-
-// Navigation Destinations
-@Serializable
-sealed interface NavDestination {
-    val navIndex: Int
-    val navTitle: String
-
-    companion object {
-        val entries: List<NavDestination> = listOf(Timers, Home, Todo)
-        fun fromIndex(targetIndex: Int): NavDestination = entries.find { it.navIndex == targetIndex } ?: Home
-        fun fromRoute(route: String?): NavDestination =
-            entries.find { route?.contains(it::class.simpleName ?: "") == true } ?: Home
-    }
-}
-
-@Serializable
-data object Home : NavDestination {
-    override val navIndex: Int = 1
-    override val navTitle: String = "Home"
-}
-
-@Serializable
-data object Timers : NavDestination {
-    override val navIndex: Int = 0
-    override val navTitle: String = "Timers"
-}
-
-@Serializable
-data object Todo : NavDestination {
-    override val navIndex: Int = 2
-    override val navTitle: String = "Todo"
-}
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun navIcon(destination: NavDestination): Painter {
@@ -86,74 +45,6 @@ fun navIcon(destination: NavDestination): Painter {
         Home -> painterResource(Res.drawable.home)
         Timers -> painterResource(Res.drawable.schedule)
         Todo -> painterResource(Res.drawable.select_check_box)
-    }
-}
-
-@Preview
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NavScreen() {
-
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    val currentDestination = NavDestination.fromRoute(currentRoute)
-
-    val selectedIndex = currentDestination.navIndex
-
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        "CozySpace",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    scrolledContainerColor = Color.Unspecified,
-                    navigationIconContentColor = Color.Unspecified,
-                    titleContentColor = Color.Unspecified,
-                    actionIconContentColor = Color.Unspecified,
-                ),
-            )
-        },
-        bottomBar = {
-            NavBar(
-                items = NavDestination.entries.map { it },
-                selectedIndex = selectedIndex,
-                onItemSelected = {
-                    val destination = NavDestination.fromIndex(it)
-                    navController.navigate(destination) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                     }
-                },
-            )
-        },
-    ) { padding ->
-        NavHost(
-            navController = navController,
-            startDestination = Home,
-            modifier = Modifier.padding(padding),
-        ) {
-            composable<Timers> {
-                TimersTabScreen()
-            }
-
-            composable<Home> {
-                HomeTabScreen()
-            }
-
-            composable<Todo> {
-                TodoTabScreen()
-            }
-        }
     }
 }
 
@@ -266,36 +157,5 @@ fun NavBar(
                 }
             }
         }
-    }
-}
-
-// Tab Screen
-@Composable
-private fun HomeTabScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text("Home Content")
-    }
-}
-
-@Composable
-private fun TimersTabScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text("Timers Content")
-    }
-}
-
-@Composable
-private fun TodoTabScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text("Todo Content")
     }
 }
