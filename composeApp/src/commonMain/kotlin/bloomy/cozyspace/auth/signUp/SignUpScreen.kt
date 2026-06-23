@@ -8,15 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import bloomy.cozyspace.auth.common.AuthHeader
 import bloomy.cozyspace.auth.common.AuthLayout
-import bloomy.cozyspace.auth.signIn.SignInForm
+import bloomy.cozyspace.store.UserStore
 
 @Composable
-fun SignUpScreen(
-    onSignUpSuccess: () -> Unit = {},
-    onSignInSuccess: () -> Unit = {}
-) {
+fun SignUpScreen(navController: NavHostController, userStore: UserStore) {
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -39,10 +37,7 @@ fun SignUpScreen(
                 )
             },
             content = {
-                SignUpForm(
-                    onSignUpSuccess = onSignUpSuccess,
-                    onSignInSuccess = onSignInSuccess
-                )
+                SignUpForm(navController, userStore)
             }
         )
     }

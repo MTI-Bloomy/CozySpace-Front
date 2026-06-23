@@ -7,36 +7,21 @@ import androidx.navigation.compose.composable
 import bloomy.cozyspace.auth.signIn.SignInScreen
 import bloomy.cozyspace.auth.signUp.SignUpScreen
 import bloomy.cozyspace.navigation.screenRoutes.Screen
+import bloomy.cozyspace.store.UserStore
 
 @Composable
-fun NavGraph (navController: NavHostController) {
+fun NavGraph (navController: NavHostController, userStore: UserStore) {
 
     NavHost(
         navController = navController,
         startDestination = Screen.SignIn.route
     ) {
         composable(Screen.SignIn.route) {
-            SignInScreen(
-                onLoginSuccess = {
-                    navController.navigate(Screen.SignIn.route)
-                    // TODO => should lead to main screen
-                },
-                onSignUp = {
-                    navController.navigate(Screen.CreateAccount.route)
-                }
-            )
+            SignInScreen(navController, userStore)
         }
 
         composable(Screen.CreateAccount.route) {
-            SignUpScreen(
-                onSignUpSuccess = {
-                    navController.navigate(Screen.SignIn.route)
-                    // TODO => verify user successfully created before changing screen
-                },
-                onSignInSuccess = {
-                    navController.navigate(Screen.SignIn.route)
-                }
-            )
+            SignUpScreen(navController, userStore)
         }
     }
 }
