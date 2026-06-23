@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -72,12 +73,21 @@ fun TodoCategory(category: Category, nbTasks: Int, isSelected: Boolean = false, 
                 modifier = Modifier.size(28.dp)
             )
 
-            Text(
-                text = "$nbTasks ${category.name}",
-                color = DarkGreen,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp
-            )
+            Row {
+                Text(
+                    text = "$nbTasks ",
+                    color = DarkGreen,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+
+                Text(
+                    text = category.name,
+                    color = DarkGreen,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }

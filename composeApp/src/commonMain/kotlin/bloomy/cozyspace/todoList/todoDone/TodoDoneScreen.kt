@@ -20,7 +20,7 @@ import bloomy.cozyspace.todoList.utils.CategoryName
 
 
 @Composable
-fun TodoDoneScreen() {
+fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
     // TODO => remove
     var tasks: Map<Category, List<Task>> by remember {
         mutableStateOf(
@@ -90,6 +90,7 @@ fun TodoDoneScreen() {
         )
     }
 
+    // Copies isDone for the modified task
     fun onTaskChecked(taskId: String, isDone: Boolean) {
         tasks = tasks.mapValues { (_, list) ->
             list.map { t -> if (t.id == taskId) t.copy(isDone = isDone) else t }
@@ -114,10 +115,12 @@ fun TodoDoneScreen() {
             onTaskChecked = ::onTaskChecked,
             header = {
                 TodoHeader(
-                    isTodoList = true,
+                    isTodoList = false,
+                    isCompact = isCompact,
                     tasks = tasks,
                     selectedCategory = selectedCategory,
-                    onCategorySelected = { selectedCategory = it }
+                    onCategorySelected = { selectedCategory = it },
+                    fromTodoDone_toTodoList
                 )
             }
         )

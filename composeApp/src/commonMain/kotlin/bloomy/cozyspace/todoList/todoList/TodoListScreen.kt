@@ -20,7 +20,7 @@ import bloomy.cozyspace.todoList.utils.CategoryName
 import kotlin.collections.Map
 
 @Composable
-fun TodoListScreen() {
+fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
     // TODO => remove
     var tasks: Map<Category, List<Task>> by remember {
         mutableStateOf(
@@ -84,6 +84,22 @@ fun TodoListScreen() {
                         type = CategoryName.Bathroom,
                         startDate = "07/05/2026 08:00",
                         isDone = true
+                    ),
+                    Task(
+                        id = "7",
+                        name = "Clean the bathtub",
+                        frequency = 7,
+                        type = CategoryName.Bathroom,
+                        startDate = "07/05/2026 08:00",
+                        isDone = false
+                    ),
+                    Task(
+                        id = "8",
+                        name = "Clean the sink",
+                        frequency = 7,
+                        type = CategoryName.Bathroom,
+                        startDate = "07/05/2026 08:00",
+                        isDone = false
                     )
                 )
             )
@@ -116,9 +132,11 @@ fun TodoListScreen() {
             header = {
                 TodoHeader(
                     isTodoList = true,
+                    isCompact = isCompact,
                     tasks = tasks,
                     selectedCategory = selectedCategory,
-                    onCategorySelected = { selectedCategory = it }
+                    onCategorySelected = { selectedCategory = it },
+                    onTodoScreenChange = fromTodoList_toTodoDone
                 )
             }
         )

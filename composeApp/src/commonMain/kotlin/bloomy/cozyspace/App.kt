@@ -1,13 +1,14 @@
 package bloomy.cozyspace
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.navigation.TodoListNavGraph
 import bloomy.cozyspace.theme.AppTheme
-import bloomy.cozyspace.todoList.TodoListScreen
 
 @Composable
 fun App() {
     AppTheme {
-        TodoListScreen()
+        val navController = rememberNavController()
+        TodoListNavGraph(navController)
     }
 }
