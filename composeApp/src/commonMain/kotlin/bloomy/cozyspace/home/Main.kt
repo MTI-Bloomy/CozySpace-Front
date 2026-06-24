@@ -16,7 +16,6 @@ fun HomeMain(stores: Stores) {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Text("Home Content")
         Button(
             onClick = {
                 stores.user.accept(UserStore.Intent.Logout)

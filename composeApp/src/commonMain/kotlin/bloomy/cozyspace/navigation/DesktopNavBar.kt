@@ -40,7 +40,7 @@ fun DesktopNavBar(
 ) {
     BoxWithConstraints(
         modifier = Modifier
-            .padding(end = 16.dp)
+            .padding(start = 16.dp)
             .fillMaxHeight(0.5f)
             .width(80.dp),
     ) {

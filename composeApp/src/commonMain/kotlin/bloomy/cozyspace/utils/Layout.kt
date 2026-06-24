@@ -66,6 +66,17 @@ fun DesktopLayout(
         modifier = Modifier.fillMaxSize()
     ) {
 
+        Box(
+            modifier = Modifier.fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            DesktopNavBar(
+                items = NavDestination.entries,
+                selectedIndex = selectedIndex,
+                onItemSelected = onItemSelected
+            )
+        }
+
         Scaffold(
             modifier = Modifier.weight(1f),
             containerColor = Color.Transparent,
@@ -85,17 +96,6 @@ fun DesktopLayout(
                 navController = navController,
                 stores = stores,
                 modifier = Modifier.padding(padding)
-            )
-        }
-
-        Box(
-            modifier = Modifier.fillMaxHeight(),
-            contentAlignment = Alignment.Center
-        ) {
-            DesktopNavBar(
-                items = NavDestination.entries,
-                selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected
             )
         }
     }
