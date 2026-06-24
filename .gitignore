@@ -142,7 +142,7 @@ Thumbs.db
 # Environment files
 # =========================================================
 
-Environment.kt
+Environment.*.kt
 !shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
 
 user_cache.json
