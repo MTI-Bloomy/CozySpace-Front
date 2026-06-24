@@ -1,4 +1,4 @@
-package bloomy.cozyspace
+package bloomy.cozyspace.utils
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -19,11 +19,13 @@ import bloomy.cozyspace.navigation.AppNavHost
 import bloomy.cozyspace.navigation.DesktopNavBar
 import bloomy.cozyspace.navigation.MobileNavBar
 import bloomy.cozyspace.navigation.screenRoutes.NavDestination
+import bloomy.cozyspace.store.Stores
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MobileLayout(
     navController: NavHostController,
+    stores: Stores,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
@@ -45,8 +47,9 @@ fun MobileLayout(
     ) { padding ->
 
         AppNavHost(
-            navController,
-            Modifier.padding(padding)
+            navController = navController,
+            stores = stores,
+            modifier = Modifier.padding(padding)
         )
     }
 }
@@ -55,6 +58,7 @@ fun MobileLayout(
 @Composable
 fun DesktopLayout(
     navController: NavHostController,
+    stores: Stores,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
@@ -78,8 +82,9 @@ fun DesktopLayout(
         ) { padding ->
 
             AppNavHost(
-                navController,
-                Modifier.padding(padding)
+                navController = navController,
+                stores = stores,
+                modifier = Modifier.padding(padding)
             )
         }
 

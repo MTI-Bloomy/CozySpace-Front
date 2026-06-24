@@ -1,4 +1,4 @@
-package bloomy.cozyspace
+package bloomy.cozyspace.utils
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

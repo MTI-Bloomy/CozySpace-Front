@@ -134,8 +134,8 @@ fun MobileNavBar(
                     Icon(
                         painter = navIcon(item),
                         contentDescription = null,
-                        tint = iconTint,
-                        modifier = Modifier.size(iconSize)
+                        modifier = Modifier.size(iconSize),
+                        tint = iconTint
                     )
                 }
             }

@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import bloomy.cozyspace.data.LoginRequestDto
 import bloomy.cozyspace.navigation.screenRoutes.Screen
+import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
@@ -47,7 +48,7 @@ import cozyspace.composeapp.generated.resources.signIn_visibility_off
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun SignInForm(navController: NavHostController, userStore: UserStore) {
+fun SignInForm(navController: NavHostController, stores: Stores) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -161,7 +162,7 @@ fun SignInForm(navController: NavHostController, userStore: UserStore) {
 
             Button(
                 onClick = {
-                    userStore.accept(
+                    stores.user.accept(
                         UserStore.Intent.Login(
                             LoginRequestDto(
                                 email = email,

@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import bloomy.cozyspace.auth.component.PasswordStrengthBar
 import bloomy.cozyspace.data.RegisterRequestDto
 import bloomy.cozyspace.navigation.screenRoutes.Screen
+import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
@@ -27,7 +28,7 @@ import cozyspace.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun SignUpForm(navController: NavHostController, userStore: UserStore) {
+fun SignUpForm(navController: NavHostController, stores: Stores) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -287,7 +288,7 @@ fun SignUpForm(navController: NavHostController, userStore: UserStore) {
             Button(
                 onClick = {
                     if (!isFormValid) return@Button
-                    userStore.accept(
+                    stores.user.accept(
                         UserStore.Intent.Register(
                             RegisterRequestDto(
                                 email = "user@example.com",

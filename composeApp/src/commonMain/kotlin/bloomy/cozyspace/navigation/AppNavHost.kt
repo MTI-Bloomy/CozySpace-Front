@@ -11,6 +11,7 @@ import bloomy.cozyspace.navigation.screenRoutes.Home
 import bloomy.cozyspace.navigation.screenRoutes.NavDestination
 import bloomy.cozyspace.navigation.screenRoutes.Timers
 import bloomy.cozyspace.navigation.screenRoutes.Todo
+import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.timers.TimersMain
 import bloomy.cozyspace.todoList.TodoMain
 import cozyspace.composeapp.generated.resources.*
@@ -28,6 +29,7 @@ fun navIcon(destination: NavDestination): Painter {
 @Composable
 fun AppNavHost(
     navController: NavHostController,
+    stores: Stores,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -40,7 +42,7 @@ fun AppNavHost(
         }
 
         composable<Home> {
-            HomeMain()
+            HomeMain(stores)
         }
 
         composable<Todo> {

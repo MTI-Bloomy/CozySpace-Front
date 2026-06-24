@@ -41,10 +41,8 @@ class UserStoreFactory(
 
     private sealed interface Msg {
         data object Loading : Msg
-
-        data class Register(
-            val response: RegisterDto
-        ) : Msg
+        data object Logout : Msg
+        data object Register : Msg
 
         data class Login(
             val response: LoginDto
@@ -69,6 +67,16 @@ class UserStoreFactory(
 
             when (intent) {
 
+                is UserStore.Intent.Logout -> {
+                    scope.launch {
+                        storage.clear()
+
+                        dispatch(Msg.Logout)
+
+                        publish(UserStore.Label.Logout)
+                    }
+                }
+
                 is UserStore.Intent.Register -> {
                     dispatch(Msg.Loading)
 
@@ -76,16 +84,7 @@ class UserStoreFactory(
                         when (val result = repository.register(intent.request)) {
                             is ApiResult.Success -> {
                                 dispatch(
-                                    Msg.Register(
-                                        result.data
-                                    )
-                                )
-
-                                storage.save(
-                                    UserCache(
-                                        token = state().token,
-                                        user = state().user
-                                    )
+                                    Msg.Register
                                 )
 
                                 publish(
@@ -183,17 +182,12 @@ class UserStoreFactory(
                         error = null
                     )
 
+                Msg.Logout ->
+                    UserStore.State()
+
                 is Msg.Register ->
                     copy(
                         loading = false,
-                        /*
-                        user = User(
-                            uid = msg.response.uid,
-                            email = msg.response.email,
-                            displayName = msg.response.displayName,
-                            photoUrl = msg.response.photoUrl
-                        ),
-                        */
                         error = null
                     )
 

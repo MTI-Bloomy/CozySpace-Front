@@ -8,27 +8,35 @@ import bloomy.cozyspace.MainApp
 import bloomy.cozyspace.auth.signIn.SignInScreen
 import bloomy.cozyspace.auth.signUp.SignUpScreen
 import bloomy.cozyspace.navigation.screenRoutes.Screen
-import bloomy.cozyspace.store.UserStore
+import bloomy.cozyspace.store.Stores
 
 @Composable
-fun NavGraph (navController: NavHostController, userStore: UserStore) {
+fun NavGraph (navController: NavHostController, stores: Stores) {
 
-    val startDestination = if(userStore.state.token.idToken == "") Screen.SignIn.route else Screen.Main.route
+    val startDestination = if(stores.user.state.token.idToken == "") Screen.SignIn.route else Screen.Main.route
 
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
         composable(Screen.SignIn.route) {
-            SignInScreen(navController, userStore)
+            SignInScreen(
+                navController = navController,
+                stores = stores
+            )
         }
 
         composable(Screen.CreateAccount.route) {
-            SignUpScreen(navController, userStore)
+            SignUpScreen(
+                navController = navController,
+                stores = stores
+            )
         }
 
         composable(Screen.Main.route) {
-            MainApp()
+            MainApp(
+                stores = stores
+            )
         }
     }
 }

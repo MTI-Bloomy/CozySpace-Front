@@ -53,8 +53,10 @@ import bloomy.cozyspace.navigation.NavGraph
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.network.ApiService
 import bloomy.cozyspace.network.createHttpClient
+import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.store.UserStoreFactory
+import bloomy.cozyspace.utils.LoadingScreen
 import com.arkivanov.mvikotlin.core.rx.observer
 import kotlinx.coroutines.launch
 
@@ -143,19 +145,32 @@ fun App() {
         return
     }
 
-    val store = userStore!!
+    val uStore = userStore!!
+
+    val stores = Stores(
+        uStore
+    )
 
     val scope = rememberCoroutineScope()
 
     DisposableEffect(userStore) {
 
-        val disposable = store.labels(
+        val disposable = stores.user.labels(
             observer { label ->
                 when (label) {
 
                     is UserStore.Label.ShowError -> {
                         scope.launch {
                             snackbarHostState.showSnackbar(label.message)
+                        }
+                    }
+
+                    UserStore.Label.Logout -> {
+                        navController.navigate(Screen.SignIn.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
                         }
                     }
 
@@ -186,7 +201,7 @@ fun App() {
 
         NavGraph(
             navController = navController,
-            userStore = store
+            stores = stores
         )
 
         SnackbarHost(
