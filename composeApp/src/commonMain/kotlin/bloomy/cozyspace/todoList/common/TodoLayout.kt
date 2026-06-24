@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,7 +40,7 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
             modifier = Modifier
                 .fillMaxSize()
                 .background(WhiteBackground)
-                .windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.systemBars)
                 .padding(horizontal = 20.dp)
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,7 +86,7 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
         Row (modifier = Modifier
             .fillMaxSize()
             .background(WhiteBackground)
-            .windowInsetsPadding(WindowInsets.statusBars)
+            .windowInsetsPadding(WindowInsets.systemBars)
             .padding(20.dp)
             .imePadding(),
             horizontalArrangement = Arrangement.spacedBy(Spacing.xl, Alignment.CenterHorizontally),

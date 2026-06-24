@@ -17,16 +17,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
@@ -36,8 +41,11 @@ import cozyspace.composeapp.generated.resources.todoItem_More
 import cozyspace.composeapp.generated.resources.todoItem_Tick
 import org.jetbrains.compose.resources.painterResource
 
+
 @Composable
-fun TodoDoneItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> Unit) {
+fun NewTodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> Unit) {
+    var taskName by remember { mutableStateOf("") }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,61 +88,40 @@ fun TodoDoneItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) 
 
             // Center text section
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .alpha(0.6f)
+                modifier = Modifier.weight(1f)
             ) {
                 // Task name
-                Text(
-                    text = task.name,
-                    color = WhiteBackground,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    maxLines = 1,
-                    textDecoration = TextDecoration.LineThrough
+                TextField(
+                    value = taskName,
+                    onValueChange = { taskName = it },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = {
+                        Text("Write a new task")
+                    },
+                    textStyle = TextStyle.Default.copy(fontSize = 20.sp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = LightGreen,
+                        unfocusedContainerColor = LightGreen.copy(alpha = 0.85f),
+
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+
+                        focusedTextColor = WhiteBackground,
+                        unfocusedTextColor = WhiteBackground,
+
+                        focusedPlaceholderColor = WhiteBackground,
+                        unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
+
+                        cursorColor = WhiteBackground
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(2.dp))
 
                 // Task category
                 TodoItemCategory(task.type)
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            // Date section (optional)
-            if (task.startDate.isNotBlank()) {
-                Column(
-                    modifier = Modifier
-                        .alpha(0.6f),
-                    horizontalAlignment = Alignment.End
-                ) {
-                    // Ex: 2026-05-04T18:00:00
-                    // Only keeps the first 5 characters after T
-                    val date = task.startDate.substringBefore('T').take(10)
-
-                    Text(
-                        text = date,
-                        color = WhiteBackground,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    // Ex: 2026-05-04T18:00:00
-                    // Only keeps the first 5 characters after T
-                    val time = task.startDate.substringAfter('T').take(5)
-
-                    Text(
-                        text = time,
-                        color = WhiteBackground,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
             }
 
             // More button
@@ -144,10 +131,9 @@ fun TodoDoneItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) 
                 Icon(
                     painter = painterResource(Res.drawable.todoItem_More),
                     contentDescription = "More",
-                    tint = WhiteBackground
+                    tint = Color.White
                 )
             }
         }
     }
 }
-

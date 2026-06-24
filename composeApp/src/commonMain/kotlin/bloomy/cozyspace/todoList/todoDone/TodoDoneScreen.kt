@@ -32,7 +32,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         frequency = 1,
                         type = CategoryName.Kitchen,
                         startDate = "2026-05-04T18:00:00",
-                        isDone = false
+                        isDone = true
                     ),
                     Task(
                         id = "2",
@@ -51,7 +51,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         frequency = 1,
                         type = CategoryName.Work,
                         startDate = "2026-05-04T18:00:00",
-                        isDone = false
+                        isDone = true
                     )
                 ),
 
@@ -62,7 +62,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         frequency = 14,
                         type = CategoryName.Bedroom,
                         startDate = "2026-05-04T18:00:00",
-                        isDone = false
+                        isDone = true
                     ),
                     Task(
                         id = "5",
@@ -70,7 +70,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         frequency = 7,
                         type = CategoryName.Bedroom,
                         startDate = "2026-05-04T18:00:00",
-                        isDone = false
+                        isDone = true
                     )
                 ),
 
@@ -91,7 +91,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         frequency = 7,
                         type = CategoryName.Bathroom,
                         startDate = "07/05/2026 08:00",
-                        isDone = false
+                        isDone = true
                     ),
                     Task(
                         id = "8",
@@ -99,7 +99,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                         frequency = 7,
                         type = CategoryName.Bathroom,
                         startDate = "07/05/2026 08:00",
-                        isDone = false
+                        isDone = true
                     )
                 )
             )

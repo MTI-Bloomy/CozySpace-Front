@@ -83,7 +83,7 @@ fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> U
                 // Task name
                 Text(
                     text = task.name,
-                    color = Color.White,
+                    color = WhiteBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     maxLines = 1
@@ -108,7 +108,7 @@ fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> U
 
                     Text(
                         text = date,
-                        color = Color.White,
+                        color = WhiteBackground,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -121,7 +121,7 @@ fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> U
 
                     Text(
                         text = time,
-                        color = Color.White.copy(alpha = 0.85f),
+                        color = WhiteBackground.copy(alpha = 0.85f),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -137,7 +137,7 @@ fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> U
                 Icon(
                     painter = painterResource(Res.drawable.todoItem_More),
                     contentDescription = "More",
-                    tint = Color.White
+                    tint = WhiteBackground
                 )
             }
         }

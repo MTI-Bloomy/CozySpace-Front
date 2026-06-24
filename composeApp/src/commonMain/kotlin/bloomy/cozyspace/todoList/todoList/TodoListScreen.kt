@@ -40,7 +40,7 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
                         frequency = 7,
                         type = CategoryName.Kitchen,
                         startDate = "2026-05-04T18:00:00",
-                        isDone = true
+                        isDone = false
                     )
                 ),
 
@@ -83,7 +83,7 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
                         frequency = 7,
                         type = CategoryName.Bathroom,
                         startDate = "07/05/2026 08:00",
-                        isDone = true
+                        isDone = false
                     ),
                     Task(
                         id = "7",
