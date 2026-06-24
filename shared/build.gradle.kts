@@ -57,6 +57,7 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
+            implementation(libs.androidx.datastore)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.ios)

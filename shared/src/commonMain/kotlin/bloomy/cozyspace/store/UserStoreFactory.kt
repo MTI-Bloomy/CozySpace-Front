@@ -1,9 +1,12 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.UserCache
+import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.LoginDto
 import bloomy.cozyspace.data.RegisterDto
 import bloomy.cozyspace.domain.Token
+import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.interfaces.ApiResult
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -15,21 +18,26 @@ import kotlin.String
 
 class UserStoreFactory(
     private val repository: AuthentificationRepository,
+    private val storage: UserStorage,
     private val storeFactory: StoreFactory = DefaultStoreFactory()
 ) {
 
-    fun create(): UserStore =
-        object : UserStore,
-            Store<
-                UserStore.Intent,
-                UserStore.State,
-                UserStore.Label
-                > by storeFactory.create(
+    suspend fun create(): UserStore {
+        val cache = storage.get()
+
+        val initialState = UserStore.State(
+            token = cache?.token ?: Token("", ""),
+            user = cache?.user ?: User("", "", "", null)
+        )
+
+        return object : UserStore,
+            Store<UserStore.Intent, UserStore.State, UserStore.Label> by storeFactory.create(
                 name = "UserStore",
-                initialState = UserStore.State(),
+                initialState = initialState,
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}
+    }
 
     private sealed interface Msg {
         data object Loading : Msg
@@ -73,6 +81,13 @@ class UserStoreFactory(
                                     )
                                 )
 
+                                storage.save(
+                                    UserCache(
+                                        token = state().token,
+                                        user = state().user
+                                    )
+                                )
+
                                 publish(
                                     UserStore.Label.RegisterSuccess
                                 )
@@ -111,6 +126,16 @@ class UserStoreFactory(
                                 dispatch(
                                     Msg.Login(
                                         result.data
+                                    )
+                                )
+
+                                storage.save(
+                                    UserCache(
+                                        token = Token(
+                                            result.data.idToken,
+                                            result.data.refreshToken.orEmpty()
+                                        ),
+                                        user = state().user
                                     )
                                 )
 

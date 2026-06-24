@@ -13,9 +13,11 @@ import bloomy.cozyspace.store.UserStore
 @Composable
 fun NavGraph (navController: NavHostController, userStore: UserStore) {
 
+    val startDestination = if(userStore.state.token.idToken == "") Screen.SignIn.route else Screen.Main.route
+
     NavHost(
         navController = navController,
-        startDestination = Screen.SignIn.route
+        startDestination = startDestination
     ) {
         composable(Screen.SignIn.route) {
             SignInScreen(navController, userStore)
