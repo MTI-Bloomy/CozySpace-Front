@@ -1,9 +1,12 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.UserCache
+import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.LoginDto
 import bloomy.cozyspace.data.RegisterDto
 import bloomy.cozyspace.domain.Token
+import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.interfaces.ApiResult
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -15,28 +18,31 @@ import kotlin.String
 
 class UserStoreFactory(
     private val repository: AuthentificationRepository,
+    private val storage: UserStorage,
     private val storeFactory: StoreFactory = DefaultStoreFactory()
 ) {
 
-    fun create(): UserStore =
-        object : UserStore,
-            Store<
-                UserStore.Intent,
-                UserStore.State,
-                UserStore.Label
-                > by storeFactory.create(
+    suspend fun create(): UserStore {
+        val cache = storage.get()
+
+        val initialState = UserStore.State(
+            token = cache?.token ?: Token("", ""),
+            user = cache?.user ?: User("", "", "", null)
+        )
+
+        return object : UserStore,
+            Store<UserStore.Intent, UserStore.State, UserStore.Label> by storeFactory.create(
                 name = "UserStore",
-                initialState = UserStore.State(),
+                initialState = initialState,
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}
+    }
 
     private sealed interface Msg {
         data object Loading : Msg
-
-        data class Register(
-            val response: RegisterDto
-        ) : Msg
+        data object Logout : Msg
+        data object Register : Msg
 
         data class Login(
             val response: LoginDto
@@ -61,6 +67,16 @@ class UserStoreFactory(
 
             when (intent) {
 
+                is UserStore.Intent.Logout -> {
+                    scope.launch {
+                        storage.clear()
+
+                        dispatch(Msg.Logout)
+
+                        publish(UserStore.Label.Logout)
+                    }
+                }
+
                 is UserStore.Intent.Register -> {
                     dispatch(Msg.Loading)
 
@@ -68,9 +84,7 @@ class UserStoreFactory(
                         when (val result = repository.register(intent.request)) {
                             is ApiResult.Success -> {
                                 dispatch(
-                                    Msg.Register(
-                                        result.data
-                                    )
+                                    Msg.Register
                                 )
 
                                 publish(
@@ -111,6 +125,16 @@ class UserStoreFactory(
                                 dispatch(
                                     Msg.Login(
                                         result.data
+                                    )
+                                )
+
+                                storage.save(
+                                    UserCache(
+                                        token = Token(
+                                            result.data.idToken,
+                                            result.data.refreshToken.orEmpty()
+                                        ),
+                                        user = state().user
                                     )
                                 )
 
@@ -158,17 +182,12 @@ class UserStoreFactory(
                         error = null
                     )
 
+                Msg.Logout ->
+                    UserStore.State()
+
                 is Msg.Register ->
                     copy(
                         loading = false,
-                        /*
-                        user = User(
-                            uid = msg.response.uid,
-                            email = msg.response.email,
-                            displayName = msg.response.displayName,
-                            photoUrl = msg.response.photoUrl
-                        ),
-                        */
                         error = null
                     )
 

@@ -28,22 +28,35 @@ package bloomy.cozyspace
 // import bloomy.cozyspace.store.UserStoreFactory
 // import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.cache.createUserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.navigation.NavGraph
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.network.ApiService
 import bloomy.cozyspace.network.createHttpClient
+import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.store.UserStoreFactory
+import bloomy.cozyspace.utils.LoadingScreen
 import com.arkivanov.mvikotlin.core.rx.observer
 import kotlinx.coroutines.launch
 
@@ -118,22 +131,31 @@ fun App() {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val userStore =
-        remember {
-            UserStoreFactory(
-                AuthentificationRepository(
-                    ApiService(
-                        createHttpClient()
-                    )
-                )
-            ).create().also { it.init() }
-        }
+    val userStore by produceState<UserStore?>(initialValue = null) {
+        value = UserStoreFactory(
+            repository = AuthentificationRepository(
+                ApiService(createHttpClient())
+            ),
+            storage = createUserStorage()
+        ).create().also { it.init() }
+    }
+
+    if (userStore == null) {
+        LoadingScreen()
+        return
+    }
+
+    val uStore = userStore!!
+
+    val stores = Stores(
+        uStore
+    )
 
     val scope = rememberCoroutineScope()
 
     DisposableEffect(userStore) {
 
-        val disposable = userStore.labels(
+        val disposable = stores.user.labels(
             observer { label ->
                 when (label) {
 
@@ -143,15 +165,22 @@ fun App() {
                         }
                     }
 
-                    UserStore.Label.LoginSuccess -> {
-                        // TODO: Change this to go to main page
+                    UserStore.Label.Logout -> {
                         navController.navigate(Screen.SignIn.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+
+                    UserStore.Label.LoginSuccess -> {
+                        navController.navigate(Screen.Main.route) {
                             popUpTo(Screen.SignIn.route) { inclusive = true }
                         }
                     }
 
                     UserStore.Label.RegisterSuccess -> {
-                        // TODO: Change this to go to main page
                         navController.navigate(Screen.SignIn.route) {
                             popUpTo(Screen.SignIn.route) { inclusive = true }
                         }
@@ -165,9 +194,21 @@ fun App() {
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        NavGraph(navController, userStore)
+
+        NavGraph(
+            navController = navController,
+            stores = stores
+        )
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 16.dp)
+        )
     }
 }
