@@ -6,6 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.navigation.TodoListNavGraph
 
 @Composable
 fun TodoMain() {
@@ -13,6 +16,7 @@ fun TodoMain() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Text("Todo Content")
+        val navTodoController = rememberNavController()
+        TodoListNavGraph(navTodoController)
     }
 }
