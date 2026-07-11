@@ -11,6 +11,10 @@ val LightGreen = Color(0xFF60A17A)
 // Drop shadow
 val ShadowColor = Color(0x40000000)
 
+// Password strength bar
+var Red = Color.Red
+var Orange = Color(0xFFFFA000)
+
 // TodoList Bubbles
 // Kitchen
 val DarkYellowBubble = Color(0xFFFCC419)

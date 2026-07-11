@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -24,6 +25,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            // kotlinx.serialization
+            api(libs.kotlinx.serialization.json)
+
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -33,8 +37,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.shared)
-
-            implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.navigation)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -85,6 +88,16 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "bloomy.cozyspace"
             packageVersion = "1.0.0"
+
+            windows {
+                iconFile.set(project.file("src/jvmMain/jvmResources/logo.ico"))
+            }
+//            macOS {
+//                iconFile.set(project.file("src/jvmMain/jvmResources/logo.icns"))
+//            }
+            linux {
+                iconFile.set(project.file("src/jvmMain/jvmResources/logo.png"))
+            }
         }
     }
 }
