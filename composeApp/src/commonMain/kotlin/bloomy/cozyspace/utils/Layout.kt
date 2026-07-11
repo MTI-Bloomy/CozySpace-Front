@@ -30,13 +30,6 @@ fun MobileLayout(
     onItemSelected: (Int) -> Unit,
 ) {
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text("CozySpace")
-                }
-            )
-        },
         bottomBar = {
             MobileNavBar(
                 items = NavDestination.entries,
@@ -80,16 +73,6 @@ fun DesktopLayout(
         Scaffold(
             modifier = Modifier.weight(1f),
             containerColor = Color.Transparent,
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text("CozySpace")
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent
-                    )
-                )
-            }
         ) { padding ->
 
             AppNavHost(

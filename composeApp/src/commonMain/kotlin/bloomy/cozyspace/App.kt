@@ -28,6 +28,7 @@ package bloomy.cozyspace
 // import bloomy.cozyspace.store.UserStoreFactory
 // import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,6 +57,7 @@ import bloomy.cozyspace.network.createHttpClient
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.store.UserStoreFactory
+import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.utils.LoadingScreen
 import com.arkivanov.mvikotlin.core.rx.observer
 import kotlinx.coroutines.launch
@@ -196,6 +198,7 @@ fun App() {
 
     Box(modifier = Modifier
         .fillMaxSize()
+        .background(WhiteBackground)
         .windowInsetsPadding(WindowInsets.systemBars)
     ) {
 
