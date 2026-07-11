@@ -16,11 +16,16 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.component.AddTodoButton
+import bloomy.cozyspace.todoList.component.NewTodoItem
 import bloomy.cozyspace.todoList.component.TodoDoneItem
 import bloomy.cozyspace.todoList.component.TodoItem
 import bloomy.cozyspace.todoList.domain.Task
@@ -28,7 +33,9 @@ import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Spacing
 
 @Composable
-fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, header: @Composable () -> Unit) {
+fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, onTaskCreated: (String, Category) -> Unit, header: @Composable () -> Unit) {
+    var showNewItem by remember { mutableStateOf(false) }
+
     val filteredTasks = if (selectedCategory == null) {
         tasks.values.flatten()
     } else {
@@ -77,9 +84,24 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                             )
                         }
                     }
+
+                    if (showNewItem) {
+                        item {
+                            NewTodoItem(
+                                onCreate = { name, category ->
+                                    onTaskCreated(name, category)
+                                    showNewItem = false
+                                }
+                            )
+                        }
+                    }
                 }
 
-                AddTodoButton(modifier = Modifier.align(Alignment.BottomEnd))
+                AddTodoButton(
+                    isActive = showNewItem,
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    onClick = { showNewItem = true }
+                )
             }
         }
     } else {

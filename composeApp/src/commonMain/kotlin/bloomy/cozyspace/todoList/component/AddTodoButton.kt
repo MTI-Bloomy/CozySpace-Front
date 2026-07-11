@@ -1,14 +1,18 @@
 package bloomy.cozyspace.todoList.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
@@ -18,12 +22,20 @@ import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.MidLightGreen
 import bloomy.cozyspace.theme.ShadowColor
+import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.todoAdd
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun AddTodoButton(onClick: () -> Unit = {}, modifier: Modifier = Modifier) {
+fun AddTodoButton(
+    isActive: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    val backgroundColor by animateColorAsState(if (isActive) WhiteBackground else DarkGreen)
+    val contentColor by animateColorAsState(if (isActive) DarkGreen else MidLightGreen)
+
     Box (
         modifier = modifier
             .dropShadow(
@@ -36,14 +48,14 @@ fun AddTodoButton(onClick: () -> Unit = {}, modifier: Modifier = Modifier) {
                 )
             )
             .clip(CircleShape)
-            .background(DarkGreen)
-            .border(2.dp, MidLightGreen, CircleShape)
+            .background(backgroundColor)
+            .border(2.dp, contentColor, CircleShape)
             .clickable(onClick = onClick),
     ) {
         Icon(
             painter = painterResource(Res.drawable.todoAdd),
             contentDescription = "Add new task",
-            tint = MidLightGreen,
+            tint = contentColor,
             modifier = Modifier.size(50.dp)
         )
     }

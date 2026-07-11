@@ -17,8 +17,12 @@ import bloomy.cozyspace.todoList.common.TodoLayout
 import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.CategoryName
+import kotlin.time.Clock
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
     // TODO => remove
@@ -113,6 +117,23 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
         }
     }
 
+    // Creates a new task and adds it to its category's list
+    fun onTaskCreated(name: String, category: Category) {
+        val newTask = Task(
+            id = Uuid.random().toString(),
+            name = name,
+            frequency = 1,
+            type = CategoryName.valueOf(category.name),
+            startDate = Clock.System.now().toString(),
+            isDone = false
+        )
+
+        tasks = tasks.toMutableMap().apply {
+            val currentList = this[category].orEmpty()
+            this[category] = currentList + newTask
+        }
+    }
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -130,6 +151,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
             tasks = tasks,
             selectedCategory = selectedCategory,
             onTaskChecked = ::onTaskChecked,
+            onTaskCreated = ::onTaskCreated,
             header = {
                 TodoHeader(
                     isTodoList = false,
@@ -137,7 +159,7 @@ fun TodoDoneScreen(fromTodoDone_toTodoList: () -> Unit = {}) {
                     tasks = tasks,
                     selectedCategory = selectedCategory,
                     onCategorySelected = { selectedCategory = it },
-                    fromTodoDone_toTodoList
+                    onTodoScreenChange = fromTodoDone_toTodoList
                 )
             }
         )
