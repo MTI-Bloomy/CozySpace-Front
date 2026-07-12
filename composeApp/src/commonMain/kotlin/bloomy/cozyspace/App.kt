@@ -53,12 +53,21 @@ import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.cache.createUserStorage
 import bloomy.cozyspace.config.Environment
 import bloomy.cozyspace.data.AuthentificationRepository
+import bloomy.cozyspace.data.HouseRepository
+import bloomy.cozyspace.data.RewardRepository
+import bloomy.cozyspace.data.RoomRepository
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.navigation.NavGraph
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.network.ApiService
 import bloomy.cozyspace.network.clearBearerCache
 import bloomy.cozyspace.network.createHttpClient
+import bloomy.cozyspace.store.HouseStore
+import bloomy.cozyspace.store.HouseStoreFactory
+import bloomy.cozyspace.store.RewardStore
+import bloomy.cozyspace.store.RewardStoreFactory
+import bloomy.cozyspace.store.RoomStore
+import bloomy.cozyspace.store.RoomStoreFactory
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.store.UserStoreFactory
@@ -171,15 +180,45 @@ fun App() {
             onAuthStateChanged = { httpClient.clearBearerCache() }
         ).create().also { it.init() }
     }
-    if (userStore == null) {
+
+    val rewardStore by produceState<RewardStore?>(initialValue = null) {
+        value = RewardStoreFactory(
+            repository = RewardRepository(ApiService(httpClient)),
+        ).create().also { it.init() }
+    }
+
+    val roomStore by produceState<RoomStore?>(initialValue = null) {
+        value = RoomStoreFactory(
+            repository = RoomRepository(ApiService(httpClient)),
+        ).create().also { it.init() }
+    }
+
+    val houseStore by produceState<HouseStore?>(initialValue = null) {
+        value = HouseStoreFactory(
+            repository = HouseRepository(ApiService(httpClient)),
+        ).create().also { it.init() }
+    }
+
+    if (
+        userStore == null ||
+        rewardStore == null ||
+        roomStore == null ||
+        houseStore == null
+    ) {
         LoadingScreen()
         return
     }
 
     val uStore = userStore!!
+    val reStore = rewardStore!!
+    val roStore = roomStore!!
+    val hStore = houseStore!!
 
     val stores = Stores(
-        uStore
+        uStore,
+        reStore,
+        roStore,
+        hStore,
     )
 
     LaunchedEffect(uStore) {
