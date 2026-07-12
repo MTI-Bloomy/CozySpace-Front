@@ -4,7 +4,6 @@ import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.dto.LoginDto
-import bloomy.cozyspace.data.dto.RegisterDto
 import bloomy.cozyspace.domain.Token
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.interfaces.ApiResult
@@ -19,9 +18,9 @@ import kotlin.String
 class UserStoreFactory(
     private val repository: AuthentificationRepository,
     private val storage: UserStorage,
-    private val storeFactory: StoreFactory = DefaultStoreFactory()
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
+    private val onAuthStateChanged: suspend () -> Unit = {}
 ) {
-
     suspend fun create(): UserStore {
         val cache = storage.get()
 
@@ -44,35 +43,28 @@ class UserStoreFactory(
         data object Logout : Msg
         data object Register : Msg
 
-        data class Login(
-            val response: LoginDto
-        ) : Msg
+        data class Login(val response: LoginDto) : Msg
 
-        data class Error(
-            val message: String
-        ) : Msg
+        data class Error(val message: String) : Msg
     }
 
-    private inner class ExecutorImpl :
-        CoroutineExecutor<
-            UserStore.Intent,
-            Unit,
-            UserStore.State,
-            Msg,
-            UserStore.Label>() {
+    private inner class ExecutorImpl :CoroutineExecutor<
+        UserStore.Intent,
+        Unit,
+        UserStore.State,
+        Msg,
+        UserStore.Label>() {
 
         override fun executeIntent(
             intent: UserStore.Intent
         ) {
-
             when (intent) {
-
                 is UserStore.Intent.Logout -> {
                     scope.launch {
                         storage.clear()
+                        onAuthStateChanged()
 
                         dispatch(Msg.Logout)
-
                         publish(UserStore.Label.Logout)
                     }
                 }
@@ -83,32 +75,17 @@ class UserStoreFactory(
                     scope.launch {
                         when (val result = repository.register(intent.request)) {
                             is ApiResult.Success -> {
-                                dispatch(
-                                    Msg.Register
-                                )
-
-                                publish(
-                                    UserStore.Label.RegisterSuccess
-                                )
+                                dispatch(Msg.Register)
+                                publish(UserStore.Label.RegisterSuccess)
                             }
 
                             is ApiResult.Error -> {
-                                dispatch(
-                                    Msg.Error(result.message)
-                                )
-
-                                publish(
-                                    UserStore.Label.ShowError(
-                                        result.message
-                                    )
-                                )
+                                dispatch(Msg.Error(result.message))
+                                publish(UserStore.Label.ShowError(result.message))
                             }
 
                             ApiResult.Empty -> {
-                                dispatch(
-                                    Msg.Error("Réponse vide du serveur")
-                                )
-
+                                dispatch(Msg.Error("Réponse vide du serveur"))
                                 publish(UserStore.Label.ShowError("Réponse vide du serveur"))
                             }
                         }
@@ -116,17 +93,12 @@ class UserStoreFactory(
                 }
 
                 is UserStore.Intent.Login -> {
-
                     dispatch(Msg.Loading)
 
                     scope.launch {
                         when (val result = repository.login(intent.request)) {
                             is ApiResult.Success -> {
-                                dispatch(
-                                    Msg.Login(
-                                        result.data
-                                    )
-                                )
+                                dispatch(Msg.Login(result.data))
 
                                 storage.save(
                                     UserCache(
@@ -138,28 +110,16 @@ class UserStoreFactory(
                                     )
                                 )
 
-                                publish(
-                                    UserStore.Label.LoginSuccess
-                                )
+                                publish(UserStore.Label.LoginSuccess)
                             }
 
                             is ApiResult.Error -> {
-                                dispatch(
-                                    Msg.Error(result.message)
-                                )
-
-                                publish(
-                                    UserStore.Label.ShowError(
-                                        result.message
-                                    )
-                                )
+                                dispatch(Msg.Error(result.message))
+                                publish(UserStore.Label.ShowError(result.message))
                             }
 
                             ApiResult.Empty -> {
-                                dispatch(
-                                    Msg.Error("Réponse vide du serveur")
-                                )
-
+                                dispatch(Msg.Error("Réponse vide du serveur"))
                                 publish(UserStore.Label.ShowError("Réponse vide du serveur"))
                             }
                         }
@@ -169,13 +129,9 @@ class UserStoreFactory(
         }
     }
 
-    private object ReducerImpl :
-        Reducer<UserStore.State, Msg> {
-
+    private object ReducerImpl : Reducer<UserStore.State, Msg> {
         override fun UserStore.State.reduce(msg: Msg): UserStore.State =
-
             when (msg) {
-
                 Msg.Loading ->
                     copy(
                         loading = true,

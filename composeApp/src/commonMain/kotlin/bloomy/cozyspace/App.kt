@@ -39,6 +39,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -48,11 +49,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.cache.createUserStorage
+import bloomy.cozyspace.config.Environment
 import bloomy.cozyspace.data.AuthentificationRepository
+import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.navigation.NavGraph
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.network.ApiService
+import bloomy.cozyspace.network.clearBearerCache
 import bloomy.cozyspace.network.createHttpClient
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
@@ -60,6 +65,8 @@ import bloomy.cozyspace.store.UserStoreFactory
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.utils.LoadingScreen
 import com.arkivanov.mvikotlin.core.rx.observer
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
@@ -133,15 +140,37 @@ fun App() {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val userStore by produceState<UserStore?>(initialValue = null) {
-        value = UserStoreFactory(
-            repository = AuthentificationRepository(
-                ApiService(createHttpClient())
-            ),
-            storage = createUserStorage()
-        ).create().also { it.init() }
+    val storage = remember { createUserStorage() }
+    val forcedLogout = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
+
+    val httpClient = remember {
+        createHttpClient(
+            baseUrl = Environment.API_URL,
+            loadTokens = {
+                storage.get()?.token
+                    ?.takeIf { it.idToken.isNotBlank() }
+                    ?.let { BearerTokens(it.idToken, it.refreshToken) }
+            },
+            onTokensRefreshed = { newToken ->
+                val cache = storage.get()
+                storage.save(
+                    UserCache(token = newToken, user = cache?.user ?: User("", "", "", null))
+                )
+            },
+            onRefreshFailed = {
+                storage.clear()
+                forcedLogout.tryEmit(Unit)
+            }
+        )
     }
 
+    val userStore by produceState<UserStore?>(initialValue = null) {
+        value = UserStoreFactory(
+            repository = AuthentificationRepository(ApiService(httpClient)),
+            storage = storage,
+            onAuthStateChanged = { httpClient.clearBearerCache() }
+        ).create().also { it.init() }
+    }
     if (userStore == null) {
         LoadingScreen()
         return
@@ -152,6 +181,12 @@ fun App() {
     val stores = Stores(
         uStore
     )
+
+    LaunchedEffect(uStore) {
+        forcedLogout.collect {
+            uStore.accept(UserStore.Intent.Logout)
+        }
+    }
 
     val scope = rememberCoroutineScope()
 

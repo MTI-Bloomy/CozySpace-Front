@@ -50,3 +50,15 @@ data class LoginRequestDto(
     val password: String,
     val returnSecureToken: Boolean = true
 )
+
+@Serializable
+data class RefreshDto(
+    val idToken: String,
+    val refreshToken: String? = null
+)
+
+@Serializable
+data class RefreshRequestDto(
+    val grant_type: String = "refresh_token",
+    val refresh_token: String
+)
