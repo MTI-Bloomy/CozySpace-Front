@@ -33,7 +33,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import bloomy.cozyspace.data.LoginRequestDto
+import bloomy.cozyspace.data.dto.LoginRequestDto
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore

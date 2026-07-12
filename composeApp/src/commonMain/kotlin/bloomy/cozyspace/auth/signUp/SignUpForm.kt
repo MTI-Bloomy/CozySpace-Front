@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import bloomy.cozyspace.auth.component.PasswordStrengthBar
-import bloomy.cozyspace.data.RegisterRequestDto
+import bloomy.cozyspace.data.dto.RegisterRequestDto
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore

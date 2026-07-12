@@ -1,10 +1,10 @@
 package bloomy.cozyspace.network
 
 import bloomy.cozyspace.config.Environment
-import bloomy.cozyspace.data.LoginRequestDto
-import bloomy.cozyspace.data.RegisterRequestDto
-import bloomy.cozyspace.data.RegisterDto
-import bloomy.cozyspace.data.LoginDto
+import bloomy.cozyspace.data.dto.LoginRequestDto
+import bloomy.cozyspace.data.dto.RegisterRequestDto
+import bloomy.cozyspace.data.dto.RegisterDto
+import bloomy.cozyspace.data.dto.LoginDto
 import bloomy.cozyspace.interfaces.ApiResult
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get

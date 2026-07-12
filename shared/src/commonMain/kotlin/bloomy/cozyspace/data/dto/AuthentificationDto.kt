@@ -1,4 +1,4 @@
-package bloomy.cozyspace.data
+package bloomy.cozyspace.data.dto
 
 import kotlinx.serialization.Serializable
 

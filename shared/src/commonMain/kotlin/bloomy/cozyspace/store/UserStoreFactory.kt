@@ -3,8 +3,8 @@ package bloomy.cozyspace.store
 import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
-import bloomy.cozyspace.data.LoginDto
-import bloomy.cozyspace.data.RegisterDto
+import bloomy.cozyspace.data.dto.LoginDto
+import bloomy.cozyspace.data.dto.RegisterDto
 import bloomy.cozyspace.domain.Token
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.interfaces.ApiResult

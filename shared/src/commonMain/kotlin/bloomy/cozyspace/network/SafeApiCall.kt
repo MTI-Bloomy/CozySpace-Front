@@ -1,6 +1,6 @@
 package bloomy.cozyspace.network
 
-import bloomy.cozyspace.data.ErrorDto
+import bloomy.cozyspace.data.dto.ErrorDto
 import bloomy.cozyspace.interfaces.ApiResult
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
