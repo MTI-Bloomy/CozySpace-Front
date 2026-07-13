@@ -30,22 +30,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.component.DateTimeDetails
 import bloomy.cozyspace.todoList.component.FrequencyDetails
 import bloomy.cozyspace.todoList.component.TodoName
 import bloomy.cozyspace.todoList.component.microComponent.LabelButton
-import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Frequency
+import kotlin.time.Instant
 
 @Composable
 fun TaskDetailPopup(
-    task: Task,
+    task: Todo,
     onDismiss: () -> Unit,
     onCategorySelected: (Category) -> Unit,
-    onDateTimeSelected: (String?) -> Unit,
+    onDateTimeSelected: (Instant) -> Unit,
     onFrequencySelected: (Frequency) -> Unit,
     onConfirm: () -> Unit = onDismiss
 ) {

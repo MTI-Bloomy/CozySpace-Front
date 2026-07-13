@@ -46,7 +46,7 @@ fun AppNavHost(
         }
 
         composable<Todo> {
-            TodoMain()
+            TodoMain(stores)
         }
     }
 }

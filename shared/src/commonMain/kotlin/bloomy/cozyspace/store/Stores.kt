@@ -5,4 +5,6 @@ data class Stores (
     val reward: RewardStore,
     val room: RoomStore,
     val house: HouseStore,
+    val todoList: TodoListStore,
+    val todoDone: TodoDoneStore,
 )

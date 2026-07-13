@@ -31,19 +31,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.domain.RoomType
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
+import bloomy.cozyspace.todoList.utils.CategoryName
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.delete
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun TodoName(task: Task, onCategorySelected: (Category) -> Unit) {
+fun TodoName(task: Todo, onCategorySelected: (Category) -> Unit) {
     var todoName by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf(Category.valueOf(task.type.name)) }
+    var selectedCategory by remember { mutableStateOf(
+        when (task.type) {
+            RoomType.KITCHEN -> Category.Kitchen
+            RoomType.BATHROOM -> Category.Bathroom
+            RoomType.BEDROOM -> Category.Bedroom
+            RoomType.GARDEN -> Category.Garden
+            RoomType.WORK -> Category.Work
+        }
+    )}
 
     Card(
         modifier = Modifier

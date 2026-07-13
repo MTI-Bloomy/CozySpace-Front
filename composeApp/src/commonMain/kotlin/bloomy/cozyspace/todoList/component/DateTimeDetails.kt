@@ -40,10 +40,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.MidLightGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.domain.Task
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.calendar
 import org.jetbrains.compose.resources.painterResource
@@ -53,13 +53,14 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateTimeDetails(
-    task: Task,
-    onDateTimeSelected: (String?) -> Unit = {}
+    task: Todo,
+    onDateTimeSelected: (Instant) -> Unit = {}
 ) {
     var isDateEnabled by remember { mutableStateOf(false) }
     var selectedDateMillis by remember { mutableStateOf<Long?>(null) }
@@ -69,15 +70,11 @@ fun DateTimeDetails(
     var showTimePicker by remember { mutableStateOf(false) }
 
     fun notifyChange() {
-        val millis = selectedDateMillis
-        if (millis == null) {
-            onDateTimeSelected(null)
-            return
-        }
+        val millis = selectedDateMillis ?: return
         val date = Instant.fromEpochMilliseconds(millis)
             .toLocalDateTime(TimeZone.currentSystemDefault()).date
         val localDateTime = LocalDateTime(date, LocalTime(selectedHour, selectedMinute))
-        onDateTimeSelected(localDateTime.toString())
+        onDateTimeSelected(localDateTime.toInstant(TimeZone.currentSystemDefault()))
     }
 
     val dateLabel = selectedDateMillis?.let { millis ->
@@ -185,7 +182,6 @@ fun DateTimeDetails(
                         selectedDateMillis = null
                         selectedHour = 0
                         selectedMinute = 0
-                        onDateTimeSelected(null)
                     }
                 },
                 colors = SwitchDefaults.colors(

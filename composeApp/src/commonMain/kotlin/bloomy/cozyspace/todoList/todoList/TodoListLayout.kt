@@ -23,18 +23,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.component.AddTodoButton
 import bloomy.cozyspace.todoList.component.NewTodoItem
 import bloomy.cozyspace.todoList.component.TodoDoneItem
 import bloomy.cozyspace.todoList.component.TodoItem
-import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Frequency
 import bloomy.cozyspace.todoList.utils.Spacing
+import kotlin.time.Instant
 
 @Composable
-fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, onTaskCreated: (String, Category, Frequency, String?) -> Unit, header: @Composable () -> Unit) {
+fun TodoListLayout(
+    isCompact: Boolean,
+    keyboardOpen: Boolean,
+    tasks: MutableMap<Category, List<Todo>>,
+    selectedCategory: Category?,
+    onTaskChecked: (String) -> Unit,
+    onTaskCreated: (String, Category, Frequency, Instant) -> Unit,
+    header: @Composable () -> Unit,
+) {
     var showNewItem by remember { mutableStateOf(false) }
 
     val filteredTasks = if (selectedCategory == null) {
@@ -44,7 +53,7 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
     }
 
     if (isCompact) {
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(WhiteBackground)
@@ -52,12 +61,12 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                 .padding(horizontal = 20.dp)
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Spacing.lg)
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg),
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(),
-                contentAlignment = Alignment.TopCenter
+                contentAlignment = Alignment.TopCenter,
             ) {
                 header()
             }
@@ -66,24 +75,16 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                contentAlignment = Alignment.TopCenter
+                contentAlignment = Alignment.TopCenter,
             ) {
-                LazyColumn (
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs)
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     items(filteredTasks) { task ->
-                        if (isTodoList) {
-                            TodoItem(
+                        TodoItem(
                                 task,
-                                onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
+                                onTaskChecked = { onTaskChecked(task.id) },
                             )
-                        }
-                        else {
-                            TodoDoneItem(
-                                task,
-                                onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
-                            )
-                        }
                     }
 
                     if (showNewItem) {
@@ -93,7 +94,7 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                                 onCreate = { name, category, frequency, startDate ->
                                     onTaskCreated(name, category, frequency, startDate)
                                     showNewItem = false
-                                }
+                                },
                             )
                         }
                     }
@@ -102,25 +103,26 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                 AddTodoButton(
                     isActive = showNewItem,
                     modifier = Modifier.align(Alignment.BottomEnd),
-                    onClick = { showNewItem = true }
+                    onClick = { showNewItem = true },
                 )
             }
         }
     } else {
-        Row (modifier = Modifier
-            .fillMaxSize()
-            .background(WhiteBackground)
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .padding(20.dp)
-            .imePadding(),
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(WhiteBackground)
+                .windowInsetsPadding(WindowInsets.systemBars)
+                .padding(20.dp)
+                .imePadding(),
             horizontalArrangement = Arrangement.spacedBy(Spacing.xl, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
                 modifier = Modifier.weight(
-                    if (keyboardOpen) 1f else 1.5f
+                    if (keyboardOpen) 1f else 1.5f,
                 ),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 header()
             }
@@ -129,24 +131,16 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                 modifier = Modifier
                     .weight(1f)
                     .widthIn(max = 500.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             ) {
-                LazyColumn (
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs)
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     items(filteredTasks) { task ->
-                        if (isTodoList) {
-                            TodoItem(
+                        TodoItem(
                                 task,
-                                onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
+                                onTaskChecked = { onTaskChecked(task.id) },
                             )
-                        }
-                        else {
-                            TodoDoneItem(
-                                task,
-                                onTaskChecked = { checked -> onTaskChecked(task.id, checked) }
-                            )
-                        }
                     }
 
                     if (showNewItem) {
@@ -156,7 +150,7 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                                 onCreate = { name, category, frequency, startDate ->
                                     onTaskCreated(name, category, frequency, startDate)
                                     showNewItem = false
-                                }
+                                },
                             )
                         }
                     }
@@ -165,7 +159,7 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                 AddTodoButton(
                     isActive = showNewItem,
                     modifier = Modifier.align(Alignment.BottomEnd),
-                    onClick = { showNewItem = true }
+                    onClick = { showNewItem = true },
                 )
             }
         }

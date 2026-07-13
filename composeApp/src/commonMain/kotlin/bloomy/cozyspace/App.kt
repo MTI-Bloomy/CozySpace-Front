@@ -58,6 +58,8 @@ import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.HouseRepository
 import bloomy.cozyspace.data.RewardRepository
 import bloomy.cozyspace.data.RoomRepository
+import bloomy.cozyspace.data.TodoListRepository
+import bloomy.cozyspace.data.TodoDoneRepository
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.navigation.NavGraph
 import bloomy.cozyspace.navigation.screenRoutes.Screen
@@ -71,6 +73,10 @@ import bloomy.cozyspace.store.RewardStoreFactory
 import bloomy.cozyspace.store.RoomStore
 import bloomy.cozyspace.store.RoomStoreFactory
 import bloomy.cozyspace.store.Stores
+import bloomy.cozyspace.store.TodoListStore
+import bloomy.cozyspace.store.TodoListStoreFactory
+import bloomy.cozyspace.store.TodoDoneStore
+import bloomy.cozyspace.store.TodoDoneStoreFactory
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.store.UserStoreFactory
 import bloomy.cozyspace.theme.WhiteBackground
@@ -202,26 +208,39 @@ fun App() {
         ).create().also { it.init() }
     }
 
+    val todoListStore by produceState<TodoListStore?>(initialValue = null) {
+        value = TodoListStoreFactory(
+            repository = TodoListRepository(ApiService(httpClient)),
+        ).create().also { it.init() }
+    }
+
+    val todoDoneStore by produceState<TodoDoneStore?>(initialValue = null) {
+        value = TodoDoneStoreFactory(
+            repository = TodoDoneRepository(ApiService(httpClient)),
+        ).create().also { it.init() }
+    }
+
     if (
         userStore == null ||
         rewardStore == null ||
         roomStore == null ||
-        houseStore == null
+        houseStore == null ||
+        todoListStore == null ||
+        todoDoneStore == null
     ) {
         LoadingScreen()
         return
     }
 
     val uStore = userStore!!
-    val reStore = rewardStore!!
-    val roStore = roomStore!!
-    val hStore = houseStore!!
 
     val stores = Stores(
         uStore,
-        reStore,
-        roStore,
-        hStore,
+        rewardStore!!,
+        roomStore!!,
+        houseStore!!,
+        todoListStore!!,
+        todoDoneStore!!
     )
 
     LaunchedEffect(uStore) {

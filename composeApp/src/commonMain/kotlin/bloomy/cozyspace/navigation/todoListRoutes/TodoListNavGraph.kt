@@ -5,11 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import bloomy.cozyspace.navigation.todoListRoutes.TodoScreen
+import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.todoList.TodoListScreen
 import bloomy.cozyspace.todoList.todoDone.TodoDoneScreen
 
 @Composable
-fun TodoListNavGraph (navController: NavHostController) {
+fun TodoListNavGraph (navController: NavHostController, stores: Stores) {
 
     NavHost(
         navController = navController,
@@ -19,7 +20,8 @@ fun TodoListNavGraph (navController: NavHostController) {
             TodoListScreen(
                 fromTodoList_toTodoDone = {
                     navController.navigate(TodoScreen.TodoDone.route)
-                }
+                },
+                stores
             )
         }
 
@@ -27,7 +29,8 @@ fun TodoListNavGraph (navController: NavHostController) {
             TodoDoneScreen(
                 fromTodoDone_toTodoList = {
                     navController.navigate(TodoScreen.TodoList.route)
-                }
+                },
+                stores
             )
         }
     }

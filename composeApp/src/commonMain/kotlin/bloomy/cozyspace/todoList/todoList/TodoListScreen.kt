@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,127 +13,59 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import bloomy.cozyspace.data.dto.TodoRequestDto
+import bloomy.cozyspace.domain.RoomType
+import bloomy.cozyspace.domain.Todo
+import bloomy.cozyspace.store.Stores
+import bloomy.cozyspace.store.TodoListStore
 import bloomy.cozyspace.todoList.common.TodoHeader
-import bloomy.cozyspace.todoList.common.TodoLayout
-import bloomy.cozyspace.todoList.domain.Task
+import bloomy.cozyspace.todoList.common.TodoListLayout
 import bloomy.cozyspace.todoList.utils.Category
-import bloomy.cozyspace.todoList.utils.CategoryName
 import bloomy.cozyspace.todoList.utils.Frequency
-import kotlin.collections.Map
-import kotlin.time.Clock
+import bloomy.cozyspace.utils.observeState
+import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
-    // TODO => remove
-    var tasks: Map<Category, List<Task>> by remember {
-        mutableStateOf(
-            mapOf(
-                Category.Kitchen to listOf(
-                    Task(
-                        id = "1",
-                        name = "Do the dishes",
-                        frequency = 1,
-                        type = CategoryName.Kitchen,
-                        startDate = "2026-05-04T18:00:00",
-                        isDone = false
-                    ),
-                    Task(
-                        id = "2",
-                        name = "Clean fridge",
-                        frequency = 7,
-                        type = CategoryName.Kitchen,
-                        startDate = "2026-05-04T18:00:00",
-                        isDone = false
-                    )
-                ),
+fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}, stores: Stores) {
+    val todoListState = stores.todoList.observeState()
 
-                Category.Work to listOf(
-                    Task(
-                        id = "3",
-                        name = "Finish report",
-                        frequency = 1,
-                        type = CategoryName.Work,
-                        startDate = "2026-05-04T18:00:00",
-                        isDone = false
-                    )
-                ),
-
-                Category.Bedroom to listOf(
-                    Task(
-                        id = "4",
-                        name = "Change sheets",
-                        frequency = 14,
-                        type = CategoryName.Bedroom,
-                        startDate = "2026-05-04T18:00:00",
-                        isDone = false
-                    ),
-                    Task(
-                        id = "5",
-                        name = "Vacuum room",
-                        frequency = 7,
-                        type = CategoryName.Bedroom,
-                        startDate = "2026-05-04T18:00:00",
-                        isDone = false
-                    )
-                ),
-
-                Category.Garden to emptyList(),
-
-                Category.Bathroom to listOf(
-                    Task(
-                        id = "6",
-                        name = "Clean mirror",
-                        frequency = 7,
-                        type = CategoryName.Bathroom,
-                        startDate = "07/05/2026 08:00",
-                        isDone = false
-                    ),
-                    Task(
-                        id = "7",
-                        name = "Clean the bathtub",
-                        frequency = 7,
-                        type = CategoryName.Bathroom,
-                        startDate = "07/05/2026 08:00",
-                        isDone = false
-                    ),
-                    Task(
-                        id = "8",
-                        name = "Clean the sink",
-                        frequency = 7,
-                        type = CategoryName.Bathroom,
-                        startDate = "07/05/2026 08:00",
-                        isDone = false
-                    )
-                )
-            )
-        )
+    LaunchedEffect(Unit) {
+        stores.todoList.accept(TodoListStore.Intent.GetTodoList)
     }
 
-    // Copies isDone for the modified task
-    fun onTaskChecked(taskId: String, isDone: Boolean) {
-        tasks = tasks.mapValues { (_, list) ->
-            list.map { t -> if (t.id == taskId) t.copy(isDone = isDone) else t }
+    val tasks = mutableMapOf<Category, List<Todo>>()
+    tasks[Category.Kitchen] = emptyList()
+    tasks[Category.Bathroom] = emptyList()
+    tasks[Category.Bedroom] = emptyList()
+    tasks[Category.Garden] = emptyList()
+    tasks[Category.Work] = emptyList()
+
+    for (todoList in todoListState.todoList) {
+        when (todoList.type) {
+            RoomType.KITCHEN -> tasks[Category.Kitchen] = tasks[Category.Kitchen]?.plus(todoList) as List<Todo>
+            RoomType.BATHROOM -> tasks[Category.Bathroom] = tasks[Category.Bathroom]?.plus(todoList) as List<Todo>
+            RoomType.BEDROOM -> tasks[Category.Bedroom] = tasks[Category.Bedroom]?.plus(todoList) as List<Todo>
+            RoomType.GARDEN -> tasks[Category.Garden] = tasks[Category.Garden]?.plus(todoList) as List<Todo>
+            RoomType.WORK -> tasks[Category.Work] = tasks[Category.Work]?.plus(todoList) as List<Todo>
         }
+    }
+
+    fun onTaskChecked(taskId: String) {
+        stores.todoList.accept(TodoListStore.Intent.CompleteTodo(taskId))
     }
 
     // Creates a new task and adds it to its category's list
-    fun onTaskCreated(name: String, category: Category, frequency: Frequency, startDate: String?) {
-        val newTask = Task(
-            id = Uuid.random().toString(),
+    fun onTaskCreated(name: String, category: Category, frequency: Frequency, nextDueDate: Instant) {
+        val newTask = TodoRequestDto(
             name = name,
             frequency = frequency.days,
-            type = CategoryName.valueOf(category.name),
-            startDate = startDate.orEmpty(),
-            isDone = false
+            type = category.name,
+            nextDueDate = nextDueDate,
         )
 
-        tasks = tasks.toMutableMap().apply {
-            val currentList = this[category].orEmpty()
-            this[category] = currentList + newTask
-        }
+        stores.todoList.accept(TodoListStore.Intent.CreateTodo(newTask))
     }
 
     BoxWithConstraints(
@@ -145,9 +78,8 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
             mutableStateOf<Category?>(null)
         }
 
-        TodoLayout(
+        TodoListLayout(
             isCompact = isCompact,
-            isTodoList = true,
             keyboardOpen = keyboardOpen,
             tasks = tasks,
             selectedCategory = selectedCategory,

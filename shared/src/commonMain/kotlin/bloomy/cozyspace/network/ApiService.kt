@@ -9,6 +9,8 @@ import bloomy.cozyspace.data.dto.RegisterDto
 import bloomy.cozyspace.data.dto.LoginDto
 import bloomy.cozyspace.data.dto.RewardDto
 import bloomy.cozyspace.data.dto.RoomDto
+import bloomy.cozyspace.data.dto.TodoDto
+import bloomy.cozyspace.data.dto.TodoRequestDto
 import bloomy.cozyspace.interfaces.ApiResult
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
@@ -56,5 +58,26 @@ class ApiService(
 
     suspend fun getHouse(): ApiResult<List<HouseDto>> = safeApiCall {
         client.get("${Environment.API_URL}/house")
+    }
+
+    // Todo
+    suspend fun getTodoList(): ApiResult<List<TodoDto>> = safeApiCall {
+        client.get("${Environment.API_URL}/todoList")
+    }
+
+    suspend fun createTodo(request: TodoRequestDto): ApiResult<TodoDto> = safeApiCall {
+        client.post("${Environment.API_URL}/todoList") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    suspend fun completeTodo(id: String): ApiResult<TodoDto> = safeApiCall {
+        client.put("${Environment.API_URL}/todoList/$id/complete")
+    }
+
+    // Todo Done
+    suspend fun getTodoDone(): ApiResult<List<TodoDto>> = safeApiCall {
+        client.get("${Environment.API_URL}/todoDone")
     }
 }

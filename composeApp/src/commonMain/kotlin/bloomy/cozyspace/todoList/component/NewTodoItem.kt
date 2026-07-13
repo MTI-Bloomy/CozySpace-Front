@@ -20,8 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,17 +29,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.data.dto.TodoDto
+import bloomy.cozyspace.data.dto.toDomain
+import bloomy.cozyspace.domain.RoomType
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.popUp.TaskDetailPopup
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.CategoryName
@@ -49,16 +49,18 @@ import bloomy.cozyspace.todoList.utils.Frequency
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.todoItem_More
 import org.jetbrains.compose.resources.painterResource
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 @Composable
 fun NewTodoItem(
-    onCreate: (name: String, category: Category, frequency: Frequency, startDate: String?) -> Unit,
+    onCreate: (name: String, category: Category, frequency: Frequency, startDate: Instant) -> Unit,
     clicked: () -> Unit = {}
 ) {
     var taskName by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(Category.entries.first()) }
     var selectedFrequency by remember { mutableStateOf(Frequency.Never) }
-    var startDate by remember { mutableStateOf<String?>(null) }
+    var startDate by remember { mutableStateOf(Clock.System.now()) }
     var hasBeenCreated by remember { mutableStateOf(false) }
     var showDetailPopup by remember { mutableStateOf(false) }
 
@@ -70,13 +72,13 @@ fun NewTodoItem(
     }
 
     // Draft task built from current local state, just to feed the popup's preview
-    val draftTask = Task(
+    val draftTask = TodoDto(
         id = "",
         name = taskName,
         frequency = selectedFrequency.days,
-        type = CategoryName.valueOf(selectedCategory.name),
-        startDate = startDate.orEmpty(),
-        isDone = false
+        type = selectedCategory.name,
+        date = startDate,
+        rewardId = null
     )
 
     Card(
@@ -168,7 +170,7 @@ fun NewTodoItem(
 
     if (showDetailPopup) {
         TaskDetailPopup(
-            task = draftTask,
+            task = draftTask.toDomain(),
             onDismiss = { showDetailPopup = false },
             onDateTimeSelected = { newDate -> startDate = newDate },
             onFrequencySelected = { newFrequency -> selectedFrequency = newFrequency },

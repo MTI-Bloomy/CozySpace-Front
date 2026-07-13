@@ -1,7 +1,6 @@
 package bloomy.cozyspace.todoList.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,10 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
-import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Frequency
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.arrow_down
@@ -49,10 +47,10 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FrequencyDetails(
-    task: Task,
+    task: Todo,
     onFrequencySelected: (Frequency) -> Unit = {}
 ) {
-    var selectedFrequency by remember { mutableStateOf(Frequency.fromDays(task.frequency)) }
+    var selectedFrequency by remember { mutableStateOf(Frequency.fromDays(task.frequency?: 0)) }
     var expanded by remember { mutableStateOf(false) }
 
     Card(

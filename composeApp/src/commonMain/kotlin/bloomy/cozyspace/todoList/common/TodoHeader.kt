@@ -16,18 +16,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.todoList.component.TodoCategory
 import bloomy.cozyspace.todoList.component.TodoCorner
-import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Spacing
 import java.text.SimpleDateFormat
 import java.util.Date
 
 @Composable
-fun TodoHeader(isTodoList: Boolean, isCompact: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onCategorySelected: (Category?) -> Unit, onTodoScreenChange: () -> Unit) {
+fun TodoHeader(
+    isTodoList: Boolean,
+    isCompact: Boolean,
+    tasks: Map<Category, List<Todo>>,
+    selectedCategory: Category?,
+    onCategorySelected: (Category?) -> Unit,
+    onTodoScreenChange: () -> Unit,
+) {
     val sdf = SimpleDateFormat("dd MMMM")
     val currentDate = sdf.format(Date())
 
@@ -38,13 +45,13 @@ fun TodoHeader(isTodoList: Boolean, isCompact: Boolean, tasks: Map<Category, Lis
     val titleFontSize = 42.sp
     val titleText = if (isTodoList) "Tasks" else if (isCompact) "Completed\ntasks" else "Completed tasks"
 
-    Box (
-        modifier = Modifier.fillMaxWidth()
+    Box(
+        modifier = Modifier.fillMaxWidth(),
     ) {
-        Column (
+        Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = if (mirrored) Alignment.Start else Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(Spacing.sm)
+            verticalArrangement = Arrangement.spacedBy(Spacing.sm),
         ) {
             Text(
                 text = titleText,
@@ -52,7 +59,7 @@ fun TodoHeader(isTodoList: Boolean, isCompact: Boolean, tasks: Map<Category, Lis
                 color = DarkGreen,
                 fontWeight = FontWeight.Black,
                 fontSize = titleFontSize,
-                lineHeight = titleFontSize * 1.15f
+                lineHeight = titleFontSize * 1.15f,
             )
 
             Text(
@@ -60,14 +67,14 @@ fun TodoHeader(isTodoList: Boolean, isCompact: Boolean, tasks: Map<Category, Lis
                 color = LightGreen,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                maxLines = 1
+                maxLines = 1,
             )
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.height(180.dp)
+                modifier = Modifier.height(180.dp),
             ) {
                 items(tasks.entries.toList()) { entry ->
                     val category = entry.key
@@ -82,9 +89,9 @@ fun TodoHeader(isTodoList: Boolean, isCompact: Boolean, tasks: Map<Category, Lis
                                 if (selectedCategory == category)
                                     null
                                 else
-                                    category
+                                    category,
                             )
-                        }
+                        },
                     )
                 }
             }
@@ -94,7 +101,7 @@ fun TodoHeader(isTodoList: Boolean, isCompact: Boolean, tasks: Map<Category, Lis
             isTodoList = isTodoList,
             mirrored = mirrored,
             onClick = onTodoScreenChange,
-            modifier = Modifier.align(if (!isCompact || !isTodoList) Alignment.TopStart else Alignment.TopEnd)
+            modifier = Modifier.align(if (!isCompact || !isTodoList) Alignment.TopStart else Alignment.TopEnd),
         )
     }
 }
