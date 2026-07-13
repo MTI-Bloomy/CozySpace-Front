@@ -41,25 +41,43 @@ import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
+import bloomy.cozyspace.todoList.domain.Task
+import bloomy.cozyspace.todoList.popUp.TaskDetailPopup
 import bloomy.cozyspace.todoList.utils.Category
+import bloomy.cozyspace.todoList.utils.CategoryName
+import bloomy.cozyspace.todoList.utils.Frequency
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.todoItem_More
 import org.jetbrains.compose.resources.painterResource
+
 @Composable
 fun NewTodoItem(
-    onCreate: (name: String, category: Category) -> Unit,
+    onCreate: (name: String, category: Category, frequency: Frequency, startDate: String?) -> Unit,
     clicked: () -> Unit = {}
 ) {
     var taskName by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(Category.entries.first()) }
+    var selectedFrequency by remember { mutableStateOf(Frequency.Never) }
+    var startDate by remember { mutableStateOf<String?>(null) }
     var hasBeenCreated by remember { mutableStateOf(false) }
+    var showDetailPopup by remember { mutableStateOf(false) }
 
     fun tryCreate() {
         if (!hasBeenCreated && taskName.isNotBlank()) {
             hasBeenCreated = true
-            onCreate(taskName, selectedCategory)
+            onCreate(taskName, selectedCategory, selectedFrequency, startDate)
         }
     }
+
+    // Draft task built from current local state, just to feed the popup's preview
+    val draftTask = Task(
+        id = "",
+        name = taskName,
+        frequency = selectedFrequency.days,
+        type = CategoryName.valueOf(selectedCategory.name),
+        startDate = startDate.orEmpty(),
+        isDone = false
+    )
 
     Card(
         modifier = Modifier
@@ -88,7 +106,6 @@ fun NewTodoItem(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Center text section
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -137,9 +154,8 @@ fun NewTodoItem(
                 )
             }
 
-            // More button
             IconButton(
-                onClick = { }
+                onClick = { showDetailPopup = true }
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.todoItem_More),
@@ -148,5 +164,15 @@ fun NewTodoItem(
                 )
             }
         }
+    }
+
+    if (showDetailPopup) {
+        TaskDetailPopup(
+            task = draftTask,
+            onDismiss = { showDetailPopup = false },
+            onDateTimeSelected = { newDate -> startDate = newDate },
+            onFrequencySelected = { newFrequency -> selectedFrequency = newFrequency },
+            onCategorySelected = { newCategory -> selectedCategory = newCategory }
+        )
     }
 }

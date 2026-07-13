@@ -17,6 +17,7 @@ import bloomy.cozyspace.todoList.common.TodoLayout
 import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.CategoryName
+import bloomy.cozyspace.todoList.utils.Frequency
 import kotlin.collections.Map
 import kotlin.time.Clock
 import kotlin.uuid.ExperimentalUuidApi
@@ -118,13 +119,13 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}) {
     }
 
     // Creates a new task and adds it to its category's list
-    fun onTaskCreated(name: String, category: Category) {
+    fun onTaskCreated(name: String, category: Category, frequency: Frequency, startDate: String?) {
         val newTask = Task(
             id = Uuid.random().toString(),
             name = name,
-            frequency = 1,
+            frequency = frequency.days,
             type = CategoryName.valueOf(category.name),
-            startDate = "",
+            startDate = startDate.orEmpty(),
             isDone = false
         )
 

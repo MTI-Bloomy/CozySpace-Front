@@ -30,10 +30,11 @@ import bloomy.cozyspace.todoList.component.TodoDoneItem
 import bloomy.cozyspace.todoList.component.TodoItem
 import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.todoList.utils.Category
+import bloomy.cozyspace.todoList.utils.Frequency
 import bloomy.cozyspace.todoList.utils.Spacing
 
 @Composable
-fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, onTaskCreated: (String, Category) -> Unit, header: @Composable () -> Unit) {
+fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, tasks: Map<Category, List<Task>>, selectedCategory: Category?, onTaskChecked: (String, Boolean) -> Unit, onTaskCreated: (String, Category, Frequency, String?) -> Unit, header: @Composable () -> Unit) {
     var showNewItem by remember { mutableStateOf(false) }
 
     val filteredTasks = if (selectedCategory == null) {
@@ -88,8 +89,9 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                     if (showNewItem) {
                         item {
                             NewTodoItem(
-                                onCreate = { name, category ->
-                                    onTaskCreated(name, category)
+                                // Dans TodoLayout
+                                onCreate = { name, category, frequency, startDate ->
+                                    onTaskCreated(name, category, frequency, startDate)
                                     showNewItem = false
                                 }
                             )
@@ -146,7 +148,25 @@ fun TodoLayout(isTodoList: Boolean, isCompact: Boolean, keyboardOpen: Boolean, t
                             )
                         }
                     }
+
+                    if (showNewItem) {
+                        item {
+                            NewTodoItem(
+                                // Dans TodoLayout
+                                onCreate = { name, category, frequency, startDate ->
+                                    onTaskCreated(name, category, frequency, startDate)
+                                    showNewItem = false
+                                }
+                            )
+                        }
+                    }
                 }
+
+                AddTodoButton(
+                    isActive = showNewItem,
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    onClick = { showNewItem = true }
+                )
             }
         }
     }

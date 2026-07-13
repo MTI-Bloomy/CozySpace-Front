@@ -18,6 +18,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,13 +33,17 @@ import bloomy.cozyspace.todoList.domain.Task
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
+import bloomy.cozyspace.todoList.popUp.TaskDetailPopup
+import bloomy.cozyspace.todoList.utils.Category
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.todoItem_More
 import cozyspace.composeapp.generated.resources.todoItem_Tick
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> Unit) {
+fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> Unit, onCategoryChanged: (String, Category) -> Unit = { _, _ -> }) {
+    var showDetailPopup by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -132,7 +140,7 @@ fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> U
 
             // More button
             IconButton(
-                onClick = { }
+                onClick = { showDetailPopup = true }
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.todoItem_More),
@@ -141,5 +149,15 @@ fun TodoItem(task: Task, clicked: () -> Unit = {}, onTaskChecked: (Boolean) -> U
                 )
             }
         }
+    }
+
+    if (showDetailPopup) {
+        TaskDetailPopup(
+            task = task,
+            onDismiss = { showDetailPopup = false },
+            onDateTimeSelected = { /* à connecter */ },
+            onFrequencySelected = { /* à connecter */ },
+            onCategorySelected = { newCategory -> onCategoryChanged(task.id, newCategory) }
+        )
     }
 }

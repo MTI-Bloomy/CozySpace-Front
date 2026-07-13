@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,7 +61,7 @@ fun FrequencyDetails(
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = LightGreen,
+            containerColor = DarkGreen,
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -97,34 +99,39 @@ fun FrequencyDetails(
                     maxLines = 1
                 )
 
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
                 ) {
-                    Row(
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = WhiteBackground.copy(alpha = 0.18f),
                         modifier = Modifier
                             .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                            .clickable { expanded = true },
-                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = selectedFrequency.name,
-                            color = WhiteBackground,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            maxLines = 1
-                        )
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = selectedFrequency.name,
+                                color = WhiteBackground,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp,
+                                maxLines = 1
+                            )
 
-                        Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
 
-                        Icon(
-                            painter = painterResource(if (expanded) Res.drawable.arrow_up else Res.drawable.arrow_down),
-                            contentDescription = null,
-                            tint = WhiteBackground,
-                            modifier = Modifier.size(16.dp)
-                        )
+                            Icon(
+                                painter = painterResource(if (expanded) Res.drawable.arrow_up else Res.drawable.arrow_down),
+                                contentDescription = null,
+                                tint = WhiteBackground,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
                     }
 
                     ExposedDropdownMenu(
@@ -136,8 +143,9 @@ fun FrequencyDetails(
                                 text = {
                                     Text(
                                         text = frequency.name,
+                                        color = if (frequency == selectedFrequency) DarkGreen else Color.Black,
+                                        fontWeight = if (frequency == selectedFrequency) FontWeight.Bold else FontWeight.Normal,
                                         fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold,
                                         maxLines = 1,
                                         softWrap = false
                                     )

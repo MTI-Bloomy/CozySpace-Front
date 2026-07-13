@@ -22,9 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.utils.Category
 import cozyspace.composeapp.generated.resources.Res
@@ -87,8 +89,8 @@ fun CategoryDropdown(
                         Text(
                             text = category.name,
                             color = category.colors.dark,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            fontWeight = if (category == selectedCategory) FontWeight.Bold else FontWeight.Normal,
                             maxLines = 1,
                             softWrap = false
                         )

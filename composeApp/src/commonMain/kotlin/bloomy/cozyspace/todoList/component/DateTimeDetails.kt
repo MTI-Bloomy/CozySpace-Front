@@ -2,6 +2,7 @@ package bloomy.cozyspace.todoList.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -66,7 +68,6 @@ fun DateTimeDetails(
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
-    // Builds the "YYYY-MM-DDTHH:mm:00" string and notifies the parent
     fun notifyChange() {
         val millis = selectedDateMillis
         if (millis == null) {
@@ -123,7 +124,6 @@ fun DateTimeDetails(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Date / time info
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -135,34 +135,48 @@ fun DateTimeDetails(
                     maxLines = 1
                 )
 
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = dateLabel,
-                        color = WhiteBackground.copy(alpha = if (isDateEnabled) 1f else 0.6f),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        maxLines = 1,
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = WhiteBackground.copy(alpha = if (isDateEnabled) 0.18f else 0.08f),
                         modifier = Modifier
                             .clickable(enabled = isDateEnabled) { showDatePicker = true }
-                    )
+                    ) {
+                        Text(
+                            text = dateLabel,
+                            color = WhiteBackground.copy(alpha = if (isDateEnabled) 1f else 0.5f),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        text = timeLabel,
-                        color = WhiteBackground.copy(alpha = if (isDateEnabled) 1f else 0.6f),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        maxLines = 1,
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = WhiteBackground.copy(alpha = if (isDateEnabled) 0.18f else 0.08f),
                         modifier = Modifier
                             .clickable(enabled = isDateEnabled) { showTimePicker = true }
-                    )
+                    ) {
+                        Text(
+                            text = timeLabel,
+                            color = WhiteBackground.copy(alpha = if (isDateEnabled) 1f else 0.5f),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                        )
+                    }
                 }
             }
 
-            // Toggle switch
+            Spacer(modifier = Modifier.width(8.dp))
+
             Switch(
                 checked = isDateEnabled,
                 onCheckedChange = { checked ->
@@ -177,8 +191,13 @@ fun DateTimeDetails(
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = WhiteBackground,
                     checkedTrackColor = MidLightGreen,
+                    checkedBorderColor = MidLightGreen,
+                    checkedIconColor = DarkGreen,
+
                     uncheckedThumbColor = WhiteBackground,
-                    uncheckedTrackColor = WhiteBackground.copy(alpha = 0.3f)
+                    uncheckedTrackColor = WhiteBackground.copy(alpha = 0.3f),
+                    uncheckedBorderColor = WhiteBackground.copy(alpha = 0.3f),
+                    uncheckedIconColor = DarkGreen
                 )
             )
         }
@@ -217,7 +236,6 @@ fun DateTimeDetails(
             is24Hour = true
         )
 
-        // If no date is set yet, default to today when the user picks a time first
         if (selectedDateMillis == null) {
             selectedDateMillis = Clock.System.now().toEpochMilliseconds()
         }
