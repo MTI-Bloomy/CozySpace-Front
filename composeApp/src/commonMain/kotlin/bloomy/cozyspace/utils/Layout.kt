@@ -30,6 +30,7 @@ fun MobileLayout(
     onItemSelected: (Int) -> Unit,
 ) {
     Scaffold(
+        containerColor = Color.Transparent,
         bottomBar = {
             MobileNavBar(
                 items = NavDestination.entries,

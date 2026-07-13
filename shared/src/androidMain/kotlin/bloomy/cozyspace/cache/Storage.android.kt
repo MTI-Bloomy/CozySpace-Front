@@ -66,7 +66,9 @@ class AndroidAssetStorage(
     private val dir = File(context.filesDir, "assets_cache").apply { mkdirs() }
 
     override suspend fun save(key: String, bytes: ByteArray) = withContext(Dispatchers.IO) {
-        File(dir, key).writeBytes(bytes)
+        val file = File(dir, key)
+        file.parentFile?.mkdirs()
+        file.writeBytes(bytes)
     }
 
     override suspend fun get(key: String): ByteArray? = withContext(Dispatchers.IO) {

@@ -14,6 +14,7 @@ import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.utils.observeState
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.home.components.RoomView
 import bloomy.cozyspace.store.RewardStore
@@ -23,7 +24,9 @@ import bloomy.cozyspace.theme.WhiteBackground
 fun HomeMain(stores: Stores) {
     val rewardState = stores.reward.observeState()
 
-    stores.reward.accept(RewardStore.Intent.GetRewards)
+    LaunchedEffect(Unit) {
+        stores.reward.accept(RewardStore.Intent.GetRewards)
+    }
 
     Scaffold(
         topBar = {
