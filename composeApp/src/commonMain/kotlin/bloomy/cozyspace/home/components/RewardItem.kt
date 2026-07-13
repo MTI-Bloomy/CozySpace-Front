@@ -18,7 +18,7 @@ expect fun ByteArray.toImageBitmap(): ImageBitmap
 @Composable
 fun RoomView(rewards: List<Reward>, images: Map<String, ByteArray?>) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fond de la pièce
+        // Room Background
         Image(
             painter = painterResource(Res.drawable.kitchen_base),
             contentDescription = "Room base",
@@ -26,7 +26,7 @@ fun RoomView(rewards: List<Reward>, images: Map<String, ByteArray?>) {
             contentScale = ContentScale.Fit
         )
 
-        // Meubles superposés
+        // Stacked furniture
         rewards.forEach { reward ->
             val bytes = images[reward.id]
             if (bytes != null) {

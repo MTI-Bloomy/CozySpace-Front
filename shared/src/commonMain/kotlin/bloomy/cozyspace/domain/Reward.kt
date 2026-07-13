@@ -7,5 +7,5 @@ data class Reward(
     val id: String,
     val furnitureId: String,
     val furnitureLink: String,
-    // val todoDoneId: TodoDone
+    val todoDoneId: String,
 )

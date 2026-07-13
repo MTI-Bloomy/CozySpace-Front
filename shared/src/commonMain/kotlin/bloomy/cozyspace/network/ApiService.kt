@@ -43,7 +43,7 @@ class ApiService(
         client.get("${Environment.API_URL}/reward/$rewardId")
     }
 
-    suspend fun choseReward(request: ChooseRewardRequestDto) : ApiResult<RewardDto> = safeApiCall {
+    suspend fun chooseReward(request: ChooseRewardRequestDto) : ApiResult<RewardDto> = safeApiCall {
         client.put("${Environment.API_URL}/reward/choose") {
             contentType(ContentType.Application.Json)
             setBody(request)

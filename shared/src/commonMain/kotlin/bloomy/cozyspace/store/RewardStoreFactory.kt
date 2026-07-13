@@ -124,7 +124,7 @@ class RewardStoreFactory(
                     dispatch(Msg.Loading)
 
                     scope.launch {
-                        when (val result = repository.choseReward(intent.request)) {
+                        when (val result = repository.chooseReward(intent.request)) {
                             is ApiResult.Success -> {
                                 dispatch(Msg.ChooseRewardSuccess(result.data.toDomain()))
                             }

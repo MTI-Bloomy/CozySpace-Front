@@ -16,6 +16,7 @@ fun RewardDto.toDomain(): Reward = Reward(
     id = id,
     furnitureId = furnitureId,
     furnitureLink = furnitureLink,
+    todoDoneId = todoDoneId,
 )
 
 @Serializable

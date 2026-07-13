@@ -85,8 +85,8 @@ class UserStoreFactory(
                             }
 
                             ApiResult.Empty -> {
-                                dispatch(Msg.Error("Réponse vide du serveur"))
-                                publish(UserStore.Label.ShowError("Réponse vide du serveur"))
+                                dispatch(Msg.Error("Empty response from server"))
+                                publish(UserStore.Label.ShowError("Empty response from server"))
                             }
                         }
                     }
@@ -119,8 +119,8 @@ class UserStoreFactory(
                             }
 
                             ApiResult.Empty -> {
-                                dispatch(Msg.Error("Réponse vide du serveur"))
-                                publish(UserStore.Label.ShowError("Réponse vide du serveur"))
+                                dispatch(Msg.Error("Empty response from server"))
+                                publish(UserStore.Label.ShowError("Empty response from server"))
                             }
                         }
                     }

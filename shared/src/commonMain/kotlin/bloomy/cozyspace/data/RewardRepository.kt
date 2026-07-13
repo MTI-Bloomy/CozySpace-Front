@@ -16,7 +16,7 @@ class RewardRepository(
         return api.getReward(rewardId)
     }
 
-    suspend fun choseReward(request: ChooseRewardRequestDto): ApiResult<RewardDto> {
-        return api.choseReward(request)
+    suspend fun chooseReward(request: ChooseRewardRequestDto): ApiResult<RewardDto> {
+        return api.chooseReward(request)
     }
 }
