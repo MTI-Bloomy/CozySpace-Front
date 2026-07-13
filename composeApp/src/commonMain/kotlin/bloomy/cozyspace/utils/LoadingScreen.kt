@@ -10,10 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import bloomy.cozyspace.theme.DarkGreen
 
 @Composable
 fun LoadingScreen(
-    message: String = "Chargement..."
+    message: String = "Loading..."
 ) {
     Box(
         modifier = Modifier
@@ -24,10 +25,13 @@ fun LoadingScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(
+                color = DarkGreen
+            )
 
             Text(
-                text = message
+                text = message,
+                color = DarkGreen
             )
         }
     }

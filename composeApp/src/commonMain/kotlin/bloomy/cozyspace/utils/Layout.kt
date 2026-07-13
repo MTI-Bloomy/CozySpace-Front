@@ -30,6 +30,7 @@ fun MobileLayout(
     onItemSelected: (Int) -> Unit,
 ) {
     Scaffold(
+        containerColor = Color.Transparent,
         bottomBar = {
             MobileNavBar(
                 items = NavDestination.entries,
@@ -72,7 +73,7 @@ fun DesktopLayout(
 
         Scaffold(
             modifier = Modifier.weight(1f),
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
         ) { padding ->
 
             AppNavHost(
