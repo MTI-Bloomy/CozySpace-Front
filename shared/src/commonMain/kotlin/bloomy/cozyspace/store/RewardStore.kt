@@ -9,18 +9,19 @@ interface RewardStore : Store<RewardStore.Intent, RewardStore.State, RewardStore
         data object GetRewards : Intent
         data class GetReward(val id: String) : Intent
         data class ChooseReward(
-            val request: ChooseRewardRequestDto
+            val request: ChooseRewardRequestDto,
         ) : Intent
     }
 
     sealed interface Label {
-        data class ShowError(val message: String): Label
+        data class ShowError(val message: String) : Label
     }
 
     data class State(
         val loading: Boolean = false,
         val rewards: List<Reward> = emptyList(),
-        val error: String? = null
+        val images: Map<String, ByteArray> = emptyMap(),
+        val error: String? = null,
     )
 }
 

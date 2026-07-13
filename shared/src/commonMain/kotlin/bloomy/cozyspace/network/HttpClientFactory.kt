@@ -4,7 +4,6 @@ import bloomy.cozyspace.data.dto.RefreshDto
 import bloomy.cozyspace.data.dto.RefreshRequestDto
 import bloomy.cozyspace.domain.Token
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerAuthProvider
@@ -78,10 +77,11 @@ fun createHttpClient(
                     }
 
                     val response = client.post("$baseUrl/refresh") {
+                        skipAuth()
                         markAsRefreshTokenRequest() // évite la boucle infinie
                         contentType(ContentType.Application.Json)
                         setBody(
-                            RefreshRequestDto(refresh_token = refreshToken)
+                            RefreshRequestDto(refreshToken = refreshToken)
                         )
                     }
 

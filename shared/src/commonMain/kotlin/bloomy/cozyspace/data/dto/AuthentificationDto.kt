@@ -1,5 +1,6 @@
 package bloomy.cozyspace.data.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -53,12 +54,12 @@ data class LoginRequestDto(
 
 @Serializable
 data class RefreshDto(
-    val idToken: String,
-    val refreshToken: String? = null
+    @SerialName("id_token") val idToken: String,
+    @SerialName("refresh_token") val refreshToken: String? = null
 )
 
 @Serializable
 data class RefreshRequestDto(
-    val grant_type: String = "refresh_token",
-    val refresh_token: String
+    @SerialName("grant_type") val grantType: String = "refresh_token",
+    @SerialName("refresh_token") val refreshToken: String
 )

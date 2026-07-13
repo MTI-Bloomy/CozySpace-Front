@@ -50,8 +50,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import bloomy.cozyspace.cache.UserCache
+import bloomy.cozyspace.cache.createAssetStorage
 import bloomy.cozyspace.cache.createUserStorage
 import bloomy.cozyspace.config.Environment
+import bloomy.cozyspace.data.AssetRepository
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.HouseRepository
 import bloomy.cozyspace.data.RewardRepository
@@ -150,6 +152,7 @@ fun App() {
     val snackbarHostState = remember { SnackbarHostState() }
 
     val storage = remember { createUserStorage() }
+    val assetStorage = remember { createAssetStorage() }
     val forcedLogout = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
 
     val httpClient = remember {
@@ -184,6 +187,7 @@ fun App() {
     val rewardStore by produceState<RewardStore?>(initialValue = null) {
         value = RewardStoreFactory(
             repository = RewardRepository(ApiService(httpClient)),
+            assetRepository = AssetRepository(httpClient, assetStorage),
         ).create().also { it.init() }
     }
 

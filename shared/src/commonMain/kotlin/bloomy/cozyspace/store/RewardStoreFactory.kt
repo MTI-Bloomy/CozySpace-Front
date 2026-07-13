@@ -1,7 +1,7 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.data.AssetRepository
 import bloomy.cozyspace.data.RewardRepository
-import bloomy.cozyspace.data.dto.RewardDto
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.Reward
 import bloomy.cozyspace.interfaces.ApiResult
@@ -14,11 +14,12 @@ import kotlinx.coroutines.launch
 
 class RewardStoreFactory(
     private val repository: RewardRepository,
-    private val storeFactory: StoreFactory = DefaultStoreFactory()
+    private val assetRepository: AssetRepository,
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): RewardStore {
         val initialState = RewardStore.State(
-            rewards = emptyList()
+            rewards = emptyList(),
         )
 
         return object : RewardStore,
@@ -26,7 +27,7 @@ class RewardStoreFactory(
                 name = "RewardStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
@@ -35,6 +36,7 @@ class RewardStoreFactory(
         data class GetRewardsSuccess(val rewards: List<Reward>) : Msg
         data class GetRewardSuccess(val reward: Reward) : Msg
         data class ChooseRewardSuccess(val reward: Reward) : Msg
+        data class ImageLoaded(val rewardId: String, val bytes: ByteArray) : Msg
         data class Error(val message: String) : Msg
     }
 
@@ -43,7 +45,8 @@ class RewardStoreFactory(
         Unit,
         RewardStore.State,
         Msg,
-        RewardStore.Label>() {
+        RewardStore.Label,
+        >() {
 
         override fun executeIntent(intent: RewardStore.Intent) {
             when (intent) {
@@ -53,7 +56,23 @@ class RewardStoreFactory(
                     scope.launch {
                         when (val result = repository.getRewards()) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.GetRewardsSuccess(result.data.map { it.toDomain() }))
+                                dispatch(
+                                    Msg.GetRewardsSuccess(
+                                        result.data.map {
+                                            launch {
+                                                try {
+                                                    val bytes =
+                                                        assetRepository.getAsset(it.furnitureId, it.furnitureLink)
+                                                    dispatch(Msg.ImageLoaded(it.id, bytes))
+                                                } catch (e: Exception) {
+                                                    // pas d'image = pas bloquant, le reward reste affiché (placeholder côté UI)
+                                                }
+                                            }
+
+                                            it.toDomain()
+                                        },
+                                    ),
+                                )
                             }
 
                             is ApiResult.Error -> {
@@ -75,7 +94,17 @@ class RewardStoreFactory(
                     scope.launch {
                         when (val result = repository.getReward(intent.id)) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.GetRewardSuccess(result.data.toDomain()))
+                                val reward = result.data.toDomain()
+                                dispatch(Msg.GetRewardSuccess(reward))
+
+                                launch {
+                                    try {
+                                        val bytes = assetRepository.getAsset(reward.furnitureId, reward.furnitureLink)
+                                        dispatch(Msg.ImageLoaded(reward.id, bytes))
+                                    } catch (e: Exception) {
+                                        // pas d'image = pas bloquant, le reward reste affiché (placeholder côté UI)
+                                    }
+                                }
                             }
 
                             is ApiResult.Error -> {
@@ -97,7 +126,7 @@ class RewardStoreFactory(
                     scope.launch {
                         when (val result = repository.choseReward(intent.request)) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.ChooseRewardSuccess( result.data.toDomain()))
+                                dispatch(Msg.ChooseRewardSuccess(result.data.toDomain()))
                             }
 
                             is ApiResult.Error -> {
@@ -122,31 +151,33 @@ class RewardStoreFactory(
                 Msg.Loading ->
                     copy(
                         loading = true,
-                        error = null
+                        error = null,
                     )
 
                 is Msg.GetRewardsSuccess -> copy(
                     loading = false,
                     rewards = msg.rewards,
-                    error = null
+                    error = null,
                 )
 
                 is Msg.GetRewardSuccess -> copy(
                     loading = false,
                     rewards = if (rewards.any { it.id == msg.reward.id }) rewards.map { if (it.id == msg.reward.id) msg.reward else it } else rewards + msg.reward,
-                    error = null
+                    error = null,
                 )
 
                 is Msg.ChooseRewardSuccess -> copy(
                     loading = false,
                     rewards = if (rewards.any { it.id == msg.reward.id }) rewards.map { if (it.id == msg.reward.id) msg.reward else it } else rewards + msg.reward,
-                    error = null
+                    error = null,
                 )
+
+                is Msg.ImageLoaded -> copy(images = images + (msg.rewardId to msg.bytes))
 
                 is Msg.Error ->
                     copy(
                         loading = false,
-                        error = msg.message
+                        error = msg.message,
                     )
             }
     }
