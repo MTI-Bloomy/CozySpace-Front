@@ -41,6 +41,12 @@ suspend fun HttpClient.clearBearerCache() {
         ?.clearToken()
 }
 
+val AppJson = Json {
+    ignoreUnknownKeys = true
+    isLenient = true
+    encodeDefaults = true
+}
+
 fun createHttpClient(
     baseUrl: String,
     loadTokens: suspend () -> BearerTokens?,
@@ -51,11 +57,7 @@ fun createHttpClient(
         expectSuccess = false
 
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-                encodeDefaults = true
-            })
+            json(AppJson)
         }
 
         install(HttpTimeout) {
@@ -88,7 +90,7 @@ fun createHttpClient(
                     val bodyText = response.bodyAsText()
 
                     if (response.status.isSuccess()) {
-                        val dto = Json.decodeFromString<RefreshDto>(bodyText)
+                        val dto = AppJson.decodeFromString<RefreshDto>(bodyText)
                         val newToken = Token(
                             idToken = dto.idToken,
                             refreshToken = dto.refreshToken ?: refreshToken

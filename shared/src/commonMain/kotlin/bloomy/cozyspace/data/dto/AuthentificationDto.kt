@@ -22,13 +22,13 @@ data class UserMetadataDto(
 
 @Serializable
 data class RegisterDto(
-    val displayName: String,
+    val displayName: String?,
     val email: String,
     val emailVerified: Boolean,
     val phoneNumber: String?,
     val photoUrl: String?,
     val providerData: List<ProviderDataDto>,
-    val tokenValidAfterTimestamp: Long,
+    val tokenValidAfterTimestamp: Long? = null,
     val uid: String,
     val userMetadata: UserMetadataDto
 )

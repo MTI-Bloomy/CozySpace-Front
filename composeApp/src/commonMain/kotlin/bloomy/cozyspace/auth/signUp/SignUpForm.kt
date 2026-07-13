@@ -291,8 +291,8 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     stores.user.accept(
                         UserStore.Intent.Register(
                             RegisterRequestDto(
-                                email = "user@example.com",
-                                password = "password"
+                                email = email,
+                                password = password,
                             )
                     ))
                 },
