@@ -1,7 +1,7 @@
 package bloomy.cozyspace.store
 
-import bloomy.cozyspace.data.LoginRequestDto
-import bloomy.cozyspace.data.RegisterRequestDto
+import bloomy.cozyspace.data.dto.LoginRequestDto
+import bloomy.cozyspace.data.dto.RegisterRequestDto
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.domain.Token
 import com.arkivanov.mvikotlin.core.store.Store

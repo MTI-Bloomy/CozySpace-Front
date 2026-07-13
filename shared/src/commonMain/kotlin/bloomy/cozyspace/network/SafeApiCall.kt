@@ -1,11 +1,10 @@
 package bloomy.cozyspace.network
 
-import bloomy.cozyspace.data.ErrorDto
+import bloomy.cozyspace.data.dto.ErrorDto
 import bloomy.cozyspace.interfaces.ApiResult
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
-import kotlinx.serialization.json.Json
 
 suspend inline fun <reified T> safeApiCall(
     crossinline block: suspend () -> HttpResponse
@@ -21,7 +20,7 @@ suspend inline fun <reified T> safeApiCall(
                     ApiResult.Empty
                 } else {
                     ApiResult.Success(
-                        Json.decodeFromString<T>(body)
+                        AppJson.decodeFromString<T>(body)
                     )
                 }
             }
@@ -30,7 +29,7 @@ suspend inline fun <reified T> safeApiCall(
                 val errorBody = response.bodyAsText()
 
                 val message = runCatching {
-                    Json.decodeFromString<ErrorDto>(errorBody).message
+                    AppJson.decodeFromString<ErrorDto>(errorBody).message
                 }.getOrElse {
                     errorBody.ifBlank { "Unknown server error" }
                 }

@@ -39,6 +39,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -48,18 +49,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.cache.UserCache
+import bloomy.cozyspace.cache.createAssetStorage
 import bloomy.cozyspace.cache.createUserStorage
+import bloomy.cozyspace.config.Environment
+import bloomy.cozyspace.data.AssetRepository
 import bloomy.cozyspace.data.AuthentificationRepository
+import bloomy.cozyspace.data.HouseRepository
+import bloomy.cozyspace.data.RewardRepository
+import bloomy.cozyspace.data.RoomRepository
+import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.navigation.NavGraph
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.network.ApiService
+import bloomy.cozyspace.network.clearBearerCache
 import bloomy.cozyspace.network.createHttpClient
+import bloomy.cozyspace.store.HouseStore
+import bloomy.cozyspace.store.HouseStoreFactory
+import bloomy.cozyspace.store.RewardStore
+import bloomy.cozyspace.store.RewardStoreFactory
+import bloomy.cozyspace.store.RoomStore
+import bloomy.cozyspace.store.RoomStoreFactory
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.store.UserStoreFactory
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.utils.LoadingScreen
 import com.arkivanov.mvikotlin.core.rx.observer
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
@@ -133,25 +151,85 @@ fun App() {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val storage = remember { createUserStorage() }
+    val assetStorage = remember { createAssetStorage() }
+    val forcedLogout = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
+
+    val httpClient = remember {
+        createHttpClient(
+            baseUrl = Environment.API_URL,
+            loadTokens = {
+                storage.get()?.token
+                    ?.takeIf { it.idToken.isNotBlank() }
+                    ?.let { BearerTokens(it.idToken, it.refreshToken) }
+            },
+            onTokensRefreshed = { newToken ->
+                val cache = storage.get()
+                storage.save(
+                    UserCache(token = newToken, user = cache?.user ?: User("", "", "", null))
+                )
+            },
+            onRefreshFailed = {
+                storage.clear()
+                forcedLogout.tryEmit(Unit)
+            }
+        )
+    }
+
     val userStore by produceState<UserStore?>(initialValue = null) {
         value = UserStoreFactory(
-            repository = AuthentificationRepository(
-                ApiService(createHttpClient())
-            ),
-            storage = createUserStorage()
+            repository = AuthentificationRepository(ApiService(httpClient)),
+            storage = storage,
+            onAuthStateChanged = { httpClient.clearBearerCache() }
         ).create().also { it.init() }
     }
 
-    if (userStore == null) {
+    val rewardStore by produceState<RewardStore?>(initialValue = null) {
+        value = RewardStoreFactory(
+            repository = RewardRepository(ApiService(httpClient)),
+            assetRepository = AssetRepository(httpClient, assetStorage),
+        ).create().also { it.init() }
+    }
+
+    val roomStore by produceState<RoomStore?>(initialValue = null) {
+        value = RoomStoreFactory(
+            repository = RoomRepository(ApiService(httpClient)),
+        ).create().also { it.init() }
+    }
+
+    val houseStore by produceState<HouseStore?>(initialValue = null) {
+        value = HouseStoreFactory(
+            repository = HouseRepository(ApiService(httpClient)),
+        ).create().also { it.init() }
+    }
+
+    if (
+        userStore == null ||
+        rewardStore == null ||
+        roomStore == null ||
+        houseStore == null
+    ) {
         LoadingScreen()
         return
     }
 
     val uStore = userStore!!
+    val reStore = rewardStore!!
+    val roStore = roomStore!!
+    val hStore = houseStore!!
 
     val stores = Stores(
-        uStore
+        uStore,
+        reStore,
+        roStore,
+        hStore,
     )
+
+    LaunchedEffect(uStore) {
+        forcedLogout.collect {
+            uStore.accept(UserStore.Intent.Logout)
+        }
+    }
 
     val scope = rememberCoroutineScope()
 

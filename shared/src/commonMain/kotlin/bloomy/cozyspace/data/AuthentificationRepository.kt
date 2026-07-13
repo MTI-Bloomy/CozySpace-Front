@@ -1,5 +1,9 @@
 package bloomy.cozyspace.data
 
+import bloomy.cozyspace.data.dto.LoginDto
+import bloomy.cozyspace.data.dto.LoginRequestDto
+import bloomy.cozyspace.data.dto.RegisterDto
+import bloomy.cozyspace.data.dto.RegisterRequestDto
 import bloomy.cozyspace.interfaces.ApiResult
 import bloomy.cozyspace.network.ApiService
 

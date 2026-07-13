@@ -1,5 +1,6 @@
-package bloomy.cozyspace.data
+package bloomy.cozyspace.data.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,13 +22,13 @@ data class UserMetadataDto(
 
 @Serializable
 data class RegisterDto(
-    val displayName: String,
+    val displayName: String?,
     val email: String,
     val emailVerified: Boolean,
     val phoneNumber: String?,
     val photoUrl: String?,
     val providerData: List<ProviderDataDto>,
-    val tokenValidAfterTimestamp: Long,
+    val tokenValidAfterTimestamp: Long? = null,
     val uid: String,
     val userMetadata: UserMetadataDto
 )
@@ -49,4 +50,16 @@ data class LoginRequestDto(
     val email: String,
     val password: String,
     val returnSecureToken: Boolean = true
+)
+
+@Serializable
+data class RefreshDto(
+    @SerialName("id_token") val idToken: String,
+    @SerialName("refresh_token") val refreshToken: String? = null
+)
+
+@Serializable
+data class RefreshRequestDto(
+    @SerialName("grant_type") val grantType: String = "refresh_token",
+    @SerialName("refresh_token") val refreshToken: String
 )
