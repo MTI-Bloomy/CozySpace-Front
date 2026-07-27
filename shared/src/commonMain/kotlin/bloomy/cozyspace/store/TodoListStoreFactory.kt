@@ -34,6 +34,7 @@ class TodoListStoreFactory(
         data class GetTodoListSuccess(val todoList: List<Todo>) : Msg
         data class CreateTodoSuccess(val todo: Todo) : Msg
         data class CompleteTodoSuccess(val initId: String) : Msg
+        data class ModifyTodoSuccess(val initId: String) : Msg
         data class Error(val message: String) : Msg
     }
 
@@ -112,6 +113,28 @@ class TodoListStoreFactory(
                         }
                     }
                 }
+
+                is TodoListStore.Intent.ModifyTodo -> {
+                    dispatch(Msg.Loading)
+
+                    scope.launch {
+                        when (val result = repository.modifyTodo(intent.todoId)) {
+                            is ApiResult.Success -> {
+                                dispatch(Msg.ModifyTodoSuccess(intent.todoId))
+                            }
+
+                            is ApiResult.Error -> {
+                                dispatch(Msg.Error(result.message))
+                                publish(TodoListStore.Label.ShowError(result.message))
+                            }
+
+                            ApiResult.Empty -> {
+                                dispatch(Msg.Error("Empty response from server"))
+                                publish(TodoListStore.Label.ShowError("Empty response from server"))
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -139,6 +162,12 @@ class TodoListStoreFactory(
                 is Msg.CompleteTodoSuccess -> copy(
                     loading = false,
                     todoList = todoList.filter { it.id != msg.initId },
+                    error = null
+                )
+
+                is Msg.ModifyTodoSuccess -> copy(
+                    loading = false,
+                    todoList = msg, //TODO
                     error = null
                 )
 

@@ -19,4 +19,8 @@ class TodoListRepository(
     suspend fun completeTodo(todoId: String): ApiResult<TodoDto> {
         return api.completeTodo(todoId)
     }
+
+    suspend fun modifyTodo(todoId: String): ApiResult<TodoDto> {
+        return api.modifyTodo(todoId)
+    }
 }

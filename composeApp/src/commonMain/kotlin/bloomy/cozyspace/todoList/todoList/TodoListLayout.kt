@@ -27,7 +27,6 @@ import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.component.AddTodoButton
 import bloomy.cozyspace.todoList.component.NewTodoItem
-import bloomy.cozyspace.todoList.component.TodoDoneItem
 import bloomy.cozyspace.todoList.component.TodoItem
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Frequency
@@ -103,7 +102,7 @@ fun TodoListLayout(
                 AddTodoButton(
                     isActive = showNewItem,
                     modifier = Modifier.align(Alignment.BottomEnd),
-                    onClick = { showNewItem = true },
+                    onClick = { showNewItem = !showNewItem },
                 )
             }
         }
@@ -159,7 +158,7 @@ fun TodoListLayout(
                 AddTodoButton(
                     isActive = showNewItem,
                     modifier = Modifier.align(Alignment.BottomEnd),
-                    onClick = { showNewItem = true },
+                    onClick = { showNewItem = !showNewItem },
                 )
             }
         }

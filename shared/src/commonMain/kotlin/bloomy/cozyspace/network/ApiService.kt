@@ -76,6 +76,10 @@ class ApiService(
         client.put("${Environment.API_URL}/todoList/$id/complete")
     }
 
+    suspend fun modifyTodo(id: String): ApiResult<TodoDto> = safeApiCall {
+        client.put("${Environment.API_URL}/todoList/$id")
+    }
+
     // Todo Done
     suspend fun getTodoDone(): ApiResult<List<TodoDto>> = safeApiCall {
         client.get("${Environment.API_URL}/todoDone")

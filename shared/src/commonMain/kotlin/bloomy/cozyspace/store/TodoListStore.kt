@@ -9,6 +9,7 @@ interface TodoListStore : Store<TodoListStore.Intent, TodoListStore.State, TodoL
         data object GetTodoList : Intent
         data class CreateTodo(val todo: TodoRequestDto) : Intent
         data class CompleteTodo(val todoId: String) : Intent
+        data class ModifyTodo(val todoId: String) : Intent
     }
 
     sealed interface Label {
