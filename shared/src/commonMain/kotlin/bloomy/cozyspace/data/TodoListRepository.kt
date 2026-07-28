@@ -20,7 +20,11 @@ class TodoListRepository(
         return api.completeTodo(todoId)
     }
 
-    suspend fun modifyTodo(todoId: String): ApiResult<TodoDto> {
-        return api.modifyTodo(todoId)
+    suspend fun modifyTodo(todoId: String, todo: TodoRequestDto): ApiResult<TodoDto> {
+        return api.modifyTodo(todoId, todo)
+    }
+
+    suspend fun deleteTodo(todoId: String): ApiResult<TodoDto> {
+        return api.deleteTodo(todoId)
     }
 }
