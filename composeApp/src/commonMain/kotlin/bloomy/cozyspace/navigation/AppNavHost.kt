@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.home.HomeMain
 import bloomy.cozyspace.navigation.screenRoutes.Home
 import bloomy.cozyspace.navigation.screenRoutes.NavDestination
@@ -30,6 +31,7 @@ fun navIcon(destination: NavDestination): Painter {
 fun AppNavHost(
     navController: NavHostController,
     stores: Stores,
+    storages: Storages,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -42,7 +44,7 @@ fun AppNavHost(
         }
 
         composable<Home> {
-            HomeMain(stores)
+            HomeMain(stores, storages)
         }
 
         composable<Todo> {

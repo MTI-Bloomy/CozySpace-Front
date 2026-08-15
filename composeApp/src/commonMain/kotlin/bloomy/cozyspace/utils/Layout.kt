@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.navigation.AppNavHost
 import bloomy.cozyspace.navigation.DesktopNavBar
 import bloomy.cozyspace.navigation.MobileNavBar
@@ -26,6 +27,7 @@ import bloomy.cozyspace.store.Stores
 fun MobileLayout(
     navController: NavHostController,
     stores: Stores,
+    storages: Storages,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
@@ -43,6 +45,7 @@ fun MobileLayout(
         AppNavHost(
             navController = navController,
             stores = stores,
+            storages = storages,
             modifier = Modifier.padding(padding)
         )
     }
@@ -53,6 +56,7 @@ fun MobileLayout(
 fun DesktopLayout(
     navController: NavHostController,
     stores: Stores,
+    storages: Storages,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
@@ -79,6 +83,7 @@ fun DesktopLayout(
             AppNavHost(
                 navController = navController,
                 stores = stores,
+                storages = storages,
                 modifier = Modifier.padding(padding)
             )
         }

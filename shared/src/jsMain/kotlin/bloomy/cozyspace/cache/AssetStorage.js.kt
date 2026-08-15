@@ -1,37 +1,11 @@
 package bloomy.cozyspace.cache
 
-import kotlinx.browser.localStorage
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import kotlinx.coroutines.suspendCancellableCoroutine
+import okio.Path
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-
-actual fun createUserStorage(): UserStorage =
-    JsUserStorage()
-
-class JsUserStorage : UserStorage {
-
-    override suspend fun save(cache: UserCache) {
-        localStorage.setItem(
-            "user_cache",
-            Json.encodeToString(cache)
-        )
-    }
-
-    override suspend fun get(): UserCache? {
-        val json = localStorage.getItem("user_cache")
-            ?: return null
-
-        return Json.decodeFromString(json)
-    }
-
-    override suspend fun clear() {
-        localStorage.removeItem("user_cache")
-    }
-}
 
 external val indexedDB: dynamic
 
@@ -95,5 +69,9 @@ class JsAssetStorage : AssetStorage {
             request.onsuccess = { _: dynamic -> cont.resume(Unit); Unit }
             request.onerror = { _: dynamic -> cont.resumeWithException(Exception("Clear échoué")); Unit }
         }
+    }
+
+    override fun path(key: String): Path {
+        TODO("Not yet implemented. Note: it seems that it's not possible to return a path")
     }
 }

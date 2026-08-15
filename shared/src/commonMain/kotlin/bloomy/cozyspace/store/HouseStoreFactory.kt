@@ -1,5 +1,7 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.HouseCache
+import bloomy.cozyspace.cache.HouseStorage
 import bloomy.cozyspace.data.HouseRepository
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.House
@@ -13,11 +15,15 @@ import kotlinx.coroutines.launch
 
 class HouseStoreFactory(
     private val repository: HouseRepository,
+    private val storage: HouseStorage,
     private val storeFactory: StoreFactory = DefaultStoreFactory()
 ) {
     suspend fun create(): HouseStore {
+        val cache = storage.get()
+
         val initialState = HouseStore.State(
-            savedHouses = emptyList()
+            house = cache?.house ?: null,
+            savedHouses = cache?.savedHouses ?: emptyList()
         )
 
         return object : HouseStore,
@@ -51,7 +57,16 @@ class HouseStoreFactory(
                     scope.launch {
                         when (val result = repository.getHouse()) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.GetHouseSuccess(result.data.map { it.toDomain() }))
+                                val houses = result.data.map { it.toDomain() }
+
+                                dispatch(Msg.GetHouseSuccess(houses))
+
+                                storage.save(
+                                    HouseCache(
+                                        house = houses.find { it.saveDate == null },
+                                        savedHouses = houses.filter { it.saveDate != null }
+                                    )
+                                )
                             }
 
                             is ApiResult.Error -> {

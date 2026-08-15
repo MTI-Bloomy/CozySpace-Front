@@ -145,5 +145,5 @@ Thumbs.db
 Environment.*.kt
 !shared/src/commonMain/kotlin/bloomy/cozyspace/config/Environment.kt
 
-user_cache.json
+app_cache.json
 assets_cache

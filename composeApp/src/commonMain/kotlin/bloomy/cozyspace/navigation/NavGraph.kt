@@ -7,11 +7,12 @@ import androidx.navigation.compose.composable
 import bloomy.cozyspace.MainApp
 import bloomy.cozyspace.auth.signIn.SignInScreen
 import bloomy.cozyspace.auth.signUp.SignUpScreen
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.store.Stores
 
 @Composable
-fun NavGraph (navController: NavHostController, stores: Stores) {
+fun NavGraph (navController: NavHostController, stores: Stores, storages: Storages) {
 
     val startDestination = if(stores.user.state.token.idToken == "") Screen.SignIn.route else Screen.Main.route
 
@@ -22,7 +23,7 @@ fun NavGraph (navController: NavHostController, stores: Stores) {
         composable(Screen.SignIn.route) {
             SignInScreen(
                 navController = navController,
-                stores = stores
+                stores = stores,
             )
         }
 
@@ -35,7 +36,8 @@ fun NavGraph (navController: NavHostController, stores: Stores) {
 
         composable(Screen.Main.route) {
             MainApp(
-                stores = stores
+                stores = stores,
+                storages = storages
             )
         }
     }

@@ -20,7 +20,6 @@ interface RewardStore : Store<RewardStore.Intent, RewardStore.State, RewardStore
     data class State(
         val loading: Boolean = false,
         val rewards: List<Reward> = emptyList(),
-        val images: Map<String, ByteArray> = emptyMap(),
         val error: String? = null,
     )
 }

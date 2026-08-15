@@ -38,6 +38,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
+            api(libs.coil)
 
             // kotlinx.serialization
             api(libs.kotlinx.serialization.json)

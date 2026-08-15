@@ -1,33 +1,21 @@
 package bloomy.cozyspace.cache
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import platform.Foundation.NSUserDefaults
-import kotlinx.cinterop.*
-import platform.Foundation.*
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.allocArrayOf
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.usePinned
+import okio.Path
+import okio.Path.Companion.toPath
+import platform.Foundation.NSApplicationSupportDirectory
+import platform.Foundation.NSData
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSUserDomainMask
+import platform.Foundation.create
+import platform.Foundation.dataWithContentsOfFile
+import platform.Foundation.writeToFile
 import platform.posix.memcpy
-
-class IOSUserStorage : UserStorage {
-
-    private val defaults = NSUserDefaults.standardUserDefaults
-
-    override suspend fun save(cache: UserCache) {
-        val json = Json.encodeToString(cache)
-        defaults.setObject(json, "user_cache")
-    }
-
-    override suspend fun get(): UserCache? {
-        val json = defaults.stringForKey("user_cache") ?: return null
-        return Json.decodeFromString(json)
-    }
-
-    override suspend fun clear() {
-        defaults.removeObjectForKey("user_cache")
-    }
-}
-
-actual fun createUserStorage(): UserStorage =
-    IOSUserStorage()
 
 actual fun createAssetStorage(): AssetStorage = IosAssetStorage()
 
@@ -67,6 +55,8 @@ class IosAssetStorage : AssetStorage {
             NSFileManager.defaultManager.removeItemAtPath("$dirPath/$it", null)
         }
     }
+
+    override fun path(key: String): Path = "$dirPath/$key".toPath()
 }
 
 @OptIn(ExperimentalForeignApi::class)

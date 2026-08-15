@@ -1,5 +1,7 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.RewardCache
+import bloomy.cozyspace.cache.RewardStorage
 import bloomy.cozyspace.data.AssetRepository
 import bloomy.cozyspace.data.RewardRepository
 import bloomy.cozyspace.data.dto.toDomain
@@ -14,12 +16,15 @@ import kotlinx.coroutines.launch
 
 class RewardStoreFactory(
     private val repository: RewardRepository,
+    private val storage: RewardStorage,
     private val assetRepository: AssetRepository,
     private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): RewardStore {
+        val cache = storage.get()
+
         val initialState = RewardStore.State(
-            rewards = emptyList(),
+            rewards = cache?.rewards ?: emptyList(),
         )
 
         return object : RewardStore,
@@ -36,7 +41,6 @@ class RewardStoreFactory(
         data class GetRewardsSuccess(val rewards: List<Reward>) : Msg
         data class GetRewardSuccess(val reward: Reward) : Msg
         data class ChooseRewardSuccess(val reward: Reward) : Msg
-        data class ImageLoaded(val rewardId: String, val bytes: ByteArray) : Msg
         data class Error(val message: String) : Msg
     }
 
@@ -56,23 +60,21 @@ class RewardStoreFactory(
                     scope.launch {
                         when (val result = repository.getRewards()) {
                             is ApiResult.Success -> {
-                                dispatch(
-                                    Msg.GetRewardsSuccess(
-                                        result.data.map {
-                                            launch {
-                                                try {
-                                                    val bytes =
-                                                        assetRepository.getAsset(it.furnitureId, it.furnitureLink)
-                                                    dispatch(Msg.ImageLoaded(it.id, bytes))
-                                                } catch (e: Exception) {
-                                                    // pas d'image = pas bloquant, le reward reste affiché (placeholder côté UI)
-                                                }
-                                            }
+                                val rewards = result.data.map {
+                                    launch {
+                                        try {
+                                            assetRepository.getAsset(it.furnitureId, it.furnitureLink)
+                                        } catch (e: Exception) {
+                                            // TODO: To handle, but not necessary for now
+                                        }
+                                    }
 
-                                            it.toDomain()
-                                        },
-                                    ),
-                                )
+                                    it.toDomain()
+                                }
+
+                                storage.save(RewardCache(rewards))
+
+                                dispatch(Msg.GetRewardsSuccess(rewards))
                             }
 
                             is ApiResult.Error -> {
@@ -95,14 +97,26 @@ class RewardStoreFactory(
                         when (val result = repository.getReward(intent.id)) {
                             is ApiResult.Success -> {
                                 val reward = result.data.toDomain()
+
+                                val cache = storage.get()
+
+                                storage.save(
+                                    if (cache?.rewards.isNullOrEmpty()) {
+                                        RewardCache(listOf(reward))
+                                    } else {
+                                        RewardCache(
+                                            if (cache.rewards.any { it.id == reward.id }) cache.rewards.map { if (it.id == reward.id) reward else it } else cache.rewards + reward
+                                        )
+                                    }
+                                )
+
                                 dispatch(Msg.GetRewardSuccess(reward))
 
                                 launch {
                                     try {
-                                        val bytes = assetRepository.getAsset(reward.furnitureId, reward.furnitureLink)
-                                        dispatch(Msg.ImageLoaded(reward.id, bytes))
+                                        assetRepository.getAsset(reward.furnitureId, reward.furnitureLink)
                                     } catch (e: Exception) {
-                                        // pas d'image = pas bloquant, le reward reste affiché (placeholder côté UI)
+                                        // TODO: To handle, but not necessary for now
                                     }
                                 }
                             }
@@ -126,7 +140,21 @@ class RewardStoreFactory(
                     scope.launch {
                         when (val result = repository.chooseReward(intent.request)) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.ChooseRewardSuccess(result.data.toDomain()))
+                                val reward = result.data.toDomain()
+
+                                val cache = storage.get()
+
+                                storage.save(
+                                    if (cache?.rewards.isNullOrEmpty()) {
+                                        RewardCache(listOf(reward))
+                                    } else {
+                                        RewardCache(
+                                            if (cache.rewards.any { it.id == reward.id }) cache.rewards.map { if (it.id == reward.id) reward else it } else cache.rewards + reward
+                                        )
+                                    }
+                                )
+
+                                dispatch(Msg.ChooseRewardSuccess(reward))
                             }
 
                             is ApiResult.Error -> {
@@ -171,8 +199,6 @@ class RewardStoreFactory(
                     rewards = if (rewards.any { it.id == msg.reward.id }) rewards.map { if (it.id == msg.reward.id) msg.reward else it } else rewards + msg.reward,
                     error = null,
                 )
-
-                is Msg.ImageLoaded -> copy(images = images + (msg.rewardId to msg.bytes))
 
                 is Msg.Error ->
                     copy(

@@ -49,9 +49,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.cache.HouseStorage
+import bloomy.cozyspace.cache.RewardStorage
+import bloomy.cozyspace.cache.RoomStorage
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.UserCache
+import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.cache.createAssetStorage
-import bloomy.cozyspace.cache.createUserStorage
+import bloomy.cozyspace.cache.createKeyValueStore
 import bloomy.cozyspace.config.Environment
 import bloomy.cozyspace.data.AssetRepository
 import bloomy.cozyspace.data.AuthentificationRepository
@@ -151,26 +156,41 @@ fun App() {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val storage = remember { createUserStorage() }
-    val assetStorage = remember { createAssetStorage() }
+    val keyValueStore = createKeyValueStore()
+    val assetStorage = createAssetStorage()
+
+    val userStorage = UserStorage(keyValueStore)
+    val houseStorage = HouseStorage(keyValueStore)
+    val roomStorage = RoomStorage(keyValueStore)
+    val rewardStorage = RewardStorage(keyValueStore)
+
+    val storages = Storages(
+        assetStorage,
+        keyValueStore,
+        userStorage,
+        houseStorage,
+        roomStorage,
+        rewardStorage,
+    )
+
     val forcedLogout = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
 
     val httpClient = remember {
         createHttpClient(
             baseUrl = Environment.API_URL,
             loadTokens = {
-                storage.get()?.token
+                userStorage.get()?.token
                     ?.takeIf { it.idToken.isNotBlank() }
                     ?.let { BearerTokens(it.idToken, it.refreshToken) }
             },
             onTokensRefreshed = { newToken ->
-                val cache = storage.get()
-                storage.save(
+                val cache = userStorage.get()
+                userStorage.save(
                     UserCache(token = newToken, user = cache?.user ?: User("", "", "", null))
                 )
             },
             onRefreshFailed = {
-                storage.clear()
+                userStorage.clear()
                 forcedLogout.tryEmit(Unit)
             }
         )
@@ -179,7 +199,7 @@ fun App() {
     val userStore by produceState<UserStore?>(initialValue = null) {
         value = UserStoreFactory(
             repository = AuthentificationRepository(ApiService(httpClient)),
-            storage = storage,
+            storage = userStorage,
             onAuthStateChanged = { httpClient.clearBearerCache() }
         ).create().also { it.init() }
     }
@@ -187,6 +207,7 @@ fun App() {
     val rewardStore by produceState<RewardStore?>(initialValue = null) {
         value = RewardStoreFactory(
             repository = RewardRepository(ApiService(httpClient)),
+            storage = rewardStorage,
             assetRepository = AssetRepository(httpClient, assetStorage),
         ).create().also { it.init() }
     }
@@ -194,12 +215,14 @@ fun App() {
     val roomStore by produceState<RoomStore?>(initialValue = null) {
         value = RoomStoreFactory(
             repository = RoomRepository(ApiService(httpClient)),
+            storage = roomStorage,
         ).create().also { it.init() }
     }
 
     val houseStore by produceState<HouseStore?>(initialValue = null) {
         value = HouseStoreFactory(
             repository = HouseRepository(ApiService(httpClient)),
+            storage = houseStorage,
         ).create().also { it.init() }
     }
 
@@ -282,7 +305,8 @@ fun App() {
 
         NavGraph(
             navController = navController,
-            stores = stores
+            stores = stores,
+            storages = storages
         )
 
         SnackbarHost(

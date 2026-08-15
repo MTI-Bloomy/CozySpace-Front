@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.navigation.screenRoutes.NavDestination
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.utils.DesktopLayout
@@ -15,7 +16,7 @@ import bloomy.cozyspace.utils.MobileLayout
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun MainApp(stores: Stores) {
+fun MainApp(stores: Stores, storages: Storages) {
     BoxWithConstraints {
 
         val isLargeScreen = maxWidth > 600.dp
@@ -43,6 +44,7 @@ fun MainApp(stores: Stores) {
             DesktopLayout(
                 navController = navController,
                 stores = stores,
+                storages = storages,
                 selectedIndex = selectedIndex,
                 onItemSelected = onItemSelected
             )
@@ -50,6 +52,7 @@ fun MainApp(stores: Stores) {
             MobileLayout(
                 navController = navController,
                 stores = stores,
+                storages = storages,
                 selectedIndex = selectedIndex,
                 onItemSelected = onItemSelected
             )

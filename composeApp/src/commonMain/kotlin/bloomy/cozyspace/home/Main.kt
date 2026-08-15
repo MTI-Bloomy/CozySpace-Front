@@ -18,6 +18,7 @@ import bloomy.cozyspace.utils.observeState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.domain.RoomType
 import bloomy.cozyspace.home.components.RoomView
 import bloomy.cozyspace.store.HouseStore
@@ -31,7 +32,7 @@ import cozyspace.composeapp.generated.resources.logout
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun HomeMain(stores: Stores) {
+fun HomeMain(stores: Stores, storages: Storages) {
     val houseState = stores.house.observeState()
     val roomState = stores.room.observeState()
     val rewardState = stores.reward.observeState()
@@ -83,7 +84,7 @@ fun HomeMain(stores: Stores) {
                             reward.id,
                         )
                     },
-                    images = rewardState.images,
+                    storages = storages,
                 )
             } else {
                 LoadingScreen()
