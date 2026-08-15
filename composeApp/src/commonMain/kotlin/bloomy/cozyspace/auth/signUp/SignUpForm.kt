@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import bloomy.cozyspace.auth.component.PasswordStrengthBar
 import bloomy.cozyspace.data.dto.RegisterRequestDto
 import bloomy.cozyspace.navigation.screenRoutes.Screen
+import bloomy.cozyspace.store.HouseStore
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.theme.DarkGreen
@@ -295,6 +296,9 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                                 password = password,
                             )
                     ))
+                    stores.house.accept(
+                        HouseStore.Intent.CreateHouse("Default")
+                    )
                 },
                 enabled = isFormValid,
                 modifier = Modifier

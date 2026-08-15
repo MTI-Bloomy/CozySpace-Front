@@ -9,6 +9,7 @@ import bloomy.cozyspace.data.dto.RegisterDto
 import bloomy.cozyspace.data.dto.LoginDto
 import bloomy.cozyspace.data.dto.RewardDto
 import bloomy.cozyspace.data.dto.RoomDto
+import bloomy.cozyspace.data.dto.createHouseRequestDto
 import bloomy.cozyspace.interfaces.ApiResult
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
@@ -56,5 +57,12 @@ class ApiService(
 
     suspend fun getHouse(): ApiResult<List<HouseDto>> = safeApiCall {
         client.get("${Environment.API_URL}/house")
+    }
+
+    suspend fun createHouse(request: createHouseRequestDto): ApiResult<HouseDto> = safeApiCall {
+        client.post("${Environment.API_URL}/house") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
     }
 }

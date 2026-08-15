@@ -1,6 +1,7 @@
 package bloomy.cozyspace.store
 
 import bloomy.cozyspace.data.HouseRepository
+import bloomy.cozyspace.data.dto.createHouseRequestDto
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.House
 import bloomy.cozyspace.interfaces.ApiResult
@@ -32,6 +33,7 @@ class HouseStoreFactory(
     private sealed interface Msg {
         data object Loading : Msg
         data class GetHouseSuccess(val house: List<House>) : Msg
+        data class CreateHouseSuccess(val house: House) : Msg
         data class Error(val message: String) : Msg
     }
 
@@ -66,6 +68,28 @@ class HouseStoreFactory(
                         }
                     }
                 }
+
+                is HouseStore.Intent.CreateHouse -> {
+                    dispatch(Msg.Loading)
+
+                    scope.launch {
+                        when (val result = repository.createHouse(createHouseRequestDto(intent.name))) {
+                            is ApiResult.Success -> {
+                                dispatch(Msg.CreateHouseSuccess(result.data.toDomain()))
+                            }
+
+                            is ApiResult.Error -> {
+                                dispatch(Msg.Error(result.message))
+                                publish(HouseStore.Label.ShowError(result.message))
+                            }
+
+                            ApiResult.Empty -> {
+                                dispatch(Msg.Error("Empty response from server"))
+                                publish(HouseStore.Label.ShowError("Empty response from server"))
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -82,6 +106,12 @@ class HouseStoreFactory(
                     loading = false,
                     house = msg.house.find { it.saveDate == null },
                     savedHouses = msg.house.filter { it.saveDate != null },
+                    error = null
+                )
+
+                is Msg.CreateHouseSuccess -> copy(
+                    loading = false,
+                    house = msg.house,
                     error = null
                 )
 
