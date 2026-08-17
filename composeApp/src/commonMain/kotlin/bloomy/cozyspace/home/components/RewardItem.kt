@@ -10,20 +10,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.domain.Reward
+import bloomy.cozyspace.domain.RoomType
 import coil3.compose.AsyncImage
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.kitchen_base
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun RoomView(rewards: List<Reward>, storages: Storages) {
+fun RoomView(roomType: RoomType, rewards: List<Reward>, storages: Storages) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Room Background
+        val background = when (roomType) {
+            RoomType.GARDEN -> /* FIXME */ Res.drawable.kitchen_base
+            RoomType.WORK -> /* FIXME */ Res.drawable.kitchen_base
+            RoomType.BEDROOM -> /* FIXME */ Res.drawable.kitchen_base
+            RoomType.BATHROOM -> /* FIXME */ Res.drawable.kitchen_base
+            RoomType.KITCHEN -> Res.drawable.kitchen_base
+        }
         Image(
-            painter = painterResource(Res.drawable.kitchen_base),
+            painter = painterResource(background),
             contentDescription = "Room base",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Fit

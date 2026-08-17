@@ -1,14 +1,23 @@
 package bloomy.cozyspace.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +26,14 @@ import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.utils.observeState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.domain.RoomType
@@ -28,6 +45,7 @@ import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.utils.LoadingScreen
 import cozyspace.composeapp.generated.resources.Res
+import cozyspace.composeapp.generated.resources.arrow_forward
 import cozyspace.composeapp.generated.resources.logout
 import org.jetbrains.compose.resources.painterResource
 
@@ -47,6 +65,34 @@ fun HomeMain(stores: Stores, storages: Storages) {
             stores.room.accept(RoomStore.Intent.GetRooms(houseState.house!!.id))
         }
     }
+
+    // Room actuellement affichée, trackée par id
+    var currentRoomId by remember { mutableStateOf<String?>(null) }
+
+    // Direction de la dernière navigation : 1 = suivant (slide vers la gauche), -1 = précédent (slide vers la droite)
+    var navigationDirection by remember { mutableIntStateOf(1) }
+
+    LaunchedEffect(roomState.rooms) {
+        if (roomState.rooms.none { it.id == currentRoomId }) {
+            currentRoomId = roomState.rooms.firstOrNull()?.id
+        }
+    }
+
+    val currentRoomIndex = roomState.rooms.indexOfFirst { it.id == currentRoomId }
+    val currentRoom = roomState.rooms.getOrNull(currentRoomIndex)
+
+    fun goToRoom(offset: Int) {
+        if (roomState.rooms.isEmpty() || currentRoomIndex == -1) return
+        navigationDirection = offset
+        val newIndex = (currentRoomIndex + offset).mod(roomState.rooms.size)
+        currentRoomId = roomState.rooms[newIndex].id
+    }
+
+    fun goToPreviousRoom() = goToRoom(-1)
+    fun goToNextRoom() = goToRoom(1)
+
+    val density = LocalDensity.current
+    val swipeThresholdPx = remember(density) { with(density) { 80.dp.toPx() } }
 
     Scaffold(
         topBar = {
@@ -76,16 +122,73 @@ fun HomeMain(stores: Stores, storages: Storages) {
             modifier = Modifier.fillMaxSize().background(WhiteBackground).padding(padding),
             contentAlignment = Alignment.Center,
         ) {
-            // FIXME: when switch room feature implemented, use id of current room to find them instead of hardcode type
-            if (roomState.rooms.isNotEmpty()) {
-                RoomView(
-                    rewards = rewardState.rewards.filter { reward ->
-                        roomState.rooms.filter { room -> room.type == RoomType.KITCHEN }[0].furniture.contains(
-                            reward.id,
+            if (currentRoom != null) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = { goToPreviousRoom() }) {
+                        Icon(
+                            painter = painterResource(Res.drawable.arrow_forward),
+                            contentDescription = "Room précédente",
+                            modifier = Modifier
+                                .size(36.dp)
+                                .graphicsLayer { scaleX = -1f }, // flip pour pointer à gauche
+                            tint = DarkGreen,
                         )
-                    },
-                    storages = storages,
-                )
+                    }
+
+                    AnimatedContent(
+                        targetState = currentRoomId,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .pointerInput(currentRoomId) {
+                                var totalDrag = 0f
+                                detectHorizontalDragGestures(
+                                    onDragEnd = {
+                                        when {
+                                            totalDrag > swipeThresholdPx -> goToPreviousRoom()
+                                            totalDrag < -swipeThresholdPx -> goToNextRoom()
+                                        }
+                                        totalDrag = 0f
+                                    },
+                                ) { change, dragAmount ->
+                                    change.consume()
+                                    totalDrag += dragAmount
+                                }
+                            },
+                        contentAlignment = Alignment.Center,
+                        transitionSpec = {
+                            val direction = if (navigationDirection >= 0) {
+                                AnimatedContentTransitionScope.SlideDirection.Left
+                            } else {
+                                AnimatedContentTransitionScope.SlideDirection.Right
+                            }
+                            slideIntoContainer(direction, animationSpec = tween(300)) togetherWith
+                                slideOutOfContainer(direction, animationSpec = tween(300))
+                        },
+                        label = "room_transition",
+                    ) { targetRoomId ->
+                        val room = roomState.rooms.firstOrNull { it.id == targetRoomId }
+                        if (room != null) {
+                            RoomView(
+                                roomType = room.type,
+                                rewards = rewardState.rewards.filter { reward -> room.furniture.contains(reward.id) },
+                                storages = storages,
+                            )
+                        }
+                    }
+
+                    IconButton(onClick = { goToNextRoom() }) {
+                        Icon(
+                            painter = painterResource(Res.drawable.arrow_forward),
+                            contentDescription = "Room suivante",
+                            modifier = Modifier.size(36.dp),
+                            tint = DarkGreen,
+                        )
+                    }
+                }
             } else {
                 LoadingScreen()
             }
