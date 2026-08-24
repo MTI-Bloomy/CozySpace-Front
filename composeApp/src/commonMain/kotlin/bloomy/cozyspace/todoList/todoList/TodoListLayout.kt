@@ -41,6 +41,8 @@ fun TodoListLayout(
     selectedCategory: Category?,
     onTaskChecked: (String) -> Unit,
     onTaskCreated: (String, Category, Frequency, Instant) -> Unit,
+    onTaskModified: (String, String, Category, Frequency, Instant) -> Unit,
+    onTaskDeleted: (String) -> Unit,
     header: @Composable () -> Unit,
 ) {
     var showNewItem by remember { mutableStateOf(false) }
@@ -79,13 +81,6 @@ fun TodoListLayout(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
-                    items(filteredTasks) { task ->
-                        TodoItem(
-                                task,
-                                onTaskChecked = { onTaskChecked(task.id) },
-                            )
-                    }
-
                     if (showNewItem) {
                         item {
                             NewTodoItem(
@@ -96,6 +91,15 @@ fun TodoListLayout(
                                 },
                             )
                         }
+                    }
+
+                    items(filteredTasks) { task ->
+                        TodoItem(
+                                task,
+                                onTaskChecked = { onTaskChecked(task.id) },
+                                onTaskModified = onTaskModified,
+                                onTaskDeleted = onTaskDeleted
+                            )
                     }
                 }
 
@@ -135,13 +139,6 @@ fun TodoListLayout(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
-                    items(filteredTasks) { task ->
-                        TodoItem(
-                                task,
-                                onTaskChecked = { onTaskChecked(task.id) },
-                            )
-                    }
-
                     if (showNewItem) {
                         item {
                             NewTodoItem(
@@ -152,6 +149,15 @@ fun TodoListLayout(
                                 },
                             )
                         }
+                    }
+
+                    items(filteredTasks) { task ->
+                        TodoItem(
+                                task,
+                                onTaskChecked = { onTaskChecked(task.id) },
+                                onTaskModified = onTaskModified,
+                                onTaskDeleted = onTaskDeleted
+                            )
                     }
                 }
 

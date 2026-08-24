@@ -37,14 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.data.dto.TodoDto
 import bloomy.cozyspace.data.dto.toDomain
-import bloomy.cozyspace.domain.RoomType
-import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.popUp.TaskDetailPopup
+import bloomy.cozyspace.todoList.popUp.TaskDetailsPopup
 import bloomy.cozyspace.todoList.utils.Category
-import bloomy.cozyspace.todoList.utils.CategoryName
 import bloomy.cozyspace.todoList.utils.Frequency
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.todoItem_More
@@ -168,13 +165,14 @@ fun NewTodoItem(
         }
     }
 
-    if (showDetailPopup) {
-        TaskDetailPopup(
-            task = draftTask.toDomain(),
-            onDismiss = { showDetailPopup = false },
-            onDateTimeSelected = { newDate -> startDate = newDate },
-            onFrequencySelected = { newFrequency -> selectedFrequency = newFrequency },
-            onCategorySelected = { newCategory -> selectedCategory = newCategory }
-        )
-    }
+//    if (showDetailPopup) {
+//        TaskDetailsPopup(
+//            task = draftTask.toDomain(),
+//            onDismiss = { showDetailPopup = false },
+//            onNameChanged = { newName -> taskName = newName },
+//            onDateTimeSelected = { newDate -> startDate = newDate },
+//            onFrequencySelected = { newFrequency -> selectedFrequency = newFrequency },
+//            onCategorySelected = { newCategory -> selectedCategory = newCategory }
+//        )
+//    }
 }

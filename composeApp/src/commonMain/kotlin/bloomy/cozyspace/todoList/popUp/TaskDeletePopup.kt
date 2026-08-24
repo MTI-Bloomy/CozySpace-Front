@@ -20,13 +20,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,27 +33,14 @@ import androidx.compose.ui.window.DialogProperties
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.component.DateTimeDetails
-import bloomy.cozyspace.todoList.component.FrequencyDetails
-import bloomy.cozyspace.todoList.component.TodoName
 import bloomy.cozyspace.todoList.component.microComponent.LabelButton
-import bloomy.cozyspace.todoList.utils.Category
-import bloomy.cozyspace.todoList.utils.Frequency
-import kotlin.time.Instant
 
 @Composable
-fun TaskDetailsPopup(
+fun TaskDeletePopup(
     task: Todo,
     onDismiss: () -> Unit,
-    onNameChanged: (String) -> Unit,
-    onCategorySelected: (Category) -> Unit,
-    onFrequencySelected: (Frequency) -> Unit,
-    onDelete: (String) -> Unit,
     onConfirm: () -> Unit = onDismiss
 ) {
-    var currentName by remember(task.id) { mutableStateOf(task.name) }
-    val isNameValid = currentName.isNotBlank()
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -90,25 +73,13 @@ fun TaskDetailsPopup(
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     Text(
-                        text = "Details",
+                        text = "Are you sure you want to delete this task ?",
                         color = DarkGreen,
                         fontWeight = FontWeight.Bold,
                         fontSize = 32.sp,
                         maxLines = 1,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
-                    )
-
-                    TodoName(
-                        task = task,
-                        onNameChanged = onNameChanged,
-                        onCategorySelected = onCategorySelected,
-                        onDelete = onDelete
-                    )
-
-                    FrequencyDetails(
-                        task = task,
-                        onFrequencySelected = onFrequencySelected
                     )
 
                     Spacer(modifier = Modifier.height(6.dp))
@@ -128,13 +99,11 @@ fun TaskDetailsPopup(
                         Spacer(modifier = Modifier.width(12.dp))
 
                         LabelButton(
-                            text = "Confirm",
+                            text = "Delete",
                             contentColor = DarkGreen,
                             backgroundColor = WhiteBackground,
-                            modifier = Modifier
-                                .weight(1f)
-                                .alpha(if (isNameValid) 1f else 0.5f),
-                            onClick = { if (isNameValid) onConfirm() }
+                            modifier = Modifier.weight(1f),
+                            onClick = onConfirm
                         )
                     }
                 }

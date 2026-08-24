@@ -1,6 +1,5 @@
 package bloomy.cozyspace.data.dto
 
-import bloomy.cozyspace.domain.Reward
 import bloomy.cozyspace.domain.RoomType
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.utils.InstantSerializer

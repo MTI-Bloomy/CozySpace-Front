@@ -68,6 +68,22 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}, stores: Stores) {
         stores.todoList.accept(TodoListStore.Intent.CreateTodo(newTask))
     }
 
+    // Modifies an already existing task
+    fun onTaskModified(taskId: String, name: String, category: Category, frequency: Frequency, nextDueDate: Instant) {
+        val newTask = TodoRequestDto(
+            name = name,
+            frequency = frequency.days,
+            type = category.name,
+            nextDueDate = nextDueDate,
+        )
+
+        stores.todoList.accept(TodoListStore.Intent.ModifyTodo(taskId, newTask))
+    }
+
+    fun onTaskDeleted(taskId: String) {
+        stores.todoList.accept(TodoListStore.Intent.DeleteTodo(taskId))
+    }
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -85,6 +101,8 @@ fun TodoListScreen(fromTodoList_toTodoDone: () -> Unit = {}, stores: Stores) {
             selectedCategory = selectedCategory,
             onTaskChecked = ::onTaskChecked,
             onTaskCreated = ::onTaskCreated,
+            onTaskModified = ::onTaskModified,
+            onTaskDeleted = ::onTaskDeleted,
             header = {
                 TodoHeader(
                     isTodoList = true,

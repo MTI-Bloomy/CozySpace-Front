@@ -33,21 +33,38 @@ import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.popUp.TaskDetailPopup
+import bloomy.cozyspace.todoList.popUp.TaskDetailsPopup
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.CategoryName
+import bloomy.cozyspace.todoList.utils.Frequency
+import bloomy.cozyspace.todoList.utils.toCategory
+import bloomy.cozyspace.todoList.utils.toFrequency
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.todoItem_More
 import org.jetbrains.compose.resources.painterResource
+import kotlin.time.Instant
 
 @Composable
 fun TodoItem(
     task: Todo,
     clicked: () -> Unit = {},
     onTaskChecked: () -> Unit,
-    onCategoryChanged: (String, Category) -> Unit = { _, _ -> },
+    onTaskModified: (String, String, Category, Frequency, Instant) -> Unit,
+    onTaskDeleted: (String) -> Unit
 ) {
     var showDetailPopup by remember { mutableStateOf(false) }
+
+    var selectedName by remember(task.id) { mutableStateOf(task.name) }
+
+    var selectedCategory by remember(task.id) {
+        mutableStateOf(task.type.toCategory())
+    }
+    var selectedFrequency by remember(task.id) {
+        mutableStateOf(task.frequency.toFrequency())
+    }
+    var selectedDateTime by remember(task.id) {
+        mutableStateOf(task.date)
+    }
 
     Card(
         modifier = Modifier
@@ -156,12 +173,29 @@ fun TodoItem(
     }
 
     if (showDetailPopup) {
-        TaskDetailPopup(
+        TaskDetailsPopup(
             task = task,
             onDismiss = { showDetailPopup = false },
-            onDateTimeSelected = { /* à connecter */ },
-            onFrequencySelected = { /* à connecter */ },
-            onCategorySelected = { newCategory -> onCategoryChanged(task.id, newCategory) },
+            onNameChanged = { selectedName = it },
+            onFrequencySelected = { selectedFrequency = it },
+            onCategorySelected = { selectedCategory = it },
+            onDelete = { taskId ->
+                onTaskDeleted(taskId)
+                showDetailPopup = false
+            },
+            onConfirm = {
+                val trimmedName = selectedName.trim()
+                if (trimmedName.isNotEmpty()) {
+                    onTaskModified(
+                        task.id,
+                        selectedName,
+                        selectedCategory,
+                        selectedFrequency,
+                        selectedDateTime,
+                    )
+                    showDetailPopup = false
+                }
+            }
         )
     }
 }

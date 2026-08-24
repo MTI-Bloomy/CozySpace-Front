@@ -35,25 +35,29 @@ import bloomy.cozyspace.domain.RoomType
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
+import bloomy.cozyspace.theme.Red
 import bloomy.cozyspace.theme.WhiteBackground
+import bloomy.cozyspace.todoList.popUp.TaskDeletePopup
+import bloomy.cozyspace.todoList.popUp.TaskDetailsPopup
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.CategoryName
+import bloomy.cozyspace.todoList.utils.toCategory
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.delete
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun TodoName(task: Todo, onCategorySelected: (Category) -> Unit) {
-    var todoName by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf(
-        when (task.type) {
-            RoomType.KITCHEN -> Category.Kitchen
-            RoomType.BATHROOM -> Category.Bathroom
-            RoomType.BEDROOM -> Category.Bedroom
-            RoomType.GARDEN -> Category.Garden
-            RoomType.WORK -> Category.Work
-        }
-    )}
+fun TodoName(
+    task: Todo,
+    onNameChanged: (String) -> Unit,
+    onCategorySelected: (Category) -> Unit,
+    onDelete: (String) -> Unit,
+) {
+    var todoName by remember(task.id) { mutableStateOf(task.name) }
+    var selectedCategory by remember(task.id) { mutableStateOf(task.type.toCategory()) }
+
+    val isError = todoName.isBlank()
+    var showDeletePopup by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -71,33 +75,53 @@ fun TodoName(task: Todo, onCategorySelected: (Category) -> Unit) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextField(
-                    value = todoName,
-                    onValueChange = { todoName = it },
-                    singleLine = true,
-                    modifier = Modifier.weight(1f),
-                    placeholder = {
-                        Text(
-                            text = task.name,
-                            color = WhiteBackground.copy(alpha = 0.7f),
-                            fontSize = 20.sp,
-                            maxLines = 1
+                Column(modifier = Modifier.weight(1f)) {
+                    TextField(
+                        value = todoName,
+                        onValueChange = {
+                            todoName = it
+                            onNameChanged(it)
+                        },
+                        singleLine = true,
+                        isError = isError,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = {
+                            Text(
+                                text = task.name,
+                                color = WhiteBackground.copy(alpha = 0.7f),
+                                fontSize = 20.sp,
+                                maxLines = 1
+                            )
+                        },
+                        textStyle = TextStyle.Default.copy(fontSize = 20.sp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = LightGreen,
+                            unfocusedContainerColor = LightGreen.copy(alpha = 0.85f),
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            focusedTextColor = WhiteBackground,
+                            unfocusedTextColor = WhiteBackground,
+                            focusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
+                            unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
+                            cursorColor = WhiteBackground,
+
+                            errorContainerColor = LightGreen.copy(alpha = 0.85f),
+                            errorIndicatorColor = Color.Transparent,
+                            errorTextColor = WhiteBackground,
+                            errorPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
+                            errorCursorColor = WhiteBackground
                         )
-                    },
-                    textStyle = TextStyle.Default.copy(fontSize = 20.sp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = LightGreen,
-                        unfocusedContainerColor = LightGreen.copy(alpha = 0.85f),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedTextColor = WhiteBackground,
-                        unfocusedTextColor = WhiteBackground,
-                        focusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
-                        unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
-                        cursorColor = WhiteBackground
                     )
-                )
+                    if (isError) {
+                        Text(
+                            text = "A task's name cannot be blank",
+                            color = Red,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 4.dp, top = 2.dp)
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.width(8.dp))
 
@@ -107,7 +131,7 @@ fun TodoName(task: Todo, onCategorySelected: (Category) -> Unit) {
                         .size(50.dp)
                         .clip(CircleShape)
                         .background(WhiteBackground)
-                        .clickable { /* delete action */ }
+                        .clickable { showDeletePopup = true }
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.delete),
@@ -128,5 +152,16 @@ fun TodoName(task: Todo, onCategorySelected: (Category) -> Unit) {
                 }
             )
         }
+    }
+
+    if (showDeletePopup) {
+        TaskDeletePopup(
+            task = task,
+            onDismiss = { showDeletePopup = false },
+            onConfirm = {
+                onDelete(task.id)
+                showDeletePopup = false
+            }
+        )
     }
 }
