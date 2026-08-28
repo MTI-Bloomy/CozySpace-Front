@@ -24,8 +24,6 @@ interface UserStore :
     sealed interface Label {
         data class ShowError(val message: String) : Label
         data object LoginSuccess : Label
-        data object RegisterSuccess : Label
-
         data object Logout : Label
     }
 

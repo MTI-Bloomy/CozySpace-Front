@@ -296,9 +296,6 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                                 password = password,
                             )
                     ))
-                    stores.house.accept(
-                        HouseStore.Intent.CreateHouse("Default")
-                    )
                 },
                 enabled = isFormValid,
                 modifier = Modifier

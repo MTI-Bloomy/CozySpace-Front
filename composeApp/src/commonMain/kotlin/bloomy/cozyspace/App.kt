@@ -259,12 +259,6 @@ fun App() {
                             popUpTo(Screen.SignIn.route) { inclusive = true }
                         }
                     }
-
-                    UserStore.Label.RegisterSuccess -> {
-                        navController.navigate(Screen.SignIn.route) {
-                            popUpTo(Screen.SignIn.route) { inclusive = true }
-                        }
-                    }
                 }
             }
         )

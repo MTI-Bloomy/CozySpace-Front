@@ -14,11 +14,11 @@ import kotlinx.coroutines.launch
 
 class HouseStoreFactory(
     private val repository: HouseRepository,
-    private val storeFactory: StoreFactory = DefaultStoreFactory()
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): HouseStore {
         val initialState = HouseStore.State(
-            savedHouses = emptyList()
+            savedHouses = emptyList(),
         )
 
         return object : HouseStore,
@@ -26,7 +26,7 @@ class HouseStoreFactory(
                 name = "HouseStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
@@ -42,7 +42,7 @@ class HouseStoreFactory(
         Unit,
         HouseStore.State,
         Msg,
-        HouseStore.Label
+        HouseStore.Label,
         >() {
 
         override fun executeIntent(intent: HouseStore.Intent) {
@@ -53,7 +53,11 @@ class HouseStoreFactory(
                     scope.launch {
                         when (val result = repository.getHouse()) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.GetHouseSuccess(result.data.map { it.toDomain() }))
+                                if (result.data.isEmpty()) {
+                                    createHouse(createHouseRequestDto(name = "Default"))
+                                } else {
+                                    dispatch(Msg.GetHouseSuccess(result.data.map { it.toDomain() }))
+                                }
                             }
 
                             is ApiResult.Error -> {
@@ -71,24 +75,25 @@ class HouseStoreFactory(
 
                 is HouseStore.Intent.CreateHouse -> {
                     dispatch(Msg.Loading)
+                    scope.launch { createHouse(createHouseRequestDto(intent.name)) }
+                }
+            }
+        }
 
-                    scope.launch {
-                        when (val result = repository.createHouse(createHouseRequestDto(intent.name))) {
-                            is ApiResult.Success -> {
-                                dispatch(Msg.CreateHouseSuccess(result.data.toDomain()))
-                            }
+        private suspend fun createHouse(request: createHouseRequestDto) {
+            when (val result = repository.createHouse(request)) {
+                is ApiResult.Success -> {
+                    dispatch(Msg.CreateHouseSuccess(result.data.toDomain()))
+                }
 
-                            is ApiResult.Error -> {
-                                dispatch(Msg.Error(result.message))
-                                publish(HouseStore.Label.ShowError(result.message))
-                            }
+                is ApiResult.Error -> {
+                    dispatch(Msg.Error(result.message))
+                    publish(HouseStore.Label.ShowError(result.message))
+                }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(HouseStore.Label.ShowError("Empty response from server"))
-                            }
-                        }
-                    }
+                ApiResult.Empty -> {
+                    dispatch(Msg.Error("Empty response from server"))
+                    publish(HouseStore.Label.ShowError("Empty response from server"))
                 }
             }
         }
@@ -99,25 +104,25 @@ class HouseStoreFactory(
             return when (msg) {
                 is Msg.Loading -> copy(
                     loading = true,
-                    error = null
+                    error = null,
                 )
 
                 is Msg.GetHouseSuccess -> copy(
                     loading = false,
                     house = msg.house.find { it.saveDate == null },
                     savedHouses = msg.house.filter { it.saveDate != null },
-                    error = null
+                    error = null,
                 )
 
                 is Msg.CreateHouseSuccess -> copy(
                     loading = false,
                     house = msg.house,
-                    error = null
+                    error = null,
                 )
 
                 is Msg.Error -> copy(
                     loading = false,
-                    error = msg.message
+                    error = msg.message,
                 )
             }
         }
