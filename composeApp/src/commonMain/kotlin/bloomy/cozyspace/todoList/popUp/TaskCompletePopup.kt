@@ -20,7 +20,7 @@ import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.component.microComponent.LabelButton
-import bloomy.cozyspace.todoList.utils.CustomDialogBox
+import bloomy.cozyspace.utils.CustomDialogBox
 
 
 @Composable

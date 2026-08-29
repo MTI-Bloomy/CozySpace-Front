@@ -1,4 +1,4 @@
-package bloomy.cozyspace.todoList.utils
+package bloomy.cozyspace.utils
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
