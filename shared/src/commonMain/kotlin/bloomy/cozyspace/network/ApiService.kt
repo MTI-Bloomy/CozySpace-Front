@@ -57,4 +57,8 @@ class ApiService(
     suspend fun getHouse(): ApiResult<List<HouseDto>> = safeApiCall {
         client.get("${Environment.API_URL}/house")
     }
+
+    suspend fun saveHouse(houseId: String): ApiResult<HouseDto> = safeApiCall {
+        client.put("${Environment.API_URL}/house/${houseId}/save")
+    }
 }

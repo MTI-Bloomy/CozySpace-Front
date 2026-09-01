@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,6 +26,7 @@ import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.utils.observeState
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,17 +38,20 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.cache.Storages
-import bloomy.cozyspace.domain.RoomType
 import bloomy.cozyspace.home.components.RoomView
+import bloomy.cozyspace.home.components.SavesPopup
 import bloomy.cozyspace.store.HouseStore
 import bloomy.cozyspace.store.RewardStore
 import bloomy.cozyspace.store.RoomStore
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
+import bloomy.cozyspace.utils.CustomDialogBox
 import bloomy.cozyspace.utils.LoadingScreen
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.arrow_forward
+import cozyspace.composeapp.generated.resources.file_save_off
 import cozyspace.composeapp.generated.resources.logout
+import cozyspace.composeapp.generated.resources.save
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -54,6 +59,8 @@ fun HomeMain(stores: Stores, storages: Storages) {
     val houseState = stores.house.observeState()
     val roomState = stores.room.observeState()
     val rewardState = stores.reward.observeState()
+
+    var showSavesPopup by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         stores.house.accept(HouseStore.Intent.GetHouse)
@@ -65,6 +72,8 @@ fun HomeMain(stores: Stores, storages: Storages) {
             stores.room.accept(RoomStore.Intent.GetRooms(houseState.house!!.id))
         }
     }
+
+    var saveHouseViewMode by remember { mutableStateOf(false) }
 
     // Room actuellement affichée, trackée par id
     var currentRoomId by remember { mutableStateOf<String?>(null) }
@@ -100,20 +109,63 @@ fun HomeMain(stores: Stores, storages: Storages) {
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 contentAlignment = Alignment.CenterEnd,
             ) {
-                Button(
-                    onClick = {
-                        stores.user.accept(UserStore.Intent.Logout)
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = DarkGreen,
-                    ),
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.logout),
-                        contentDescription = "",
-                        tint = WhiteBackground,
-                    )
+                    if (!saveHouseViewMode) {
+                        Button(
+                            onClick = {
+                                showSavesPopup = true
+                            },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = DarkGreen,
+                            ),
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.save),
+                                contentDescription = "Sauvegardes",
+                                tint = WhiteBackground,
+                            )
+                        }
+                    } else {
+                        Text("Saves: Currently on view mode only")
+                        Button(
+                            onClick = {
+                                saveHouseViewMode = false
+
+                                currentRoomId = null
+
+                                stores.room.accept(RoomStore.Intent.GetRooms(houseState.house!!.id))
+                            },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = DarkGreen,
+                            ),
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.file_save_off),
+                                contentDescription = "Exit save view mode",
+                                tint = WhiteBackground,
+                            )
+                        }
+                    }
+                    Button(
+                        onClick = {
+                            stores.user.accept(UserStore.Intent.Logout)
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = DarkGreen,
+                        ),
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.logout),
+                            contentDescription = "Se déconnecter",
+                            tint = WhiteBackground,
+                        )
+                    }
                 }
             }
         },
@@ -192,6 +244,27 @@ fun HomeMain(stores: Stores, storages: Storages) {
             } else {
                 LoadingScreen()
             }
+        }
+    }
+
+    if (showSavesPopup) {
+        CustomDialogBox(
+            onDismiss = { showSavesPopup = false },
+        ) {
+            SavesPopup(
+                stores = stores,
+                onViewHouse = {
+                    showSavesPopup = false
+                    saveHouseViewMode = true
+
+                    currentRoomId = null
+
+                    stores.room.accept(RoomStore.Intent.GetRooms(it.id, true))
+                },
+                onAddClick = {
+                    stores.house.accept(HouseStore.Intent.SaveHouse(houseState.house!!.id))
+                },
+            )
         }
     }
 }

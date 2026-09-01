@@ -16,14 +16,14 @@ import kotlinx.coroutines.launch
 class HouseStoreFactory(
     private val repository: HouseRepository,
     private val storage: HouseStorage,
-    private val storeFactory: StoreFactory = DefaultStoreFactory()
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): HouseStore {
         val cache = storage.get()
 
         val initialState = HouseStore.State(
             house = cache?.house ?: null,
-            savedHouses = cache?.savedHouses ?: emptyList()
+            savedHouses = cache?.savedHouses ?: emptyList(),
         )
 
         return object : HouseStore,
@@ -31,13 +31,14 @@ class HouseStoreFactory(
                 name = "HouseStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
     private sealed interface Msg {
         data object Loading : Msg
         data class GetHouseSuccess(val house: List<House>) : Msg
+        data class SaveHouseSuccess(val house: House) : Msg
         data class Error(val message: String) : Msg
     }
 
@@ -46,27 +47,34 @@ class HouseStoreFactory(
         Unit,
         HouseStore.State,
         Msg,
-        HouseStore.Label
+        HouseStore.Label,
         >() {
 
         override fun executeIntent(intent: HouseStore.Intent) {
             when (intent) {
                 HouseStore.Intent.GetHouse -> {
                     dispatch(Msg.Loading)
+                    scope.launch { getHouse() }
+                }
+
+                is HouseStore.Intent.SaveHouse -> {
+                    dispatch(Msg.Loading)
 
                     scope.launch {
-                        when (val result = repository.getHouse()) {
+                        when (val result = repository.saveHouse(intent.houseId)) {
                             is ApiResult.Success -> {
-                                val houses = result.data.map { it.toDomain() }
+                                val house = result.data.toDomain()
 
-                                dispatch(Msg.GetHouseSuccess(houses))
+                                dispatch(Msg.SaveHouseSuccess(house))
 
                                 storage.save(
                                     HouseCache(
-                                        house = houses.find { it.saveDate == null },
-                                        savedHouses = houses.filter { it.saveDate != null }
-                                    )
+                                        house = null,
+                                        savedHouses = state().savedHouses + house,
+                                    ),
                                 )
+
+                                getHouse()
                             }
 
                             is ApiResult.Error -> {
@@ -83,6 +91,33 @@ class HouseStoreFactory(
                 }
             }
         }
+
+        private suspend fun getHouse() {
+            when (val result = repository.getHouse()) {
+                is ApiResult.Success -> {
+                    val houses = result.data.map { it.toDomain() }
+
+                    dispatch(Msg.GetHouseSuccess(houses))
+
+                    storage.save(
+                        HouseCache(
+                            house = houses.find { it.saveDate == null },
+                            savedHouses = houses.filter { it.saveDate != null },
+                        ),
+                    )
+                }
+
+                is ApiResult.Error -> {
+                    dispatch(Msg.Error(result.message))
+                    publish(HouseStore.Label.ShowError(result.message))
+                }
+
+                ApiResult.Empty -> {
+                    dispatch(Msg.Error("Empty response from server"))
+                    publish(HouseStore.Label.ShowError("Empty response from server"))
+                }
+            }
+        }
     }
 
     private object ReducerImpl : Reducer<HouseStore.State, Msg> {
@@ -90,19 +125,26 @@ class HouseStoreFactory(
             return when (msg) {
                 is Msg.Loading -> copy(
                     loading = true,
-                    error = null
+                    error = null,
                 )
 
                 is Msg.GetHouseSuccess -> copy(
                     loading = false,
                     house = msg.house.find { it.saveDate == null },
                     savedHouses = msg.house.filter { it.saveDate != null },
-                    error = null
+                    error = null,
+                )
+
+                is Msg.SaveHouseSuccess -> copy(
+                    loading = false,
+                    house = null,
+                    savedHouses = savedHouses + msg.house,
+                    error = null,
                 )
 
                 is Msg.Error -> copy(
                     loading = false,
-                    error = msg.message
+                    error = msg.message,
                 )
             }
         }
