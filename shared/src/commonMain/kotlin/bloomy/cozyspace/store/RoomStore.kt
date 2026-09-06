@@ -9,6 +9,7 @@ interface RoomStore : Store<RoomStore.Intent, RoomStore.State, RoomStore.Label> 
             val houseId: String,
             val saveMode: Boolean = false,
         ) : Intent
+        data object Clear : Intent
     }
 
     sealed interface Label {

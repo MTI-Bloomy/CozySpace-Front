@@ -7,6 +7,7 @@ interface HouseStore : Store<HouseStore.Intent, HouseStore.State, HouseStore.Lab
     sealed interface Intent {
         data object GetHouse : Intent
         data class SaveHouse(val houseId: String) : Intent
+        data object Clear : Intent
     }
 
     sealed interface Label {

@@ -1,5 +1,6 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
@@ -17,12 +18,12 @@ import kotlin.String
 
 class UserStoreFactory(
     private val repository: AuthentificationRepository,
-    private val storage: UserStorage,
+    private val storages: Storages,
     private val storeFactory: StoreFactory = DefaultStoreFactory(),
     private val onAuthStateChanged: suspend () -> Unit = {}
 ) {
     suspend fun create(): UserStore {
-        val cache = storage.get()
+        val cache = storages.userStorage.get()
 
         val initialState = UserStore.State(
             token = cache?.token ?: Token("", ""),
@@ -61,7 +62,10 @@ class UserStoreFactory(
             when (intent) {
                 is UserStore.Intent.Logout -> {
                     scope.launch {
-                        storage.clear()
+                        storages.userStorage.clear()
+                        storages.houseStorage.clear()
+                        storages.roomStorage.clear()
+                        storages.rewardStorage.clear()
                         onAuthStateChanged()
 
                         dispatch(Msg.Logout)
@@ -100,7 +104,7 @@ class UserStoreFactory(
                             is ApiResult.Success -> {
                                 dispatch(Msg.Login(result.data))
 
-                                storage.save(
+                                storages.userStorage.save(
                                     UserCache(
                                         token = Token(
                                             result.data.idToken,

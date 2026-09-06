@@ -11,6 +11,7 @@ interface RewardStore : Store<RewardStore.Intent, RewardStore.State, RewardStore
         data class ChooseReward(
             val request: ChooseRewardRequestDto,
         ) : Intent
+        data object Clear : Intent
     }
 
     sealed interface Label {

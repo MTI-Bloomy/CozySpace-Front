@@ -40,6 +40,7 @@ class HouseStoreFactory(
         data class GetHouseSuccess(val house: List<House>) : Msg
         data class SaveHouseSuccess(val house: House) : Msg
         data class Error(val message: String) : Msg
+        data object Clear : Msg
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<
@@ -89,6 +90,7 @@ class HouseStoreFactory(
                         }
                     }
                 }
+                HouseStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
 
@@ -146,6 +148,8 @@ class HouseStoreFactory(
                     loading = false,
                     error = msg.message,
                 )
+
+                is Msg.Clear -> HouseStore.State()
             }
         }
     }

@@ -42,6 +42,7 @@ class RewardStoreFactory(
         data class GetRewardSuccess(val reward: Reward) : Msg
         data class ChooseRewardSuccess(val reward: Reward) : Msg
         data class Error(val message: String) : Msg
+        data object Clear : Msg
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<
@@ -169,6 +170,7 @@ class RewardStoreFactory(
                         }
                     }
                 }
+                RewardStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
     }
@@ -205,6 +207,8 @@ class RewardStoreFactory(
                         loading = false,
                         error = msg.message,
                     )
+
+                is Msg.Clear -> RewardStore.State()
             }
     }
 }

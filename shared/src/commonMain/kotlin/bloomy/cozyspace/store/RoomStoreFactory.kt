@@ -38,6 +38,7 @@ class RoomStoreFactory(
         data object Loading : Msg
         data class GetRoomsSuccess(val rooms: List<Room>) : Msg
         data class Error(val message: String) : Msg
+        data object Clear : Msg
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<
@@ -75,6 +76,7 @@ class RoomStoreFactory(
                         }
                     }
                 }
+                RoomStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
     }
@@ -97,6 +99,8 @@ class RoomStoreFactory(
                     loading = false,
                     error = msg.message,
                 )
+
+                is Msg.Clear -> RoomStore.State()
             }
         }
     }
