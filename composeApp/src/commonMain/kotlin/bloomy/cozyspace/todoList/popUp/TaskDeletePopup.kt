@@ -25,7 +25,6 @@ import bloomy.cozyspace.utils.CustomDialogBox
 
 @Composable
 fun TaskDeletePopup(
-    task: Todo,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit = onDismiss,
 ) {
@@ -41,7 +40,6 @@ fun TaskDeletePopup(
                 color = DarkGreen,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                maxLines = 1,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
             )

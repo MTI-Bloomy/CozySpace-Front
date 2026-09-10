@@ -156,7 +156,6 @@ fun TodoName(
 
     if (showDeletePopup) {
         TaskDeletePopup(
-            task = task,
             onDismiss = { showDeletePopup = false },
             onConfirm = {
                 onDelete(task.id)

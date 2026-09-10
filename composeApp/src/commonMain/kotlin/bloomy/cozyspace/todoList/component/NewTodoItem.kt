@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,19 +29,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bloomy.cozyspace.data.dto.TodoDto
-import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.popUp.TaskDetailsPopup
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Frequency
 import cozyspace.composeapp.generated.resources.Res
@@ -61,22 +62,20 @@ fun NewTodoItem(
     var hasBeenCreated by remember { mutableStateOf(false) }
     var showDetailPopup by remember { mutableStateOf(false) }
 
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
+
     fun tryCreate() {
         if (!hasBeenCreated && taskName.isNotBlank()) {
             hasBeenCreated = true
             onCreate(taskName, selectedCategory, selectedFrequency, startDate)
         }
     }
-
-    // Draft task built from current local state, just to feed the popup's preview
-    val draftTask = TodoDto(
-        id = "",
-        name = taskName,
-        frequency = selectedFrequency.days,
-        type = selectedCategory.name,
-        date = startDate,
-        rewardId = null
-    )
 
     Card(
         modifier = Modifier
@@ -124,6 +123,7 @@ fun NewTodoItem(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .focusRequester(focusRequester)
                         .onFocusChanged { focusState ->
                             if (!focusState.isFocused) {
                                 tryCreate()
@@ -164,15 +164,4 @@ fun NewTodoItem(
             }
         }
     }
-
-//    if (showDetailPopup) {
-//        TaskDetailsPopup(
-//            task = draftTask.toDomain(),
-//            onDismiss = { showDetailPopup = false },
-//            onNameChanged = { newName -> taskName = newName },
-//            onDateTimeSelected = { newDate -> startDate = newDate },
-//            onFrequencySelected = { newFrequency -> selectedFrequency = newFrequency },
-//            onCategorySelected = { newCategory -> selectedCategory = newCategory }
-//        )
-//    }
 }

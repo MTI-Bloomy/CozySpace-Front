@@ -40,9 +40,9 @@ enum class Category(
 
     Work(
         CategoryColors(
-            dark = DarkBlueBubble,
-            light = LightBlueBubble,
-            transparent = TransparentBlueBubble
+            dark = DarkPurpleBubble,
+            light = LightPurpleBubble,
+            transparent = TransparentPurpleBubble
         ),
         Res.drawable.todoCategoryWork
     ),
@@ -67,9 +67,9 @@ enum class Category(
 
     Bathroom(
         CategoryColors(
-            dark = DarkPurpleBubble,
-            light = LightPurpleBubble,
-            transparent = TransparentPurpleBubble
+            dark = DarkBlueBubble,
+            light = LightBlueBubble,
+            transparent = TransparentBlueBubble
         ),
         Res.drawable.todoCategoryBathroom
     )

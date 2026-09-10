@@ -32,7 +32,6 @@ fun CustomDialogBox(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f))
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
