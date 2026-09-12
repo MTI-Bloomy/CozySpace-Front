@@ -46,6 +46,7 @@ import kotlin.time.Instant
 
 @Composable
 fun TodoItem(
+    modifier: Modifier = Modifier,
     task: Todo,
     clicked: () -> Unit = {},
     onTaskChecked: () -> Unit,
@@ -67,7 +68,7 @@ fun TodoItem(
     }
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { clicked() }
             .padding(8.dp),

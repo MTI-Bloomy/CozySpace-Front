@@ -38,9 +38,13 @@ import cozyspace.composeapp.generated.resources.todoItem_Tick
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun TodoDoneItem(task: Todo, clicked: () -> Unit = {}) {
+fun TodoDoneItem(
+    modifier: Modifier = Modifier,
+    task: Todo,
+    clicked: () -> Unit = {}
+) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { clicked() }
             .padding(8.dp),

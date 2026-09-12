@@ -1,5 +1,7 @@
 package bloomy.cozyspace.todoList.todoDone
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.component.TodoDoneItem
+import bloomy.cozyspace.todoList.component.TodoItem
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Spacing
 import kotlin.collections.orEmpty
@@ -69,10 +72,19 @@ fun TodoDoneLayout(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
-                    items(filteredTasks) { task ->
+                    items(
+                        items = filteredTasks,
+                        key = { task -> task.id }
+                    ) { task ->
                         TodoDoneItem(
-                                task,
+                            task = task,
+                            modifier = Modifier.animateItem(
+                                placementSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
                             )
+                        )
                     }
                 }
             }
@@ -106,10 +118,19 @@ fun TodoDoneLayout(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
-                    items(filteredTasks) { task ->
+                    items(
+                        items = filteredTasks,
+                        key = { task -> task.id }
+                    ) { task ->
                         TodoDoneItem(
-                                task,
+                            task = task,
+                            modifier = Modifier.animateItem(
+                                placementSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
                             )
+                        )
                     }
                 }
             }

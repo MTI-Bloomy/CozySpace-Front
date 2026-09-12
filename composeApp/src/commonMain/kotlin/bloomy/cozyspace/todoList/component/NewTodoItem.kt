@@ -52,8 +52,9 @@ import kotlin.time.Instant
 
 @Composable
 fun NewTodoItem(
+    modifier: Modifier = Modifier,
     onCreate: (name: String, category: Category, frequency: Frequency, startDate: Instant) -> Unit,
-    clicked: () -> Unit = {}
+    clicked: () -> Unit = {},
 ) {
     var taskName by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(Category.entries.first()) }
@@ -78,7 +79,7 @@ fun NewTodoItem(
     }
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { clicked() }
             .padding(8.dp),

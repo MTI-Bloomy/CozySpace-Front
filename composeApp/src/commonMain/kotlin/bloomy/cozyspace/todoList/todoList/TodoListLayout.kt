@@ -1,5 +1,8 @@
 package bloomy.cozyspace.todoList.common
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -82,24 +85,41 @@ fun TodoListLayout(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     if (showNewItem) {
-                        item {
+                        item(key = "newTodoItem") {
                             NewTodoItem(
                                 // Dans TodoLayout
                                 onCreate = { name, category, frequency, startDate ->
                                     onTaskCreated(name, category, frequency, startDate)
                                     showNewItem = false
                                 },
+                                modifier = Modifier.animateItem(
+                                    fadeInSpec = tween(300),
+                                    placementSpec = spring(
+                                        dampingRatio = Spring.DampingRatioLowBouncy,
+                                        stiffness = Spring.StiffnessLow
+                                    ),
+                                    fadeOutSpec = tween(200)
+                                )
                             )
                         }
                     }
 
-                    items(filteredTasks) { task ->
+                    items(
+                        items = filteredTasks,
+                        key = { task -> task.id }
+                    ) { task ->
                         TodoItem(
-                                task,
-                                onTaskChecked = { onTaskChecked(task.id) },
-                                onTaskModified = onTaskModified,
-                                onTaskDeleted = onTaskDeleted
+                            task = task,
+                            onTaskChecked = { onTaskChecked(task.id) },
+                            onTaskModified = onTaskModified,
+                            onTaskDeleted = onTaskDeleted,
+                            modifier = Modifier.animateItem(
+                                placementSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
                             )
+                        )
                     }
                 }
 
@@ -140,24 +160,41 @@ fun TodoListLayout(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     if (showNewItem) {
-                        item {
+                        item(key = "newTodoItem") {
                             NewTodoItem(
                                 // Dans TodoLayout
                                 onCreate = { name, category, frequency, startDate ->
                                     onTaskCreated(name, category, frequency, startDate)
                                     showNewItem = false
                                 },
+                                modifier = Modifier.animateItem(
+                                    fadeInSpec = tween(300),
+                                    placementSpec = spring(
+                                        dampingRatio = Spring.DampingRatioLowBouncy,
+                                        stiffness = Spring.StiffnessLow
+                                    ),
+                                    fadeOutSpec = tween(200)
+                                )
                             )
                         }
                     }
 
-                    items(filteredTasks) { task ->
+                    items(
+                        items = filteredTasks,
+                        key = { task -> task.id }
+                    ) { task ->
                         TodoItem(
-                                task,
-                                onTaskChecked = { onTaskChecked(task.id) },
-                                onTaskModified = onTaskModified,
-                                onTaskDeleted = onTaskDeleted
+                            task = task,
+                            onTaskChecked = { onTaskChecked(task.id) },
+                            onTaskModified = onTaskModified,
+                            onTaskDeleted = onTaskDeleted,
+                            modifier = Modifier.animateItem(
+                                placementSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
                             )
+                        )
                     }
                 }
 
