@@ -33,12 +33,12 @@ fun AppNavHost(
     stores: Stores,
     storages: Storages,
     isOnline: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
         startDestination = Home,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable<Timers> {
             TimersMain()

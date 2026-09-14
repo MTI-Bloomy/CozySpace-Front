@@ -35,12 +35,12 @@ fun CustomVerticalScrollbar(
     thumbWidth: Dp = 38.dp,
     trackColor: Color = LightGreen,
     thumbColor: Color = DarkGreen,
-    gripColor: Color = WhiteBackground
+    gripColor: Color = WhiteBackground,
 ) {
     if (itemCount == 0) return
 
     BoxWithConstraints(
-        modifier = modifier.width(thumbWidth) // le conteneur doit être assez large pour laisser le curseur déborder de la piste
+        modifier = modifier.width(thumbWidth), // le conteneur doit être assez large pour laisser le curseur déborder de la piste
     ) {
         val density = LocalDensity.current
         val trackHeightPx = with(density) { maxHeight.toPx() }
@@ -63,7 +63,7 @@ fun CustomVerticalScrollbar(
                 .fillMaxHeight()
                 .width(trackWidth)
                 .clip(RoundedCornerShape(50))
-                .background(trackColor)
+                .background(trackColor),
         )
 
         // Curseur : pilule large qui déborde, avec poignée
@@ -75,18 +75,18 @@ fun CustomVerticalScrollbar(
                 .height(with(density) { thumbHeightPx.toDp() })
                 .clip(RoundedCornerShape(24.dp))
                 .background(thumbColor),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 repeat(2) {
                     Box(
                         modifier = Modifier
                             .width(16.dp)
                             .height(1.5.dp)
-                            .background(gripColor)
+                            .background(gripColor),
                     )
                 }
             }

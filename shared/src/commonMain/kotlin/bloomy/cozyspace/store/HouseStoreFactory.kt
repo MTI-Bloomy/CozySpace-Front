@@ -24,7 +24,7 @@ class HouseStoreFactory(
         val cache = storage.get()
 
         val initialState = HouseStore.State(
-            house = cache?.house ?: null,
+            house = cache?.house,
             savedHouses = cache?.savedHouses ?: emptyList(),
         )
 

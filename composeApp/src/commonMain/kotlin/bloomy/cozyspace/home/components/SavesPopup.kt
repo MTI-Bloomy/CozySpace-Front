@@ -55,38 +55,38 @@ fun Instant.toDisplayDate(): String {
 fun SaveItem(
     house: House,
     onViewClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(LightGreen, RoundedCornerShape(16.dp))
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         Text(
             text = "Sauvegarde du ${house.saveDate?.toDisplayDate() ?: "--/--/----"}",
             color = WhiteBackground,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
 
         Text(
             text = "${house.rooms.size} pièce${if (house.rooms.size > 1) "s" else ""}",
             color = WhiteBackground.copy(alpha = 0.85f),
             fontSize = 13.sp,
-            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
         )
 
         Button(
             onClick = onViewClick,
             colors = ButtonDefaults.buttonColors(
                 containerColor = DarkGreen,
-                contentColor = WhiteBackground
+                contentColor = WhiteBackground,
             ),
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(0.6f)
+                .fillMaxWidth(0.6f),
         ) {
             Text("Voir")
         }
@@ -98,7 +98,7 @@ fun SavesPopup(
     stores: Stores,
     isOnline: Boolean,
     onViewHouse: (House) -> Unit = {},
-    onAddClick: () -> Unit = {}
+    onAddClick: () -> Unit = {},
 ) {
     val houseState = stores.house.observeState()
     val listState = rememberLazyListState()
@@ -111,14 +111,14 @@ fun SavesPopup(
         modifier = Modifier
             .fillMaxWidth()
             .background(DarkGreen)
-            .padding(20.dp)
+            .padding(20.dp),
     ) {
         Text(
             text = "Sauvegardes",
             color = WhiteBackground,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         )
 
         Box(modifier = Modifier.weight(1f, fill = false)) {
@@ -128,7 +128,7 @@ fun SavesPopup(
                         color = WhiteBackground,
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .padding(24.dp)
+                            .padding(24.dp),
                     )
                 }
 
@@ -138,7 +138,7 @@ fun SavesPopup(
                         color = WhiteBackground.copy(alpha = 0.7f),
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .padding(24.dp)
+                            .padding(24.dp),
                     )
                 }
 
@@ -148,13 +148,13 @@ fun SavesPopup(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 300.dp)
-                            //.padding(end = 16.dp) // laisse la place à la scrollbar
+                            .heightIn(max = 300.dp),
+                        //.padding(end = 16.dp) // laisse la place à la scrollbar
                     ) {
                         items(houseState.savedHouses, key = { it.id }) { house ->
                             SaveItem(
                                 house = house,
-                                onViewClick = { onViewHouse(house) }
+                                onViewClick = { onViewHouse(house) },
                             )
                         }
                     }
@@ -182,7 +182,7 @@ fun SavesPopup(
             modifier = Modifier
                 .align(Alignment.Start)
                 .size(48.dp)
-                .alpha(if (isOnline) 1f else 0.4f)
+                .alpha(if (isOnline) 1f else 0.4f),
         ) {
             Icon(
                 painter = painterResource(Res.drawable.add),

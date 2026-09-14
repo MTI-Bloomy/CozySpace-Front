@@ -14,7 +14,7 @@ fun rememberUserStore(env: AppEnvironment) =
         value = UserStoreFactory(
             repository = AuthentificationRepository(ApiService(env.httpClient, env.networkMonitor)),
             storages = env.storages,
-            onAuthStateChanged = { env.httpClient.clearBearerCache() }
+            onAuthStateChanged = { env.httpClient.clearBearerCache() },
         ).create().also { it.init() }
     }
 

@@ -33,7 +33,7 @@ fun RoomView(roomType: RoomType, rewards: List<Reward>, storages: Storages) {
             painter = painterResource(background),
             contentDescription = "Room base",
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
         )
 
         // Stacked furniture

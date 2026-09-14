@@ -47,7 +47,7 @@ fun MainApp(stores: Stores, storages: Storages, isOnline: Boolean) {
                 storages = storages,
                 isOnline = isOnline,
                 selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected
+                onItemSelected = onItemSelected,
             )
         } else {
             MobileLayout(
@@ -56,7 +56,7 @@ fun MainApp(stores: Stores, storages: Storages, isOnline: Boolean) {
                 storages = storages,
                 isOnline = isOnline,
                 selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected
+                onItemSelected = onItemSelected,
             )
         }
     }

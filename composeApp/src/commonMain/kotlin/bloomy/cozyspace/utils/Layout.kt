@@ -38,9 +38,9 @@ fun MobileLayout(
             MobileNavBar(
                 items = NavDestination.entries,
                 selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected
+                onItemSelected = onItemSelected,
             )
-        }
+        },
     ) { padding ->
 
         AppNavHost(
@@ -48,7 +48,7 @@ fun MobileLayout(
             stores = stores,
             storages = storages,
             isOnline = isOnline,
-            modifier = Modifier.padding(padding)
+            modifier = Modifier.padding(padding),
         )
     }
 }
@@ -64,17 +64,17 @@ fun DesktopLayout(
     onItemSelected: (Int) -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
 
         Box(
             modifier = Modifier.fillMaxHeight(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             DesktopNavBar(
                 items = NavDestination.entries,
                 selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected
+                onItemSelected = onItemSelected,
             )
         }
 
@@ -88,7 +88,7 @@ fun DesktopLayout(
                 stores = stores,
                 storages = storages,
                 isOnline = isOnline,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
             )
         }
     }

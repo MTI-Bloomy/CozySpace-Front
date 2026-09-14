@@ -78,7 +78,7 @@ fun App() {
         modifier = Modifier
             .fillMaxSize()
             .background(WhiteBackground)
-            .windowInsetsPadding(WindowInsets.systemBars)
+            .windowInsetsPadding(WindowInsets.systemBars),
     ) {
         NavGraph(
             navController = navController,
@@ -96,7 +96,7 @@ fun App() {
                     .padding(12.dp)
                     .padding(6.dp)
                     .size(24.dp),
-                tint = DarkGreen
+                tint = DarkGreen,
             )
         }
 
@@ -104,7 +104,7 @@ fun App() {
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 16.dp)
+                .padding(top = 16.dp),
         )
     }
 }

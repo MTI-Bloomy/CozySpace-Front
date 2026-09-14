@@ -16,11 +16,13 @@ fun <T : Any> ObserveErrors(
     extractError: (T) -> String?,
 ) {
     DisposableEffect(store) {
-        val disposable = store.labels(observer { label ->
-            extractError(label)?.let { message ->
-                scope.launch { snackbarHostState.showSnackbar(message) }
-            }
-        })
+        val disposable = store.labels(
+            observer { label ->
+                extractError(label)?.let { message ->
+                    scope.launch { snackbarHostState.showSnackbar(message) }
+                }
+            },
+        )
         onDispose { disposable.dispose() }
     }
 }
