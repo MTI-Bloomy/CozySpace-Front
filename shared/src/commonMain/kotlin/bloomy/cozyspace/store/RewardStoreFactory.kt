@@ -82,11 +82,6 @@ class RewardStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(RewardStore.Label.ShowError(result.message))
                             }
-
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(RewardStore.Label.ShowError("Empty response from server"))
-                            }
                         }
                     }
                 }
@@ -126,11 +121,6 @@ class RewardStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(RewardStore.Label.ShowError(result.message))
                             }
-
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(RewardStore.Label.ShowError("Empty response from server"))
-                            }
                         }
                     }
                 }
@@ -161,11 +151,6 @@ class RewardStoreFactory(
                             is ApiResult.Error -> {
                                 dispatch(Msg.Error(result.message))
                                 publish(RewardStore.Label.ShowError(result.message))
-                            }
-
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(RewardStore.Label.ShowError("Empty response from server"))
                             }
                         }
                     }

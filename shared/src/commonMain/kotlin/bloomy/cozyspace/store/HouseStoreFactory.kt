@@ -82,11 +82,6 @@ class HouseStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(HouseStore.Label.ShowError(result.message))
                             }
-
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(HouseStore.Label.ShowError("Empty response from server"))
-                            }
                         }
                     }
                 }
@@ -112,11 +107,6 @@ class HouseStoreFactory(
                 is ApiResult.Error -> {
                     dispatch(Msg.Error(result.message))
                     publish(HouseStore.Label.ShowError(result.message))
-                }
-
-                ApiResult.Empty -> {
-                    dispatch(Msg.Error("Empty response from server"))
-                    publish(HouseStore.Label.ShowError("Empty response from server"))
                 }
             }
         }

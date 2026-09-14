@@ -17,7 +17,10 @@ suspend inline fun <reified T> safeApiCall(
                 val body = response.bodyAsText()
 
                 if (body.isBlank()) {
-                    ApiResult.Empty
+                    ApiResult.Error(
+                        code = response.status.value,
+                        message = "Empty response from server"
+                    )
                 } else {
                     ApiResult.Success(
                         AppJson.decodeFromString<T>(body)

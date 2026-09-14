@@ -87,11 +87,6 @@ class UserStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(UserStore.Label.ShowError(result.message))
                             }
-
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(UserStore.Label.ShowError("Empty response from server"))
-                            }
                         }
                     }
                 }
@@ -120,11 +115,6 @@ class UserStoreFactory(
                             is ApiResult.Error -> {
                                 dispatch(Msg.Error(result.message))
                                 publish(UserStore.Label.ShowError(result.message))
-                            }
-
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(UserStore.Label.ShowError("Empty response from server"))
                             }
                         }
                     }

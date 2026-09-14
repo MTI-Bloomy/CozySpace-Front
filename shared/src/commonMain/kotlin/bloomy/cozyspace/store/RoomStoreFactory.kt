@@ -68,11 +68,6 @@ class RoomStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(RoomStore.Label.ShowError(result.message))
                             }
-
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(RoomStore.Label.ShowError("Empty response from server"))
-                            }
                         }
                     }
                 }
