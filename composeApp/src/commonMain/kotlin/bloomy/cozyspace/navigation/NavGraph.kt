@@ -12,13 +12,13 @@ import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.store.Stores
 
 @Composable
-fun NavGraph (navController: NavHostController, stores: Stores, storages: Storages) {
+fun NavGraph (navController: NavHostController, stores: Stores, storages: Storages, isOnline: Boolean) {
 
     val startDestination = if(stores.user.state.token.idToken == "") Screen.SignIn.route else Screen.Main.route
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
     ) {
         composable(Screen.SignIn.route) {
             SignInScreen(
@@ -30,14 +30,15 @@ fun NavGraph (navController: NavHostController, stores: Stores, storages: Storag
         composable(Screen.CreateAccount.route) {
             SignUpScreen(
                 navController = navController,
-                stores = stores
+                stores = stores,
             )
         }
 
         composable(Screen.Main.route) {
             MainApp(
                 stores = stores,
-                storages = storages
+                storages = storages,
+                isOnline = isOnline,
             )
         }
     }

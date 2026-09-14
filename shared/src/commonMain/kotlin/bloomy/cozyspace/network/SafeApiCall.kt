@@ -7,9 +7,11 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 
 suspend inline fun <reified T> safeApiCall(
+    networkMonitor: NetworkMonitor,
     crossinline block: suspend () -> HttpResponse
 ): ApiResult<T> {
     return try {
+        if (!networkMonitor.isOnline.value) return ApiResult.Offline
         val response = block()
 
         when {
@@ -45,6 +47,7 @@ suspend inline fun <reified T> safeApiCall(
         }
 
     } catch (e: Exception) {
+        networkMonitor.refreshNow() // l'appel a échoué -> on revérifie tout de suite
         ApiResult.Error(
             message = e.message ?: "Unknown error"
         )

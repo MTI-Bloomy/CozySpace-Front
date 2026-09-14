@@ -12,7 +12,7 @@ import bloomy.cozyspace.store.*
 fun rememberUserStore(env: AppEnvironment) =
     produceState<UserStore?>(initialValue = null, env.httpClient) {
         value = UserStoreFactory(
-            repository = AuthentificationRepository(ApiService(env.httpClient)),
+            repository = AuthentificationRepository(ApiService(env.httpClient, env.networkMonitor)),
             storages = env.storages,
             onAuthStateChanged = { env.httpClient.clearBearerCache() }
         ).create().also { it.init() }
@@ -22,7 +22,7 @@ fun rememberUserStore(env: AppEnvironment) =
 fun rememberHouseStore(env: AppEnvironment) =
     produceState<HouseStore?>(initialValue = null, env.httpClient) {
         value = HouseStoreFactory(
-            repository = HouseRepository(ApiService(env.httpClient)),
+            repository = HouseRepository(ApiService(env.httpClient, env.networkMonitor)),
             storage = env.storages.houseStorage,
         ).create().also { it.init() }
     }
@@ -31,7 +31,7 @@ fun rememberHouseStore(env: AppEnvironment) =
 fun rememberRoomStore(env: AppEnvironment) =
     produceState<RoomStore?>(initialValue = null, env.httpClient) {
         value = RoomStoreFactory(
-            repository = RoomRepository(ApiService(env.httpClient)),
+            repository = RoomRepository(ApiService(env.httpClient, env.networkMonitor)),
             storage = env.storages.roomStorage,
         ).create().also { it.init() }
     }
@@ -40,7 +40,7 @@ fun rememberRoomStore(env: AppEnvironment) =
 fun rememberRewardStore(env: AppEnvironment) =
     produceState<RewardStore?>(initialValue = null, env.httpClient) {
         value = RewardStoreFactory(
-            repository = RewardRepository(ApiService(env.httpClient)),
+            repository = RewardRepository(ApiService(env.httpClient, env.networkMonitor)),
             storage = env.storages.rewardStorage,
             assetRepository = AssetRepository(env.httpClient, env.storages.assetStorage),
         ).create().also { it.init() }

@@ -7,5 +7,7 @@ data class Storages(
     val userStorage: UserStorage,
     val houseStorage: HouseStorage,
     val roomStorage: RoomStorage,
-    val rewardStorage: RewardStorage
+    val rewardStorage: RewardStorage,
+
+    val syncQueueStorage: SyncQueueStorage,
 )

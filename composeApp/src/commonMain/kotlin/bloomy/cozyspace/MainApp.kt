@@ -16,7 +16,7 @@ import bloomy.cozyspace.utils.MobileLayout
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun MainApp(stores: Stores, storages: Storages) {
+fun MainApp(stores: Stores, storages: Storages, isOnline: Boolean) {
     BoxWithConstraints {
 
         val isLargeScreen = maxWidth > 600.dp
@@ -45,6 +45,7 @@ fun MainApp(stores: Stores, storages: Storages) {
                 navController = navController,
                 stores = stores,
                 storages = storages,
+                isOnline = isOnline,
                 selectedIndex = selectedIndex,
                 onItemSelected = onItemSelected
             )
@@ -53,6 +54,7 @@ fun MainApp(stores: Stores, storages: Storages) {
                 navController = navController,
                 stores = stores,
                 storages = storages,
+                isOnline = isOnline,
                 selectedIndex = selectedIndex,
                 onItemSelected = onItemSelected
             )

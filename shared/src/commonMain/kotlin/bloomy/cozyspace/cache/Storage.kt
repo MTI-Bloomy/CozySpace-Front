@@ -1,5 +1,7 @@
 package bloomy.cozyspace.cache
 
+import kotlinx.serialization.builtins.ListSerializer
+
 class UserStorage(store: KeyValueStore) {
     private val delegate = JsonCacheStore(store, "user_cache", UserCache.serializer())
     suspend fun save(cache: UserCache) = delegate.save(cache)
@@ -25,5 +27,17 @@ class RewardStorage(store: KeyValueStore) {
     private val delegate = JsonCacheStore(store, "reward_cache", RewardCache.serializer())
     suspend fun save(cache: RewardCache) = delegate.save(cache)
     suspend fun get(): RewardCache? = delegate.get()
+    suspend fun clear() = delegate.clear()
+}
+
+class SyncQueueStorage(store: KeyValueStore) {
+    private val delegate = JsonCacheStore(
+        store = store,
+        key = "sync_queue_cache",
+        serializer = ListSerializer(PendingAction.serializer()),
+    )
+
+    suspend fun save(actions: List<PendingAction>) = delegate.save(actions)
+    suspend fun get(): List<PendingAction> = delegate.get() ?: emptyList()
     suspend fun clear() = delegate.clear()
 }

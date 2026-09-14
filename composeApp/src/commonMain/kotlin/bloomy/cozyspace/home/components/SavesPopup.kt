@@ -37,6 +37,7 @@ import cozyspace.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Instant
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.draw.alpha
 import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.add
 import kotlinx.datetime.TimeZone
@@ -95,6 +96,7 @@ fun SaveItem(
 @Composable
 fun SavesPopup(
     stores: Stores,
+    isOnline: Boolean,
     onViewHouse: (House) -> Unit = {},
     onAddClick: () -> Unit = {}
 ) {
@@ -173,17 +175,18 @@ fun SavesPopup(
         Spacer(modifier = Modifier.height(16.dp))
 
         FloatingActionButton(
-            onClick = onAddClick,
+            onClick = { if (isOnline) onAddClick() },
             containerColor = LightGreen,
             contentColor = WhiteBackground,
             shape = CircleShape,
             modifier = Modifier
                 .align(Alignment.Start)
                 .size(48.dp)
+                .alpha(if (isOnline) 1f else 0.4f)
         ) {
             Icon(
                 painter = painterResource(Res.drawable.add),
-                contentDescription = "Ajouter une sauvegarde",
+                contentDescription = if (isOnline) "Ajouter une sauvegarde" else "Ajout indisponible hors ligne",
             )
         }
     }

@@ -5,14 +5,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,8 +28,12 @@ import bloomy.cozyspace.store.RewardStore
 import bloomy.cozyspace.store.RoomStore
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
+import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.utils.*
+import cozyspace.composeapp.generated.resources.Res
+import cozyspace.composeapp.generated.resources.cloud_off
+import org.jetbrains.compose.resources.painterResource
 
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -35,7 +43,7 @@ fun App() {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val env = rememberAppEnvironment()
+    val env = rememberAppEnvironment(scope)
 
     val userStore = rememberUserStore(env).value
     val houseStore = rememberHouseStore(env).value
@@ -64,6 +72,8 @@ fun App() {
     ObserveErrors(stores.room, snackbarHostState, scope) { (it as? RoomStore.Label.ShowError)?.message }
     ObserveErrors(stores.reward, snackbarHostState, scope) { (it as? RewardStore.Label.ShowError)?.message }
 
+    val isOnline by env.networkMonitor.isOnline.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -73,8 +83,22 @@ fun App() {
         NavGraph(
             navController = navController,
             stores = stores,
-            storages = env.storages
+            storages = env.storages,
+            isOnline = isOnline,
         )
+
+        if (!isOnline) {
+            Icon(
+                painter = painterResource(Res.drawable.cloud_off),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(12.dp)
+                    .padding(6.dp)
+                    .size(24.dp),
+                tint = DarkGreen
+            )
+        }
 
         SnackbarHost(
             hostState = snackbarHostState,

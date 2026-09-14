@@ -36,6 +36,7 @@ class RoomStoreFactory(
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data class GetRoomsSuccess(val rooms: List<Room>) : Msg
         data class Error(val message: String) : Msg
         data object Clear : Msg
@@ -68,9 +69,12 @@ class RoomStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(RoomStore.Label.ShowError(result.message))
                             }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
+
                 RoomStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
@@ -79,8 +83,13 @@ class RoomStoreFactory(
     private object ReducerImpl : Reducer<RoomStore.State, Msg> {
         override fun RoomStore.State.reduce(msg: Msg): RoomStore.State {
             return when (msg) {
-                is Msg.Loading -> copy(
+                Msg.Loading -> copy(
                     loading = true,
+                    error = null,
+                )
+
+                Msg.Offline -> copy(
+                    loading = false,
                     error = null,
                 )
 
@@ -95,7 +104,7 @@ class RoomStoreFactory(
                     error = msg.message,
                 )
 
-                is Msg.Clear -> RoomStore.State()
+                Msg.Clear -> RoomStore.State()
             }
         }
     }

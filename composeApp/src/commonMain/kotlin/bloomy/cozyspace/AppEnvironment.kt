@@ -1,36 +1,46 @@
 package bloomy.cozyspace
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import bloomy.cozyspace.cache.HouseStorage
 import bloomy.cozyspace.cache.RewardStorage
 import bloomy.cozyspace.cache.RoomStorage
 import bloomy.cozyspace.cache.Storages
+import bloomy.cozyspace.cache.SyncQueue
+import bloomy.cozyspace.cache.SyncQueueStorage
 import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.cache.createAssetStorage
 import bloomy.cozyspace.cache.createKeyValueStore
 import bloomy.cozyspace.config.Environment
 import bloomy.cozyspace.domain.User
+import bloomy.cozyspace.network.NetworkMonitor
 import bloomy.cozyspace.network.createHttpClient
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.providers.BearerTokens
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class AppEnvironment(
     val storages: Storages,
     val httpClient: HttpClient,
     val forcedLogout: MutableSharedFlow<Unit>,
+    val networkMonitor: NetworkMonitor,
+    val syncQueue: SyncQueue,
 )
 
 @Composable
-fun rememberAppEnvironment(): AppEnvironment {
+fun rememberAppEnvironment(scope: CoroutineScope): AppEnvironment {
     val keyValueStore = remember { createKeyValueStore() }
     val assetStorage = remember { createAssetStorage() }
     val userStorage = remember { UserStorage(keyValueStore) }
     val houseStorage = remember { HouseStorage(keyValueStore) }
     val roomStorage = remember { RoomStorage(keyValueStore) }
     val rewardStorage = remember { RewardStorage(keyValueStore) }
+    val syncQueueStorage = remember { SyncQueueStorage(keyValueStore) }
+
     val forcedLogout = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
 
     val httpClient = remember {
@@ -48,15 +58,33 @@ fun rememberAppEnvironment(): AppEnvironment {
             onRefreshFailed = {
                 userStorage.clear()
                 forcedLogout.tryEmit(Unit)
-            }
+            },
         )
+    }
+
+    val networkMonitor = remember(httpClient) { NetworkMonitor(client = httpClient, scope = scope) }
+    val syncQueue = remember(syncQueueStorage) { SyncQueue(syncQueueStorage, scope) }
+
+    LaunchedEffect(networkMonitor, syncQueue) {
+        networkMonitor.start()
+        syncQueue.load()
     }
 
     return remember {
         AppEnvironment(
-            storages = Storages(assetStorage, keyValueStore, userStorage, houseStorage, roomStorage, rewardStorage),
+            storages = Storages(
+                assetStorage,
+                keyValueStore,
+                userStorage,
+                houseStorage,
+                roomStorage,
+                rewardStorage,
+                syncQueueStorage,
+            ),
             httpClient = httpClient,
             forcedLogout = forcedLogout,
+            networkMonitor = networkMonitor,
+            syncQueue = syncQueue,
         )
     }
 }

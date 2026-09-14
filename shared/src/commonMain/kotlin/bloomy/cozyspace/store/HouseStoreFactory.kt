@@ -2,10 +2,12 @@ package bloomy.cozyspace.store
 
 import bloomy.cozyspace.cache.HouseCache
 import bloomy.cozyspace.cache.HouseStorage
+import bloomy.cozyspace.cache.SyncQueue
 import bloomy.cozyspace.data.HouseRepository
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.House
 import bloomy.cozyspace.interfaces.ApiResult
+import bloomy.cozyspace.network.NetworkMonitor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -37,6 +39,7 @@ class HouseStoreFactory(
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data class GetHouseSuccess(val house: List<House>) : Msg
         data class SaveHouseSuccess(val house: House) : Msg
         data class Error(val message: String) : Msg
@@ -82,9 +85,12 @@ class HouseStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(HouseStore.Label.ShowError(result.message))
                             }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
+
                 HouseStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
@@ -108,6 +114,8 @@ class HouseStoreFactory(
                     dispatch(Msg.Error(result.message))
                     publish(HouseStore.Label.ShowError(result.message))
                 }
+
+                ApiResult.Offline -> dispatch(Msg.Offline)
             }
         }
     }
@@ -115,8 +123,13 @@ class HouseStoreFactory(
     private object ReducerImpl : Reducer<HouseStore.State, Msg> {
         override fun HouseStore.State.reduce(msg: Msg): HouseStore.State {
             return when (msg) {
-                is Msg.Loading -> copy(
+                Msg.Loading -> copy(
                     loading = true,
+                    error = null,
+                )
+
+                Msg.Offline -> copy(
+                    loading = false,
                     error = null,
                 )
 
@@ -139,7 +152,7 @@ class HouseStoreFactory(
                     error = msg.message,
                 )
 
-                is Msg.Clear -> HouseStore.State()
+                Msg.Clear -> HouseStore.State()
             }
         }
     }

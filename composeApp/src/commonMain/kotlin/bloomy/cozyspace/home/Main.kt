@@ -55,7 +55,7 @@ import cozyspace.composeapp.generated.resources.save
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun HomeMain(stores: Stores, storages: Storages) {
+fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
     val houseState = stores.house.observeState()
     val roomState = stores.room.observeState()
     val rewardState = stores.reward.observeState()
@@ -253,6 +253,7 @@ fun HomeMain(stores: Stores, storages: Storages) {
         ) {
             SavesPopup(
                 stores = stores,
+                isOnline = isOnline,
                 onViewHouse = {
                     showSavesPopup = false
                     saveHouseViewMode = true

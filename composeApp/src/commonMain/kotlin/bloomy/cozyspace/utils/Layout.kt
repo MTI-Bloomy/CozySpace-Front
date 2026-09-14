@@ -28,6 +28,7 @@ fun MobileLayout(
     navController: NavHostController,
     stores: Stores,
     storages: Storages,
+    isOnline: Boolean,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
@@ -46,6 +47,7 @@ fun MobileLayout(
             navController = navController,
             stores = stores,
             storages = storages,
+            isOnline = isOnline,
             modifier = Modifier.padding(padding)
         )
     }
@@ -57,6 +59,7 @@ fun DesktopLayout(
     navController: NavHostController,
     stores: Stores,
     storages: Storages,
+    isOnline: Boolean,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
@@ -84,6 +87,7 @@ fun DesktopLayout(
                 navController = navController,
                 stores = stores,
                 storages = storages,
+                isOnline = isOnline,
                 modifier = Modifier.padding(padding)
             )
         }

@@ -2,7 +2,6 @@ package bloomy.cozyspace.store
 
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.UserCache
-import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.dto.LoginDto
 import bloomy.cozyspace.domain.Token
@@ -41,6 +40,7 @@ class UserStoreFactory(
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data object Logout : Msg
         data object Register : Msg
 
@@ -87,6 +87,8 @@ class UserStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(UserStore.Label.ShowError(result.message))
                             }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -116,6 +118,8 @@ class UserStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(UserStore.Label.ShowError(result.message))
                             }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -131,6 +135,11 @@ class UserStoreFactory(
                         loading = true,
                         error = null
                     )
+
+                Msg.Offline -> copy(
+                    loading = false,
+                    error = null,
+                )
 
                 Msg.Logout ->
                     UserStore.State()

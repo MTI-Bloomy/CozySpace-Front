@@ -32,6 +32,7 @@ fun AppNavHost(
     navController: NavHostController,
     stores: Stores,
     storages: Storages,
+    isOnline: Boolean,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -44,7 +45,7 @@ fun AppNavHost(
         }
 
         composable<Home> {
-            HomeMain(stores, storages)
+            HomeMain(stores, storages, isOnline)
         }
 
         composable<Todo> {

@@ -38,6 +38,7 @@ class RewardStoreFactory(
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data class GetRewardsSuccess(val rewards: List<Reward>) : Msg
         data class GetRewardSuccess(val reward: Reward) : Msg
         data class ChooseRewardSuccess(val reward: Reward) : Msg
@@ -82,6 +83,8 @@ class RewardStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(RewardStore.Label.ShowError(result.message))
                             }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -121,6 +124,8 @@ class RewardStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(RewardStore.Label.ShowError(result.message))
                             }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -152,9 +157,12 @@ class RewardStoreFactory(
                                 dispatch(Msg.Error(result.message))
                                 publish(RewardStore.Label.ShowError(result.message))
                             }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
+
                 RewardStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
@@ -168,6 +176,11 @@ class RewardStoreFactory(
                         loading = true,
                         error = null,
                     )
+
+                Msg.Offline -> copy(
+                    loading = false,
+                    error = null,
+                )
 
                 is Msg.GetRewardsSuccess -> copy(
                     loading = false,
@@ -193,7 +206,7 @@ class RewardStoreFactory(
                         error = msg.message,
                     )
 
-                is Msg.Clear -> RewardStore.State()
+                Msg.Clear -> RewardStore.State()
             }
     }
 }
