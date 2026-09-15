@@ -21,7 +21,7 @@ import bloomy.cozyspace.theme.MidLightGreen
 import bloomy.cozyspace.theme.ShadowColor
 import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.todoAdd
+import cozyspace.composeapp.generated.resources.add
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -50,7 +50,7 @@ fun AddTodoButton(
             .clickable(onClick = onClick),
     ) {
         Icon(
-            painter = painterResource(Res.drawable.todoAdd),
+            painter = painterResource(Res.drawable.add),
             contentDescription = "Add new task",
             tint = contentColor,
             modifier = Modifier.size(50.dp)

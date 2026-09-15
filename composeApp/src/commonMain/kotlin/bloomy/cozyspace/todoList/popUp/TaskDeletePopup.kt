@@ -17,10 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.component.microComponent.LabelButton
+import bloomy.cozyspace.component.LabelButton
 import bloomy.cozyspace.utils.CustomDialogBox
 
 @Composable

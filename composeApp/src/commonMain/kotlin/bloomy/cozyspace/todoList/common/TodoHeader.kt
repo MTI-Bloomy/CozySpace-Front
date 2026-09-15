@@ -39,7 +39,6 @@ fun TodoHeader(
     val currentDate = sdf.format(Date())
 
     // To keep the corner in the top left in landscape mode and desktop version
-    // Also
     val mirrored = isCompact && isTodoList
 
     val titleFontSize = 42.sp

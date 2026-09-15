@@ -40,7 +40,7 @@ import bloomy.cozyspace.todoList.utils.Frequency
 import bloomy.cozyspace.todoList.utils.toCategory
 import bloomy.cozyspace.todoList.utils.toFrequency
 import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.todoItem_More
+import cozyspace.composeapp.generated.resources.more_vert
 import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Instant
 
@@ -165,7 +165,7 @@ fun TodoItem(
                 onClick = { showDetailPopup = true },
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.todoItem_More),
+                    painter = painterResource(Res.drawable.more_vert),
                     contentDescription = "More",
                     tint = WhiteBackground,
                 )

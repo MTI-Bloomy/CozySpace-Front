@@ -1,4 +1,4 @@
-package bloomy.cozyspace.todoList.component.microComponent
+package bloomy.cozyspace.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

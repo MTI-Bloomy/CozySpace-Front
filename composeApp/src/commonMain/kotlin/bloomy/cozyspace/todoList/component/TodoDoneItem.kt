@@ -33,8 +33,8 @@ import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.utils.CategoryName
 import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.todoItem_More
-import cozyspace.composeapp.generated.resources.todoItem_Tick
+import cozyspace.composeapp.generated.resources.more_vert
+import cozyspace.composeapp.generated.resources.check
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -69,7 +69,7 @@ fun TodoDoneItem(
                     .background(MidDarkGreen),
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.todoItem_Tick),
+                    painter = painterResource(Res.drawable.check),
                     contentDescription = "More",
                     tint = WhiteBackground,
                     modifier = Modifier.size(28.dp),
@@ -150,7 +150,7 @@ fun TodoDoneItem(
                 onClick = { },
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.todoItem_More),
+                    painter = painterResource(Res.drawable.more_vert),
                     contentDescription = "More",
                     tint = WhiteBackground,
                 )

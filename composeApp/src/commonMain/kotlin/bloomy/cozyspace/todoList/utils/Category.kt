@@ -16,12 +16,11 @@ import bloomy.cozyspace.theme.TransparentPurpleBubble
 import bloomy.cozyspace.theme.TransparentRedBubble
 import bloomy.cozyspace.theme.TransparentYellowBubble
 import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.todoCategoryBathroom
-import cozyspace.composeapp.generated.resources.todoCategoryBedroom
-import cozyspace.composeapp.generated.resources.todoCategoryGarden
-import cozyspace.composeapp.generated.resources.todoCategoryKitchen
-import cozyspace.composeapp.generated.resources.todoCategoryWork
-import cozyspace.composeapp.generated.resources.todoItem_More
+import cozyspace.composeapp.generated.resources.shower
+import cozyspace.composeapp.generated.resources.bed
+import cozyspace.composeapp.generated.resources.nature
+import cozyspace.composeapp.generated.resources.oven_gen
+import cozyspace.composeapp.generated.resources.backpack
 import org.jetbrains.compose.resources.DrawableResource
 
 enum class Category(
@@ -35,7 +34,7 @@ enum class Category(
             light = LightYellowBubble,
             transparent = TransparentYellowBubble
         ),
-        Res.drawable.todoCategoryKitchen
+        Res.drawable.oven_gen
     ),
 
     Work(
@@ -44,7 +43,7 @@ enum class Category(
             light = LightPurpleBubble,
             transparent = TransparentPurpleBubble
         ),
-        Res.drawable.todoCategoryWork
+        Res.drawable.backpack
     ),
 
     Bedroom(
@@ -53,7 +52,7 @@ enum class Category(
             light = LightRedBubble,
             transparent = TransparentRedBubble
         ),
-        Res.drawable.todoCategoryBedroom
+        Res.drawable.bed
     ),
 
     Garden(
@@ -62,7 +61,7 @@ enum class Category(
             light = LightGreenBubble,
             transparent = TransparentGreenBubble
         ),
-        Res.drawable.todoCategoryGarden
+        Res.drawable.nature
     ),
 
     Bathroom(
@@ -71,6 +70,6 @@ enum class Category(
             light = LightBlueBubble,
             transparent = TransparentBlueBubble
         ),
-        Res.drawable.todoCategoryBathroom
+        Res.drawable.shower
     )
 }

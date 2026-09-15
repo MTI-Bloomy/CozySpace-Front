@@ -69,9 +69,9 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     Icon(
                         painter = painterResource(
                             if (isCreatedUsernameValid(username))
-                                Res.drawable.createAccount_check
+                                Res.drawable.check
                             else
-                                Res.drawable.signIn_person
+                                Res.drawable.person
                         ),
                         contentDescription = "",
                         tint = if (isCreatedUsernameValid(username))
@@ -114,9 +114,9 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     Icon(
                         painter = painterResource(
                             if (isCreatedEmailValid(email))
-                                Res.drawable.createAccount_check
+                                Res.drawable.check
                             else
-                                Res.drawable.createAccount_email
+                                Res.drawable.mail
                         ),
                         contentDescription = "",
                         tint = if (isCreatedEmailValid(email))
@@ -167,9 +167,9 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     Icon(
                         painter = painterResource(
                             if (isCreatedPasswordValid(password))
-                                Res.drawable.createAccount_check
+                                Res.drawable.check
                             else
-                                Res.drawable.signIn_lock
+                                Res.drawable.lock
                         ),
                         contentDescription = "",
                         tint = if (isCreatedPasswordValid(password))
@@ -185,9 +185,9 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                         Icon(
                             painter = painterResource(
                                 if (isPasswordVisible)
-                                    Res.drawable.signIn_visibility
+                                    Res.drawable.visibility
                                 else
-                                    Res.drawable.signIn_visibility_off
+                                    Res.drawable.visibility_off
                             ),
                             contentDescription = null,
                             tint = WhiteBackground
@@ -238,9 +238,9 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     Icon(
                         painter = painterResource(
                             if (isCreatedPasswordConfirmationValid(password, passwordConfirmation))
-                                Res.drawable.createAccount_check
+                                Res.drawable.check
                             else
-                                Res.drawable.signIn_lock
+                                Res.drawable.lock
                         ),
                         contentDescription = "",
                         tint = if (isCreatedPasswordConfirmationValid(password, passwordConfirmation))
@@ -256,9 +256,9 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                         Icon(
                             painter = painterResource(
                                 if (isPasswordConfirmationVisible)
-                                    Res.drawable.signIn_visibility
+                                    Res.drawable.visibility
                                 else
-                                    Res.drawable.signIn_visibility_off
+                                    Res.drawable.visibility_off
                             ),
                             contentDescription = null,
                             tint = WhiteBackground

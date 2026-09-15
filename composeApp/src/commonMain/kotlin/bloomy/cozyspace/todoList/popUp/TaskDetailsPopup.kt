@@ -27,7 +27,7 @@ import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.component.FrequencyDetails
 import bloomy.cozyspace.todoList.component.TodoName
-import bloomy.cozyspace.todoList.component.microComponent.LabelButton
+import bloomy.cozyspace.component.LabelButton
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Frequency
 import bloomy.cozyspace.utils.CustomDialogBox

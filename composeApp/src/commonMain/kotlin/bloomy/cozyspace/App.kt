@@ -122,7 +122,7 @@ fun App() {
                 onClick = {
                     userStore.accept(UserStore.Intent.Register(
                         RegisterRequestDto(
-                            email = "user@example.com",
+                            mail = "user@example.com",
                             password = "password"
                         )
                     ))
@@ -137,7 +137,7 @@ fun App() {
                 onClick = {
                     userStore.accept(UserStore.Intent.Login(
                         LoginRequestDto(
-                            email = "user@example.com",
+                            mail = "user@example.com",
                             password = "password"
                         )
                     ))
