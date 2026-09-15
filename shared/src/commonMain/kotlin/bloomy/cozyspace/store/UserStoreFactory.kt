@@ -4,6 +4,7 @@ import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.dto.LoginDto
+import bloomy.cozyspace.data.dto.LoginRequestDto
 import bloomy.cozyspace.domain.Token
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.interfaces.ApiResult
@@ -19,14 +20,14 @@ class UserStoreFactory(
     private val repository: AuthentificationRepository,
     private val storages: Storages,
     private val storeFactory: StoreFactory = DefaultStoreFactory(),
-    private val onAuthStateChanged: suspend () -> Unit = {}
+    private val onAuthStateChanged: suspend () -> Unit = {},
 ) {
     suspend fun create(): UserStore {
         val cache = storages.userStorage.get()
 
         val initialState = UserStore.State(
             token = cache?.token ?: Token("", ""),
-            user = cache?.user ?: User("", "", "", null)
+            user = cache?.user ?: User("", "", "", null),
         )
 
         return object : UserStore,
@@ -34,7 +35,7 @@ class UserStoreFactory(
                 name = "UserStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
@@ -49,15 +50,16 @@ class UserStoreFactory(
         data class Error(val message: String) : Msg
     }
 
-    private inner class ExecutorImpl :CoroutineExecutor<
+    private inner class ExecutorImpl : CoroutineExecutor<
         UserStore.Intent,
         Unit,
         UserStore.State,
         Msg,
-        UserStore.Label>() {
+        UserStore.Label,
+        >() {
 
         override fun executeIntent(
-            intent: UserStore.Intent
+            intent: UserStore.Intent,
         ) {
             when (intent) {
                 is UserStore.Intent.Logout -> {
@@ -80,7 +82,13 @@ class UserStoreFactory(
                         when (val result = repository.register(intent.request)) {
                             is ApiResult.Success -> {
                                 dispatch(Msg.Register)
-                                publish(UserStore.Label.RegisterSuccess)
+
+                                login(
+                                    LoginRequestDto(
+                                        email = intent.request.email,
+                                        password = intent.request.password,
+                                    ),
+                                )
                             }
 
                             is ApiResult.Error -> {
@@ -95,34 +103,35 @@ class UserStoreFactory(
 
                 is UserStore.Intent.Login -> {
                     dispatch(Msg.Loading)
-
-                    scope.launch {
-                        when (val result = repository.login(intent.request)) {
-                            is ApiResult.Success -> {
-                                dispatch(Msg.Login(result.data))
-
-                                storages.userStorage.save(
-                                    UserCache(
-                                        token = Token(
-                                            result.data.idToken,
-                                            result.data.refreshToken.orEmpty()
-                                        ),
-                                        user = state().user
-                                    )
-                                )
-
-                                publish(UserStore.Label.LoginSuccess)
-                            }
-
-                            is ApiResult.Error -> {
-                                dispatch(Msg.Error(result.message))
-                                publish(UserStore.Label.ShowError(result.message))
-                            }
-
-                            ApiResult.Offline -> dispatch(Msg.Offline)
-                        }
-                    }
+                    scope.launch { login(intent.request) }
                 }
+            }
+        }
+
+        private suspend fun login(request: LoginRequestDto) {
+            when (val result = repository.login(request)) {
+                is ApiResult.Success -> {
+                    dispatch(Msg.Login(result.data))
+
+                    storages.userStorage.save(
+                        UserCache(
+                            token = Token(
+                                result.data.idToken,
+                                result.data.refreshToken.orEmpty(),
+                            ),
+                            user = state().user,
+                        ),
+                    )
+
+                    publish(UserStore.Label.LoginSuccess)
+                }
+
+                is ApiResult.Error -> {
+                    dispatch(Msg.Error(result.message))
+                    publish(UserStore.Label.ShowError(result.message))
+                }
+
+                ApiResult.Offline -> dispatch(Msg.Offline)
             }
         }
     }
@@ -133,7 +142,7 @@ class UserStoreFactory(
                 Msg.Loading ->
                     copy(
                         loading = true,
-                        error = null
+                        error = null,
                     )
 
                 Msg.Offline -> copy(
@@ -147,7 +156,7 @@ class UserStoreFactory(
                 is Msg.Register ->
                     copy(
                         loading = false,
-                        error = null
+                        error = null,
                     )
 
                 is Msg.Login ->
@@ -155,15 +164,15 @@ class UserStoreFactory(
                         loading = false,
                         token = Token(
                             idToken = msg.response.idToken,
-                            refreshToken = msg.response.refreshToken.orEmpty()
+                            refreshToken = msg.response.refreshToken.orEmpty(),
                         ),
-                        error = null
+                        error = null,
                     )
 
                 is Msg.Error ->
                     copy(
                         loading = false,
-                        error = msg.message
+                        error = msg.message,
                     )
             }
     }

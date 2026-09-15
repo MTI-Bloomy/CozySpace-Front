@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface HouseStore : Store<HouseStore.Intent, HouseStore.State, HouseStore.Label> {
     sealed interface Intent {
         data object GetHouse : Intent
+        data class CreateHouse(val name: String) : Intent
         data class SaveHouse(val houseId: String) : Intent
         data object Clear : Intent
     }

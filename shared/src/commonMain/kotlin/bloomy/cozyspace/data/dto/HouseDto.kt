@@ -15,6 +15,11 @@ data class HouseDto(
     val rooms: List<String>,
 )
 
+@Serializable
+data class createHouseRequestDto (
+    val name: String,
+)
+
 fun HouseDto.toDomain(): House = House(
     id = id,
     name = name,

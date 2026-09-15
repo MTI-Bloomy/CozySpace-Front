@@ -16,7 +16,7 @@ import bloomy.cozyspace.store.Stores
 @Composable
 fun SignUpScreen(navController: NavHostController, stores: Stores) {
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         val isCompact = maxWidth < 600.dp
         val density = LocalDensity.current
@@ -33,15 +33,15 @@ fun SignUpScreen(navController: NavHostController, stores: Stores) {
                         maxWidth * 0.18f
                     } else {
                         maxWidth * 0.40f
-                    }
+                    },
                 )
             },
             content = {
                 SignUpForm(
                     navController = navController,
-                    stores = stores
+                    stores = stores,
                 )
-            }
+            },
         )
     }
 }

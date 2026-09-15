@@ -32,7 +32,7 @@ fun PasswordStrengthBar(password: String) {
         Red,
         Orange,
         MidLightGreen,
-        DarkGreen
+        DarkGreen,
     )
 
     val labels = listOf(
@@ -40,14 +40,14 @@ fun PasswordStrengthBar(password: String) {
         "Very weak",
         "Weak",
         "Medium",
-        "Strong"
+        "Strong",
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
         // BAR
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             for (i in 1..4) {
                 Box(
@@ -57,8 +57,8 @@ fun PasswordStrengthBar(password: String) {
                         .clip(RoundedCornerShape(4.dp))
                         .background(
                             if (i <= strength) colors[strength]
-                            else Color.LightGray.copy(alpha = 0.3f)
-                        )
+                            else Color.LightGray.copy(alpha = 0.3f),
+                        ),
                 )
             }
         }
@@ -70,7 +70,7 @@ fun PasswordStrengthBar(password: String) {
             text = labels[strength],
             modifier = Modifier.align(Alignment.End),
             fontSize = 12.sp,
-            color = colors[strength]
+            color = colors[strength],
         )
     }
 }

@@ -4,6 +4,7 @@ import bloomy.cozyspace.cache.HouseCache
 import bloomy.cozyspace.cache.HouseStorage
 import bloomy.cozyspace.cache.SyncQueue
 import bloomy.cozyspace.data.HouseRepository
+import bloomy.cozyspace.data.dto.createHouseRequestDto
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.House
 import bloomy.cozyspace.interfaces.ApiResult
@@ -41,6 +42,7 @@ class HouseStoreFactory(
         data object Loading : Msg
         data object Offline : Msg
         data class GetHouseSuccess(val house: List<House>) : Msg
+        data class CreateHouseSuccess(val house: House) : Msg
         data class SaveHouseSuccess(val house: House) : Msg
         data class Error(val message: String) : Msg
         data object Clear : Msg
@@ -91,23 +93,47 @@ class HouseStoreFactory(
                     }
                 }
 
+                is HouseStore.Intent.CreateHouse -> {
+                    dispatch(Msg.Loading)
+                    scope.launch { createHouse(createHouseRequestDto(intent.name)) }
+                }
+
                 HouseStore.Intent.Clear -> dispatch(Msg.Clear)
+            }
+        }
+
+        private suspend fun createHouse(request: createHouseRequestDto) {
+            when (val result = repository.createHouse(request)) {
+                is ApiResult.Success -> {
+                    dispatch(Msg.CreateHouseSuccess(result.data.toDomain()))
+                }
+
+                is ApiResult.Error -> {
+                    dispatch(Msg.Error(result.message))
+                    publish(HouseStore.Label.ShowError(result.message))
+                }
+
+                ApiResult.Offline -> dispatch(Msg.Offline)
             }
         }
 
         private suspend fun getHouse() {
             when (val result = repository.getHouse()) {
                 is ApiResult.Success -> {
-                    val houses = result.data.map { it.toDomain() }
+                    if (result.data.isEmpty()) {
+                        createHouse(createHouseRequestDto(name = "Default"))
+                    } else {
+                        val houses = result.data.map { it.toDomain() }
 
-                    dispatch(Msg.GetHouseSuccess(houses))
+                        dispatch(Msg.GetHouseSuccess(houses))
 
-                    storage.save(
-                        HouseCache(
-                            house = houses.find { it.saveDate == null },
-                            savedHouses = houses.filter { it.saveDate != null },
-                        ),
-                    )
+                        storage.save(
+                            HouseCache(
+                                house = houses.find { it.saveDate == null },
+                                savedHouses = houses.filter { it.saveDate != null },
+                            ),
+                        )
+                    }
                 }
 
                 is ApiResult.Error -> {
@@ -137,6 +163,12 @@ class HouseStoreFactory(
                     loading = false,
                     house = msg.house.find { it.saveDate == null },
                     savedHouses = msg.house.filter { it.saveDate != null },
+                    error = null,
+                )
+
+                is Msg.CreateHouseSuccess -> copy(
+                    loading = false,
+                    house = msg.house,
                     error = null,
                 )
 

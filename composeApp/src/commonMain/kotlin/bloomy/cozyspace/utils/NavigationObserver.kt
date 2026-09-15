@@ -32,10 +32,6 @@ fun ObserveUserNavigation(stores: Stores, navController: NavController) {
                         popUpTo(Screen.SignIn.route) { inclusive = true }
                     }
 
-                    UserStore.Label.RegisterSuccess -> navController.navigate(Screen.SignIn.route) {
-                        popUpTo(Screen.SignIn.route) { inclusive = true }
-                    }
-
                     else -> Unit
                 }
             },
