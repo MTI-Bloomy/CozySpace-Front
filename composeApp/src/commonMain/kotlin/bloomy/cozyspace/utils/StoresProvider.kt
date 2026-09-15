@@ -51,6 +51,7 @@ fun rememberTodoListStore(env: AppEnvironment) =
     produceState<TodoListStore?>(initialValue = null, env.httpClient) {
         value = TodoListStoreFactory(
             repository = TodoListRepository(ApiService(env.httpClient, env.networkMonitor)),
+            storage = env.storages.todoListStorage,
         ).create().also { it.init() }
     }
 
@@ -59,5 +60,6 @@ fun rememberTodoDoneStore(env: AppEnvironment) =
     produceState<TodoDoneStore?>(initialValue = null, env.httpClient) {
         value = TodoDoneStoreFactory(
             repository = TodoDoneRepository(ApiService(env.httpClient, env.networkMonitor)),
+            storage = env.storages.todoDoneStorage,
         ).create().also { it.init() }
     }

@@ -1,5 +1,7 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.TodoListCache
+import bloomy.cozyspace.cache.TodoListStorage
 import bloomy.cozyspace.data.TodoListRepository
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.Todo
@@ -13,11 +15,14 @@ import kotlinx.coroutines.launch
 
 class TodoListStoreFactory(
     private val repository: TodoListRepository,
-    private val storeFactory: StoreFactory = DefaultStoreFactory()
+    private val storage: TodoListStorage,
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): TodoListStore {
+        val cache = storage.get()
+
         val initialState = TodoListStore.State(
-            todoList = emptyList()
+            todoList = cache?.todoList ?: emptyList(),
         )
 
         return object : TodoListStore,
@@ -25,7 +30,7 @@ class TodoListStoreFactory(
                 name = "TodoListStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
@@ -45,7 +50,7 @@ class TodoListStoreFactory(
         Unit,
         TodoListStore.State,
         Msg,
-        TodoListStore.Label
+        TodoListStore.Label,
         >() {
 
         override fun executeIntent(intent: TodoListStore.Intent) {
@@ -56,7 +61,15 @@ class TodoListStoreFactory(
                     scope.launch {
                         when (val result = repository.getTodoList()) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.GetTodoListSuccess(result.data.map { it.toDomain() }))
+                                val todoList = result.data.map { it.toDomain() }
+
+                                dispatch(Msg.GetTodoListSuccess(todoList))
+
+                                storage.save(
+                                    TodoListCache(
+                                        todoList = todoList,
+                                    ),
+                                )
                             }
 
                             is ApiResult.Error -> {
@@ -75,7 +88,15 @@ class TodoListStoreFactory(
                     scope.launch {
                         when (val result = repository.createTodo(intent.todo)) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.CreateTodoSuccess(result.data.toDomain()))
+                                val todo = result.data.toDomain()
+
+                                dispatch(Msg.CreateTodoSuccess(todo))
+
+                                storage.save(
+                                    TodoListCache(
+                                        todoList = state().todoList + todo,
+                                    ),
+                                )
                             }
 
                             is ApiResult.Error -> {
@@ -95,6 +116,12 @@ class TodoListStoreFactory(
                         when (val result = repository.completeTodo(intent.todoId)) {
                             is ApiResult.Success -> {
                                 dispatch(Msg.CompleteTodoSuccess(intent.todoId))
+
+                                storage.save(
+                                    TodoListCache(
+                                        todoList = state().todoList.filter { it.id != intent.todoId },
+                                    ),
+                                )
                             }
 
                             is ApiResult.Error -> {
@@ -113,7 +140,17 @@ class TodoListStoreFactory(
                     scope.launch {
                         when (val result = repository.modifyTodo(intent.todoId, intent.todo)) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.ModifyTodoSuccess(result.data.toDomain()))
+                                val todo = result.data.toDomain()
+
+                                dispatch(Msg.ModifyTodoSuccess(todo))
+
+                                storage.save(
+                                    TodoListCache(
+                                        todoList = state().todoList.map { todo ->
+                                            if (todo.id == todo.id) todo else todo
+                                        },
+                                    ),
+                                )
                             }
 
                             is ApiResult.Error -> {
@@ -133,6 +170,12 @@ class TodoListStoreFactory(
                         when (val result = repository.deleteTodo(intent.todoId)) {
                             is ApiResult.Success -> {
                                 dispatch(Msg.DeleteTodoSuccess(intent.todoId))
+
+                                storage.save(
+                                    TodoListCache(
+                                        todoList = state().todoList.filter { it.id != intent.todoId },
+                                    ),
+                                )
                             }
 
                             is ApiResult.Error -> {
@@ -153,7 +196,7 @@ class TodoListStoreFactory(
             return when (msg) {
                 Msg.Loading -> copy(
                     loading = true,
-                    error = null
+                    error = null,
                 )
 
                 Msg.Offline -> copy(
@@ -164,19 +207,19 @@ class TodoListStoreFactory(
                 is Msg.GetTodoListSuccess -> copy(
                     loading = false,
                     todoList = msg.todoList,
-                    error = null
+                    error = null,
                 )
 
                 is Msg.CreateTodoSuccess -> copy(
                     loading = false,
                     todoList = todoList + msg.todo,
-                    error = null
+                    error = null,
                 )
 
                 is Msg.CompleteTodoSuccess -> copy(
                     loading = false,
                     todoList = todoList.filter { it.id != msg.initId },
-                    error = null
+                    error = null,
                 )
 
                 is Msg.ModifyTodoSuccess -> copy(
@@ -184,18 +227,18 @@ class TodoListStoreFactory(
                     todoList = todoList.map { todo ->
                         if (todo.id == msg.todo.id) msg.todo else todo
                     },
-                    error = null
+                    error = null,
                 )
 
                 is Msg.DeleteTodoSuccess -> copy(
                     loading = false,
                     todoList = todoList.filter { it.id != msg.deleteId },
-                    error = null
+                    error = null,
                 )
 
                 is Msg.Error -> copy(
                     loading = false,
-                    error = msg.message
+                    error = msg.message,
                 )
             }
         }

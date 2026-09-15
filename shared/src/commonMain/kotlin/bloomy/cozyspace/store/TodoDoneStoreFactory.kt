@@ -1,5 +1,7 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.TodoDoneCache
+import bloomy.cozyspace.cache.TodoDoneStorage
 import bloomy.cozyspace.data.TodoDoneRepository
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.Todo
@@ -13,11 +15,14 @@ import kotlinx.coroutines.launch
 
 class TodoDoneStoreFactory(
     private val repository: TodoDoneRepository,
+    private val storage: TodoDoneStorage,
     private val storeFactory: StoreFactory = DefaultStoreFactory()
 ) {
     suspend fun create(): TodoDoneStore {
+        val cache = storage.get()
+
         val initialState = TodoDoneStore.State(
-            todoDone = emptyList()
+            todoDone = cache?.todoDone ?: emptyList()
         )
 
         return object : TodoDoneStore,
@@ -52,7 +57,15 @@ class TodoDoneStoreFactory(
                     scope.launch {
                         when (val result = repository.getTodoDone()) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.GetTodoDoneSuccess(result.data.map { it.toDomain() }))
+                                val todoDone = result.data.map { it.toDomain() }
+
+                                dispatch(Msg.GetTodoDoneSuccess(todoDone))
+
+                                storage.save(
+                                    TodoDoneCache(
+                                        todoDone = todoDone,
+                                    )
+                                )
                             }
 
                             is ApiResult.Error -> {

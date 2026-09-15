@@ -26,6 +26,8 @@ import bloomy.cozyspace.store.HouseStore
 import bloomy.cozyspace.store.RewardStore
 import bloomy.cozyspace.store.RoomStore
 import bloomy.cozyspace.store.Stores
+import bloomy.cozyspace.store.TodoDoneStore
+import bloomy.cozyspace.store.TodoListStore
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
@@ -73,6 +75,8 @@ fun App() {
     ObserveErrors(stores.house, snackbarHostState, scope) { (it as? HouseStore.Label.ShowError)?.message }
     ObserveErrors(stores.room, snackbarHostState, scope) { (it as? RoomStore.Label.ShowError)?.message }
     ObserveErrors(stores.reward, snackbarHostState, scope) { (it as? RewardStore.Label.ShowError)?.message }
+    ObserveErrors(stores.todoList, snackbarHostState, scope) { (it as? TodoListStore.Label.ShowError)?.message }
+    ObserveErrors(stores.todoDone, snackbarHostState, scope) { (it as? TodoDoneStore.Label.ShowError)?.message }
 
     val isOnline by env.networkMonitor.isOnline.collectAsState()
 

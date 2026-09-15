@@ -3,6 +3,7 @@ package bloomy.cozyspace.cache
 import bloomy.cozyspace.domain.House
 import bloomy.cozyspace.domain.Reward
 import bloomy.cozyspace.domain.Room
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.domain.Token
 import bloomy.cozyspace.domain.User
 import kotlinx.serialization.Serializable
@@ -27,4 +28,14 @@ data class RoomCache(
 @Serializable
 data class RewardCache(
     val rewards: List<Reward>
+)
+
+@Serializable
+data class TodoListCache(
+    val todoList: List<Todo>
+)
+
+@Serializable
+data class TodoDoneCache(
+    val todoDone: List<Todo>
 )
