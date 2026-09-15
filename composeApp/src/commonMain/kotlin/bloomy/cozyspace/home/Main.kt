@@ -125,7 +125,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                         ) {
                             Icon(
                                 painter = painterResource(Res.drawable.save),
-                                contentDescription = "Sauvegardes",
+                                contentDescription = "Saves",
                                 tint = WhiteBackground,
                             )
                         }
@@ -162,7 +162,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                     ) {
                         Icon(
                             painter = painterResource(Res.drawable.logout),
-                            contentDescription = "Se déconnecter",
+                            contentDescription = "Log out",
                             tint = WhiteBackground,
                         )
                     }
@@ -182,7 +182,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                     IconButton(onClick = { goToPreviousRoom() }) {
                         Icon(
                             painter = painterResource(Res.drawable.arrow_forward),
-                            contentDescription = "Room précédente",
+                            contentDescription = "Previous room",
                             modifier = Modifier
                                 .size(36.dp)
                                 .graphicsLayer { scaleX = -1f }, // flip pour pointer à gauche
@@ -235,7 +235,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                     IconButton(onClick = { goToNextRoom() }) {
                         Icon(
                             painter = painterResource(Res.drawable.arrow_forward),
-                            contentDescription = "Room suivante",
+                            contentDescription = "Next room",
                             modifier = Modifier.size(36.dp),
                             tint = DarkGreen,
                         )

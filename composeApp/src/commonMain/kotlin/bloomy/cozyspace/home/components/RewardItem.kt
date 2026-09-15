@@ -53,10 +53,7 @@ fun RoomView(roomType: RoomType, rewards: List<Reward>, storages: Storages) {
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit,
                 )
-            } /* else {
-                // TODO: Review this if necessary to display
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = DarkGreen)
-            } */
+            }
         }
     }
 }
