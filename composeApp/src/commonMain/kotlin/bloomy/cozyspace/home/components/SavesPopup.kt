@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -37,7 +36,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.draw.alpha
 import bloomy.cozyspace.home.components.microComponents.SaveItem
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.utils.CustomVerticalScrollbar
 import cozyspace.composeapp.generated.resources.add
 
 @Composable
