@@ -15,4 +15,8 @@ class HouseRepository(
     suspend fun createHouse(request: createHouseRequestDto): ApiResult<HouseDto> {
         return api.createHouse(request)
     }
+
+    suspend fun saveHouse(houseId: String): ApiResult<HouseDto> {
+        return api.saveHouse(houseId)
+    }
 }

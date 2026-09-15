@@ -18,9 +18,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 class ApiService(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val networkMonitor: NetworkMonitor,
 ) {
-    suspend fun signup(request: RegisterRequestDto): ApiResult<RegisterDto> = safeApiCall {
+    suspend fun signup(request: RegisterRequestDto): ApiResult<RegisterDto> = safeApiCall(networkMonitor) {
             client.post("${Environment.API_URL}/sign-up") {
                 skipAuth()
                 contentType(ContentType.Application.Json)
@@ -28,7 +29,7 @@ class ApiService(
             }
         }
 
-    suspend fun signin(request: LoginRequestDto): ApiResult<LoginDto> = safeApiCall {
+    suspend fun signin(request: LoginRequestDto): ApiResult<LoginDto> = safeApiCall(networkMonitor) {
             client.post("${Environment.API_URL}/sign-in") {
                 skipAuth()
                 contentType(ContentType.Application.Json)
@@ -36,33 +37,37 @@ class ApiService(
             }
         }
 
-    suspend fun getRewards(): ApiResult<List<RewardDto>> = safeApiCall {
+    suspend fun getRewards(): ApiResult<List<RewardDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/reward")
     }
 
-    suspend fun getReward(rewardId: String): ApiResult<RewardDto> = safeApiCall {
+    suspend fun getReward(rewardId: String): ApiResult<RewardDto> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/reward/$rewardId")
     }
 
-    suspend fun chooseReward(request: ChooseRewardRequestDto) : ApiResult<RewardDto> = safeApiCall {
+    suspend fun chooseReward(request: ChooseRewardRequestDto) : ApiResult<RewardDto> = safeApiCall(networkMonitor) {
         client.put("${Environment.API_URL}/reward/choose") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }
     }
 
-    suspend fun getRooms(houseId: String): ApiResult<List<RoomDto>> = safeApiCall {
+    suspend fun getRooms(houseId: String): ApiResult<List<RoomDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/room?houseId=$houseId")
     }
 
-    suspend fun getHouse(): ApiResult<List<HouseDto>> = safeApiCall {
+    suspend fun getHouse(): ApiResult<List<HouseDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/house")
     }
 
-    suspend fun createHouse(request: createHouseRequestDto): ApiResult<HouseDto> = safeApiCall {
+    suspend fun createHouse(request: createHouseRequestDto): ApiResult<HouseDto> = safeApiCall(networkMonitor) {
         client.post("${Environment.API_URL}/house") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }
+    }
+
+    suspend fun saveHouse(houseId: String): ApiResult<HouseDto> = safeApiCall(networkMonitor) {
+        client.put("${Environment.API_URL}/house/${houseId}/save")
     }
 }

@@ -6,5 +6,5 @@ sealed interface ApiResult<out T> {
         val code: Int? = null,
         val message: String
     ) : ApiResult<Nothing>
-    data object Empty : ApiResult<Nothing>
+    data object Offline : ApiResult<Nothing>
 }

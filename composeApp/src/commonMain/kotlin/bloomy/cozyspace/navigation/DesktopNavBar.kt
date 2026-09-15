@@ -62,7 +62,7 @@ fun DesktopNavBar(
                 dampingRatio = 0.6f,
                 stiffness = Spring.StiffnessLow,
             ),
-            label = "Indicator Size"
+            label = "Indicator Size",
         )
 
         Box(
@@ -86,8 +86,8 @@ fun DesktopNavBar(
                     .size(indicatorSize)
                     .background(
                         WhiteBackground,
-                        shape = CircleShape
-                    )
+                        shape = CircleShape,
+                    ),
             )
         }
 
@@ -118,16 +118,18 @@ fun DesktopNavBar(
                         dampingRatio = 0.6f,
                         stiffness = Spring.StiffnessLow,
                     ),
-                    label = "Icon Size"
+                    label = "Icon Size",
                 )
 
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .clickable(interactionSource = remember {
-                            MutableInteractionSource()
-                        }) {
+                        .clickable(
+                            interactionSource = remember {
+                                MutableInteractionSource()
+                            },
+                        ) {
                             onItemSelected(index)
                         },
                     contentAlignment = Alignment.Center,
@@ -136,7 +138,7 @@ fun DesktopNavBar(
                         painter = navIcon(item),
                         contentDescription = null,
                         modifier = Modifier.size(iconSize),
-                        tint = iconTint
+                        tint = iconTint,
                     )
                 }
             }

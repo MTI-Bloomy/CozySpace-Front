@@ -7,35 +7,38 @@ import androidx.navigation.compose.composable
 import bloomy.cozyspace.MainApp
 import bloomy.cozyspace.auth.signIn.SignInScreen
 import bloomy.cozyspace.auth.signUp.SignUpScreen
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.navigation.screenRoutes.Screen
 import bloomy.cozyspace.store.Stores
 
 @Composable
-fun NavGraph (navController: NavHostController, stores: Stores) {
+fun NavGraph(navController: NavHostController, stores: Stores, storages: Storages, isOnline: Boolean) {
 
-    val startDestination = if(stores.user.state.token.idToken == "") Screen.SignIn.route else Screen.Main.route
+    val startDestination = if (stores.user.state.token.idToken == "") Screen.SignIn.route else Screen.Main.route
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
     ) {
         composable(Screen.SignIn.route) {
             SignInScreen(
                 navController = navController,
-                stores = stores
+                stores = stores,
             )
         }
 
         composable(Screen.CreateAccount.route) {
             SignUpScreen(
                 navController = navController,
-                stores = stores
+                stores = stores,
             )
         }
 
         composable(Screen.Main.route) {
             MainApp(
-                stores = stores
+                stores = stores,
+                storages = storages,
+                isOnline = isOnline,
             )
         }
     }

@@ -1,7 +1,7 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.UserCache
-import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.dto.LoginDto
 import bloomy.cozyspace.data.dto.LoginRequestDto
@@ -18,12 +18,12 @@ import kotlin.String
 
 class UserStoreFactory(
     private val repository: AuthentificationRepository,
-    private val storage: UserStorage,
+    private val storages: Storages,
     private val storeFactory: StoreFactory = DefaultStoreFactory(),
     private val onAuthStateChanged: suspend () -> Unit = {},
 ) {
     suspend fun create(): UserStore {
-        val cache = storage.get()
+        val cache = storages.userStorage.get()
 
         val initialState = UserStore.State(
             token = cache?.token ?: Token("", ""),
@@ -41,6 +41,7 @@ class UserStoreFactory(
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data object Logout : Msg
         data object Register : Msg
 
@@ -63,7 +64,10 @@ class UserStoreFactory(
             when (intent) {
                 is UserStore.Intent.Logout -> {
                     scope.launch {
-                        storage.clear()
+                        storages.userStorage.clear()
+                        storages.houseStorage.clear()
+                        storages.roomStorage.clear()
+                        storages.rewardStorage.clear()
                         onAuthStateChanged()
 
                         dispatch(Msg.Logout)
@@ -92,10 +96,7 @@ class UserStoreFactory(
                                 publish(UserStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(UserStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -112,7 +113,7 @@ class UserStoreFactory(
                 is ApiResult.Success -> {
                     dispatch(Msg.Login(result.data))
 
-                    storage.save(
+                    storages.userStorage.save(
                         UserCache(
                             token = Token(
                                 result.data.idToken,
@@ -130,10 +131,7 @@ class UserStoreFactory(
                     publish(UserStore.Label.ShowError(result.message))
                 }
 
-                ApiResult.Empty -> {
-                    dispatch(Msg.Error("Empty response from server"))
-                    publish(UserStore.Label.ShowError("Empty response from server"))
-                }
+                ApiResult.Offline -> dispatch(Msg.Offline)
             }
         }
     }
@@ -146,6 +144,11 @@ class UserStoreFactory(
                         loading = true,
                         error = null,
                     )
+
+                Msg.Offline -> copy(
+                    loading = false,
+                    error = null,
+                )
 
                 Msg.Logout ->
                     UserStore.State()
