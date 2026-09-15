@@ -19,7 +19,6 @@ import androidx.navigation.NavHostController
 import bloomy.cozyspace.auth.component.PasswordStrengthBar
 import bloomy.cozyspace.data.dto.RegisterRequestDto
 import bloomy.cozyspace.navigation.screenRoutes.Screen
-import bloomy.cozyspace.store.HouseStore
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.theme.DarkGreen
@@ -51,10 +50,11 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
             .fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.6f)
-        )
+            containerColor = Color.White.copy(alpha = 0.6f),
+        ),
     ) {
-        Column(modifier = Modifier.padding(24.dp)
+        Column(
+            modifier = Modifier.padding(24.dp),
         ) {
             // USERNAME
             TextField(
@@ -72,13 +72,13 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                             if (isCreatedUsernameValid(username))
                                 Res.drawable.createAccount_check
                             else
-                                Res.drawable.signIn_person
+                                Res.drawable.signIn_person,
                         ),
                         contentDescription = "",
                         tint = if (isCreatedUsernameValid(username))
                             DarkGreen
                         else
-                            WhiteBackground
+                            WhiteBackground,
                     )
                 },
                 shape = RoundedCornerShape(12.dp),
@@ -95,8 +95,8 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     focusedPlaceholderColor = WhiteBackground,
                     unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
 
-                    cursorColor = DarkGreen
-                )
+                    cursorColor = DarkGreen,
+                ),
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -117,13 +117,13 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                             if (isCreatedEmailValid(email))
                                 Res.drawable.createAccount_check
                             else
-                                Res.drawable.createAccount_email
+                                Res.drawable.createAccount_email,
                         ),
                         contentDescription = "",
                         tint = if (isCreatedEmailValid(email))
                             DarkGreen
                         else
-                            WhiteBackground
+                            WhiteBackground,
                     )
                 },
                 shape = RoundedCornerShape(12.dp),
@@ -140,8 +140,8 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     focusedPlaceholderColor = WhiteBackground,
                     unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
 
-                    cursorColor = DarkGreen
-                )
+                    cursorColor = DarkGreen,
+                ),
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -170,28 +170,31 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                             if (isCreatedPasswordValid(password))
                                 Res.drawable.createAccount_check
                             else
-                                Res.drawable.signIn_lock
+                                Res.drawable.signIn_lock,
                         ),
                         contentDescription = "",
                         tint = if (isCreatedPasswordValid(password))
                             DarkGreen
                         else
-                            WhiteBackground
-                    )},
+                            WhiteBackground,
+                    )
+                },
 
                 trailingIcon = {
-                    IconButton(onClick = {
-                        isPasswordVisible = !isPasswordVisible
-                    }) {
+                    IconButton(
+                        onClick = {
+                            isPasswordVisible = !isPasswordVisible
+                        },
+                    ) {
                         Icon(
                             painter = painterResource(
                                 if (isPasswordVisible)
                                     Res.drawable.signIn_visibility
                                 else
-                                    Res.drawable.signIn_visibility_off
+                                    Res.drawable.signIn_visibility_off,
                             ),
                             contentDescription = null,
-                            tint = WhiteBackground
+                            tint = WhiteBackground,
                         )
                     }
                 },
@@ -209,8 +212,8 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     focusedPlaceholderColor = WhiteBackground,
                     unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
 
-                    cursorColor = DarkGreen
-                )
+                    cursorColor = DarkGreen,
+                ),
             )
 
             Spacer(Modifier.height(8.dp))
@@ -241,28 +244,30 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                             if (isCreatedPasswordConfirmationValid(password, passwordConfirmation))
                                 Res.drawable.createAccount_check
                             else
-                                Res.drawable.signIn_lock
+                                Res.drawable.signIn_lock,
                         ),
                         contentDescription = "",
                         tint = if (isCreatedPasswordConfirmationValid(password, passwordConfirmation))
                             DarkGreen
                         else
-                            WhiteBackground
+                            WhiteBackground,
                     )
                 },
                 trailingIcon = {
-                    IconButton(onClick = {
-                        isPasswordConfirmationVisible = !isPasswordConfirmationVisible
-                    }) {
+                    IconButton(
+                        onClick = {
+                            isPasswordConfirmationVisible = !isPasswordConfirmationVisible
+                        },
+                    ) {
                         Icon(
                             painter = painterResource(
                                 if (isPasswordConfirmationVisible)
                                     Res.drawable.signIn_visibility
                                 else
-                                    Res.drawable.signIn_visibility_off
+                                    Res.drawable.signIn_visibility_off,
                             ),
                             contentDescription = null,
-                            tint = WhiteBackground
+                            tint = WhiteBackground,
                         )
                     }
                 },
@@ -280,8 +285,8 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     focusedPlaceholderColor = WhiteBackground,
                     unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
 
-                    cursorColor = DarkGreen
-                )
+                    cursorColor = DarkGreen,
+                ),
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -294,8 +299,9 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                             RegisterRequestDto(
                                 email = email,
                                 password = password,
-                            )
-                    ))
+                            ),
+                        ),
+                    )
                 },
                 enabled = isFormValid,
                 modifier = Modifier
@@ -303,13 +309,13 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                     .height(56.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = DarkGreen
-                )
+                    containerColor = DarkGreen,
+                ),
             ) {
                 Text(
                     text = "Let's get started !",
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
 
@@ -319,11 +325,11 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                 onClick = {
                     navController.navigate(Screen.SignIn.route)
                 },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             ) {
                 Text(
                     text = "Already an account ? Sign in",
-                    color = DarkGreen
+                    color = DarkGreen,
                 )
             }
         }

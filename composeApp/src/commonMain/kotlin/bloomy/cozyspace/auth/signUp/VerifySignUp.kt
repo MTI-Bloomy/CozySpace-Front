@@ -2,7 +2,7 @@ package bloomy.cozyspace.auth.signUp
 
 fun isCreatedEmailValid(email: String): Boolean {
     val emailAddressRegex = Regex(
-        "^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$"
+        "^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$",
     )
 
     return email.isNotBlank() && email.matches(emailAddressRegex);
