@@ -1,9 +1,14 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.HouseCache
+import bloomy.cozyspace.cache.HouseStorage
+import bloomy.cozyspace.cache.SyncQueue
 import bloomy.cozyspace.data.HouseRepository
+import bloomy.cozyspace.data.dto.createHouseRequestDto
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.House
 import bloomy.cozyspace.interfaces.ApiResult
+import bloomy.cozyspace.network.NetworkMonitor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -13,11 +18,15 @@ import kotlinx.coroutines.launch
 
 class HouseStoreFactory(
     private val repository: HouseRepository,
-    private val storeFactory: StoreFactory = DefaultStoreFactory()
+    private val storage: HouseStorage,
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): HouseStore {
+        val cache = storage.get()
+
         val initialState = HouseStore.State(
-            savedHouses = emptyList()
+            house = cache?.house,
+            savedHouses = cache?.savedHouses ?: emptyList(),
         )
 
         return object : HouseStore,
@@ -25,14 +34,18 @@ class HouseStoreFactory(
                 name = "HouseStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data class GetHouseSuccess(val house: List<House>) : Msg
+        data class CreateHouseSuccess(val house: House) : Msg
+        data class SaveHouseSuccess(val house: House) : Msg
         data class Error(val message: String) : Msg
+        data object Clear : Msg
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<
@@ -40,18 +53,34 @@ class HouseStoreFactory(
         Unit,
         HouseStore.State,
         Msg,
-        HouseStore.Label
+        HouseStore.Label,
         >() {
 
         override fun executeIntent(intent: HouseStore.Intent) {
             when (intent) {
                 HouseStore.Intent.GetHouse -> {
                     dispatch(Msg.Loading)
+                    scope.launch { getHouse() }
+                }
+
+                is HouseStore.Intent.SaveHouse -> {
+                    dispatch(Msg.Loading)
 
                     scope.launch {
-                        when (val result = repository.getHouse()) {
+                        when (val result = repository.saveHouse(intent.houseId)) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.GetHouseSuccess(result.data.map { it.toDomain() }))
+                                val house = result.data.toDomain()
+
+                                dispatch(Msg.SaveHouseSuccess(house))
+
+                                storage.save(
+                                    HouseCache(
+                                        house = null,
+                                        savedHouses = state().savedHouses + house,
+                                    ),
+                                )
+
+                                getHouse()
                             }
 
                             is ApiResult.Error -> {
@@ -59,13 +88,60 @@ class HouseStoreFactory(
                                 publish(HouseStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(HouseStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
+
+                is HouseStore.Intent.CreateHouse -> {
+                    dispatch(Msg.Loading)
+                    scope.launch { createHouse(createHouseRequestDto(intent.name)) }
+                }
+
+                HouseStore.Intent.Clear -> dispatch(Msg.Clear)
+            }
+        }
+
+        private suspend fun createHouse(request: createHouseRequestDto) {
+            when (val result = repository.createHouse(request)) {
+                is ApiResult.Success -> {
+                    dispatch(Msg.CreateHouseSuccess(result.data.toDomain()))
+                }
+
+                is ApiResult.Error -> {
+                    dispatch(Msg.Error(result.message))
+                    publish(HouseStore.Label.ShowError(result.message))
+                }
+
+                ApiResult.Offline -> dispatch(Msg.Offline)
+            }
+        }
+
+        private suspend fun getHouse() {
+            when (val result = repository.getHouse()) {
+                is ApiResult.Success -> {
+                    if (result.data.isEmpty()) {
+                        createHouse(createHouseRequestDto(name = "Default"))
+                    } else {
+                        val houses = result.data.map { it.toDomain() }
+
+                        dispatch(Msg.GetHouseSuccess(houses))
+
+                        storage.save(
+                            HouseCache(
+                                house = houses.find { it.saveDate == null },
+                                savedHouses = houses.filter { it.saveDate != null },
+                            ),
+                        )
+                    }
+                }
+
+                is ApiResult.Error -> {
+                    dispatch(Msg.Error(result.message))
+                    publish(HouseStore.Label.ShowError(result.message))
+                }
+
+                ApiResult.Offline -> dispatch(Msg.Offline)
             }
         }
     }
@@ -73,22 +149,42 @@ class HouseStoreFactory(
     private object ReducerImpl : Reducer<HouseStore.State, Msg> {
         override fun HouseStore.State.reduce(msg: Msg): HouseStore.State {
             return when (msg) {
-                is Msg.Loading -> copy(
+                Msg.Loading -> copy(
                     loading = true,
-                    error = null
+                    error = null,
+                )
+
+                Msg.Offline -> copy(
+                    loading = false,
+                    error = null,
                 )
 
                 is Msg.GetHouseSuccess -> copy(
                     loading = false,
                     house = msg.house.find { it.saveDate == null },
                     savedHouses = msg.house.filter { it.saveDate != null },
-                    error = null
+                    error = null,
+                )
+
+                is Msg.CreateHouseSuccess -> copy(
+                    loading = false,
+                    house = msg.house,
+                    error = null,
+                )
+
+                is Msg.SaveHouseSuccess -> copy(
+                    loading = false,
+                    house = null,
+                    savedHouses = savedHouses + msg.house,
+                    error = null,
                 )
 
                 is Msg.Error -> copy(
                     loading = false,
-                    error = msg.message
+                    error = msg.message,
                 )
+
+                Msg.Clear -> HouseStore.State()
             }
         }
     }

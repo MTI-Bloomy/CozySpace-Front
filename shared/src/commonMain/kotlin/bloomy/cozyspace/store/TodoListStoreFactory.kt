@@ -31,6 +31,7 @@ class TodoListStoreFactory(
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data class GetTodoListSuccess(val todoList: List<Todo>) : Msg
         data class CreateTodoSuccess(val todo: Todo) : Msg
         data class CompleteTodoSuccess(val initId: String) : Msg
@@ -63,10 +64,7 @@ class TodoListStoreFactory(
                                 publish(TodoListStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(TodoListStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -85,10 +83,7 @@ class TodoListStoreFactory(
                                 publish(TodoListStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(TodoListStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -107,10 +102,7 @@ class TodoListStoreFactory(
                                 publish(TodoListStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(TodoListStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -129,10 +121,7 @@ class TodoListStoreFactory(
                                 publish(TodoListStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(TodoListStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -151,10 +140,7 @@ class TodoListStoreFactory(
                                 publish(TodoListStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(TodoListStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -165,9 +151,14 @@ class TodoListStoreFactory(
     private object ReducerImpl : Reducer<TodoListStore.State, Msg> {
         override fun TodoListStore.State.reduce(msg: Msg): TodoListStore.State {
             return when (msg) {
-                is Msg.Loading -> copy(
+                Msg.Loading -> copy(
                     loading = true,
                     error = null
+                )
+
+                Msg.Offline -> copy(
+                    loading = false,
+                    error = null,
                 )
 
                 is Msg.GetTodoListSuccess -> copy(

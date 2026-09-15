@@ -59,10 +59,11 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
             .fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.6f)
-        )
+            containerColor = Color.White.copy(alpha = 0.6f),
+        ),
     ) {
-        Column(modifier = Modifier.padding(24.dp)
+        Column(
+            modifier = Modifier.padding(24.dp),
         ) {
             TextField(
                 value = email,
@@ -94,8 +95,8 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
                     focusedPlaceholderColor = WhiteBackground,
                     unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
 
-                    cursorColor = DarkGreen
-                )
+                    cursorColor = DarkGreen,
+                ),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -126,14 +127,14 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
                     IconButton(
                         onClick = {
                             passwordVisible = !passwordVisible
-                        }
+                        },
                     ) {
                         Icon(
                             painter = painterResource(
                                 if (passwordVisible)
                                     Res.drawable.visibility
                                 else
-                                    Res.drawable.visibility_off
+                                    Res.drawable.visibility_off,
                             ),
                             contentDescription = null,
                             tint = WhiteBackground,
@@ -154,8 +155,8 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
                     focusedPlaceholderColor = WhiteBackground,
                     unfocusedPlaceholderColor = WhiteBackground.copy(alpha = 0.7f),
 
-                    cursorColor = DarkGreen
-                )
+                    cursorColor = DarkGreen,
+                ),
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -166,22 +167,23 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
                         UserStore.Intent.Login(
                             LoginRequestDto(
                                 email = email,
-                                password = password
-                            )
-                    ))
+                                password = password,
+                            ),
+                        ),
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = DarkGreen
-                )
+                    containerColor = DarkGreen,
+                ),
             ) {
                 Text(
                     text = "Login",
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
 
@@ -191,11 +193,11 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
                 onClick = {
                     navController.navigate(Screen.CreateAccount.route)
                 },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             ) {
                 Text(
                     text = "Don't have an account ? Register",
-                    color = DarkGreen
+                    color = DarkGreen,
                 )
             }
         }

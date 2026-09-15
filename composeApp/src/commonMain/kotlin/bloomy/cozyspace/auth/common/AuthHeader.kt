@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,14 +28,14 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun AuthHeader(
     title: String,
-    imageWidth: Dp
+    imageWidth: Dp,
 ) {
     val animatedSize by animateDpAsState(
-        targetValue = imageWidth
+        targetValue = imageWidth,
     )
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
             painter = painterResource(Res.drawable.cozyspace_logo),
@@ -45,7 +44,7 @@ fun AuthHeader(
             modifier = Modifier
                 .width(animatedSize)
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(30.dp))
+                .clip(RoundedCornerShape(30.dp)),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -55,7 +54,7 @@ fun AuthHeader(
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             color = DarkGreen,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

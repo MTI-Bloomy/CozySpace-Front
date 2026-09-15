@@ -31,6 +31,7 @@ class TodoDoneStoreFactory(
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data class GetTodoDoneSuccess(val todoDone: List<Todo>) : Msg
         data class Error(val message: String) : Msg
     }
@@ -59,10 +60,7 @@ class TodoDoneStoreFactory(
                                 publish(TodoDoneStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(TodoDoneStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
@@ -73,9 +71,14 @@ class TodoDoneStoreFactory(
     private object ReducerImpl : Reducer<TodoDoneStore.State, Msg> {
         override fun TodoDoneStore.State.reduce(msg: Msg): TodoDoneStore.State {
             return when (msg) {
-                is Msg.Loading -> copy(
+                Msg.Loading -> copy(
                     loading = true,
                     error = null
+                )
+
+                Msg.Offline -> copy(
+                    loading = false,
+                    error = null,
                 )
 
                 is Msg.GetTodoDoneSuccess -> copy(

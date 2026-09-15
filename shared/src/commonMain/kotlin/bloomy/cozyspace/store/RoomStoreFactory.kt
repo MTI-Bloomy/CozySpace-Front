@@ -1,5 +1,7 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.RoomCache
+import bloomy.cozyspace.cache.RoomStorage
 import bloomy.cozyspace.data.RoomRepository
 import bloomy.cozyspace.data.dto.toDomain
 import bloomy.cozyspace.domain.Room
@@ -13,11 +15,14 @@ import kotlinx.coroutines.launch
 
 class RoomStoreFactory(
     private val repository: RoomRepository,
-    private val storeFactory: StoreFactory = DefaultStoreFactory()
+    private val storage: RoomStorage,
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): RoomStore {
+        val cache = storage.get()
+
         val initialState = RoomStore.State(
-            rooms = emptyList()
+            rooms = cache?.rooms ?: emptyList(),
         )
 
         return object : RoomStore,
@@ -25,23 +30,25 @@ class RoomStoreFactory(
                 name = "RoomStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data class GetRoomsSuccess(val rooms: List<Room>) : Msg
         data class Error(val message: String) : Msg
+        data object Clear : Msg
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<
-        RoomStore.Intent,
-        Unit,
-        RoomStore.State,
-        Msg,
-        RoomStore.Label
-        >() {
+            RoomStore.Intent,
+            Unit,
+            RoomStore.State,
+            Msg,
+            RoomStore.Label,
+            >() {
 
         override fun executeIntent(intent: RoomStore.Intent) {
             when (intent) {
@@ -51,7 +58,11 @@ class RoomStoreFactory(
                     scope.launch {
                         when (val result = repository.getRooms(intent.houseId)) {
                             is ApiResult.Success -> {
-                                dispatch(Msg.GetRoomsSuccess(result.data.map { it.toDomain() }))
+                                val rooms = result.data.map { it.toDomain() }
+
+                                if (!intent.saveMode) storage.save(RoomCache(rooms))
+
+                                dispatch(Msg.GetRoomsSuccess(rooms))
                             }
 
                             is ApiResult.Error -> {
@@ -59,13 +70,12 @@ class RoomStoreFactory(
                                 publish(RoomStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(RoomStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
+
+                RoomStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
     }
@@ -73,21 +83,28 @@ class RoomStoreFactory(
     private object ReducerImpl : Reducer<RoomStore.State, Msg> {
         override fun RoomStore.State.reduce(msg: Msg): RoomStore.State {
             return when (msg) {
-                is Msg.Loading -> copy(
+                Msg.Loading -> copy(
                     loading = true,
-                    error = null
+                    error = null,
+                )
+
+                Msg.Offline -> copy(
+                    loading = false,
+                    error = null,
                 )
 
                 is Msg.GetRoomsSuccess -> copy(
                     loading = false,
                     rooms = msg.rooms,
-                    error = null
+                    error = null,
                 )
-                
+
                 is Msg.Error -> copy(
                     loading = false,
-                    error = msg.message
+                    error = msg.message,
                 )
+
+                Msg.Clear -> RoomStore.State()
             }
         }
     }

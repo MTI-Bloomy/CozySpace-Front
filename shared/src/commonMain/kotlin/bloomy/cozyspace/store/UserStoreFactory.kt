@@ -1,9 +1,10 @@
 package bloomy.cozyspace.store
 
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.UserCache
-import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.data.AuthentificationRepository
 import bloomy.cozyspace.data.dto.LoginDto
+import bloomy.cozyspace.data.dto.LoginRequestDto
 import bloomy.cozyspace.domain.Token
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.interfaces.ApiResult
@@ -17,16 +18,16 @@ import kotlin.String
 
 class UserStoreFactory(
     private val repository: AuthentificationRepository,
-    private val storage: UserStorage,
+    private val storages: Storages,
     private val storeFactory: StoreFactory = DefaultStoreFactory(),
-    private val onAuthStateChanged: suspend () -> Unit = {}
+    private val onAuthStateChanged: suspend () -> Unit = {},
 ) {
     suspend fun create(): UserStore {
-        val cache = storage.get()
+        val cache = storages.userStorage.get()
 
         val initialState = UserStore.State(
             token = cache?.token ?: Token("", ""),
-            user = cache?.user ?: User("", "", "", null)
+            user = cache?.user ?: User("", "", "", null),
         )
 
         return object : UserStore,
@@ -34,12 +35,13 @@ class UserStoreFactory(
                 name = "UserStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
     private sealed interface Msg {
         data object Loading : Msg
+        data object Offline : Msg
         data object Logout : Msg
         data object Register : Msg
 
@@ -48,20 +50,24 @@ class UserStoreFactory(
         data class Error(val message: String) : Msg
     }
 
-    private inner class ExecutorImpl :CoroutineExecutor<
+    private inner class ExecutorImpl : CoroutineExecutor<
         UserStore.Intent,
         Unit,
         UserStore.State,
         Msg,
-        UserStore.Label>() {
+        UserStore.Label,
+        >() {
 
         override fun executeIntent(
-            intent: UserStore.Intent
+            intent: UserStore.Intent,
         ) {
             when (intent) {
                 is UserStore.Intent.Logout -> {
                     scope.launch {
-                        storage.clear()
+                        storages.userStorage.clear()
+                        storages.houseStorage.clear()
+                        storages.roomStorage.clear()
+                        storages.rewardStorage.clear()
                         onAuthStateChanged()
 
                         dispatch(Msg.Logout)
@@ -76,7 +82,13 @@ class UserStoreFactory(
                         when (val result = repository.register(intent.request)) {
                             is ApiResult.Success -> {
                                 dispatch(Msg.Register)
-                                publish(UserStore.Label.RegisterSuccess)
+
+                                login(
+                                    LoginRequestDto(
+                                        email = intent.request.email,
+                                        password = intent.request.password,
+                                    ),
+                                )
                             }
 
                             is ApiResult.Error -> {
@@ -84,47 +96,42 @@ class UserStoreFactory(
                                 publish(UserStore.Label.ShowError(result.message))
                             }
 
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(UserStore.Label.ShowError("Empty response from server"))
-                            }
+                            ApiResult.Offline -> dispatch(Msg.Offline)
                         }
                     }
                 }
 
                 is UserStore.Intent.Login -> {
                     dispatch(Msg.Loading)
-
-                    scope.launch {
-                        when (val result = repository.login(intent.request)) {
-                            is ApiResult.Success -> {
-                                dispatch(Msg.Login(result.data))
-
-                                storage.save(
-                                    UserCache(
-                                        token = Token(
-                                            result.data.idToken,
-                                            result.data.refreshToken.orEmpty()
-                                        ),
-                                        user = state().user
-                                    )
-                                )
-
-                                publish(UserStore.Label.LoginSuccess)
-                            }
-
-                            is ApiResult.Error -> {
-                                dispatch(Msg.Error(result.message))
-                                publish(UserStore.Label.ShowError(result.message))
-                            }
-
-                            ApiResult.Empty -> {
-                                dispatch(Msg.Error("Empty response from server"))
-                                publish(UserStore.Label.ShowError("Empty response from server"))
-                            }
-                        }
-                    }
+                    scope.launch { login(intent.request) }
                 }
+            }
+        }
+
+        private suspend fun login(request: LoginRequestDto) {
+            when (val result = repository.login(request)) {
+                is ApiResult.Success -> {
+                    dispatch(Msg.Login(result.data))
+
+                    storages.userStorage.save(
+                        UserCache(
+                            token = Token(
+                                result.data.idToken,
+                                result.data.refreshToken.orEmpty(),
+                            ),
+                            user = state().user,
+                        ),
+                    )
+
+                    publish(UserStore.Label.LoginSuccess)
+                }
+
+                is ApiResult.Error -> {
+                    dispatch(Msg.Error(result.message))
+                    publish(UserStore.Label.ShowError(result.message))
+                }
+
+                ApiResult.Offline -> dispatch(Msg.Offline)
             }
         }
     }
@@ -135,8 +142,13 @@ class UserStoreFactory(
                 Msg.Loading ->
                     copy(
                         loading = true,
-                        error = null
+                        error = null,
                     )
+
+                Msg.Offline -> copy(
+                    loading = false,
+                    error = null,
+                )
 
                 Msg.Logout ->
                     UserStore.State()
@@ -144,7 +156,7 @@ class UserStoreFactory(
                 is Msg.Register ->
                     copy(
                         loading = false,
-                        error = null
+                        error = null,
                     )
 
                 is Msg.Login ->
@@ -152,15 +164,15 @@ class UserStoreFactory(
                         loading = false,
                         token = Token(
                             idToken = msg.response.idToken,
-                            refreshToken = msg.response.refreshToken.orEmpty()
+                            refreshToken = msg.response.refreshToken.orEmpty(),
                         ),
-                        error = null
+                        error = null,
                     )
 
                 is Msg.Error ->
                     copy(
                         loading = false,
-                        error = msg.message
+                        error = msg.message,
                     )
             }
     }

@@ -14,24 +14,24 @@ import bloomy.cozyspace.theme.DarkGreen
 
 @Composable
 fun LoadingScreen(
-    message: String = "Loading..."
+    message: String = "Loading...",
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             CircularProgressIndicator(
-                color = DarkGreen
+                color = DarkGreen,
             )
 
             Text(
                 text = message,
-                color = DarkGreen
+                color = DarkGreen,
             )
         }
     }
