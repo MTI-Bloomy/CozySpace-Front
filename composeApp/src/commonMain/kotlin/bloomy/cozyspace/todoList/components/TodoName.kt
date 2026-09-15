@@ -1,4 +1,4 @@
-package bloomy.cozyspace.todoList.component
+package bloomy.cozyspace.todoList.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,16 +31,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bloomy.cozyspace.domain.RoomType
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.Red
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.todoList.popUp.TaskDeletePopup
-import bloomy.cozyspace.todoList.popUp.TaskDetailsPopup
 import bloomy.cozyspace.todoList.utils.Category
-import bloomy.cozyspace.todoList.utils.CategoryName
 import bloomy.cozyspace.todoList.utils.toCategory
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.delete

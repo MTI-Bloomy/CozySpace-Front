@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.component.LabelButton
+import bloomy.cozyspace.components.LabelButton
 import bloomy.cozyspace.utils.CustomDialogBox
 
 @Composable

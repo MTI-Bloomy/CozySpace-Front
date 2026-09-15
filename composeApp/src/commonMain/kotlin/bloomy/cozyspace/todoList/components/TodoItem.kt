@@ -1,4 +1,4 @@
-package bloomy.cozyspace.todoList.component
+package bloomy.cozyspace.todoList.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,12 +18,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.domain.RoomType
@@ -31,18 +33,40 @@ import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.MidDarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
+import bloomy.cozyspace.todoList.popUp.TaskDetailsPopup
+import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.CategoryName
+import bloomy.cozyspace.todoList.utils.Frequency
+import bloomy.cozyspace.todoList.utils.toCategory
+import bloomy.cozyspace.todoList.utils.toFrequency
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.more_vert
-import cozyspace.composeapp.generated.resources.check
 import org.jetbrains.compose.resources.painterResource
+import kotlin.time.Instant
 
 @Composable
-fun TodoDoneItem(
+fun TodoItem(
     modifier: Modifier = Modifier,
     task: Todo,
-    clicked: () -> Unit = {}
+    clicked: () -> Unit = {},
+    onTaskChecked: () -> Unit,
+    onTaskModified: (String, String, Category, Frequency, Instant) -> Unit,
+    onTaskDeleted: (String) -> Unit
 ) {
+    var showDetailPopup by remember { mutableStateOf(false) }
+
+    var selectedName by remember(task.id) { mutableStateOf(task.name) }
+
+    var selectedCategory by remember(task.id) {
+        mutableStateOf(task.type.toCategory())
+    }
+    var selectedFrequency by remember(task.id) {
+        mutableStateOf(task.frequency.toFrequency())
+    }
+    var selectedDateTime by remember(task.id) {
+        mutableStateOf(task.date)
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -66,23 +90,17 @@ fun TodoDoneItem(
                 modifier = Modifier
                     .size(42.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MidDarkGreen),
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.check),
-                    contentDescription = "More",
-                    tint = WhiteBackground,
-                    modifier = Modifier.size(28.dp),
-                )
-            }
+                    .background(MidDarkGreen)
+                    .clickable {
+                        onTaskChecked()
+                    },
+            ) { }
 
             Spacer(modifier = Modifier.width(12.dp))
 
             // Center text section
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .alpha(0.6f),
+                modifier = Modifier.weight(1f),
             ) {
                 // Task name
                 Text(
@@ -91,7 +109,6 @@ fun TodoDoneItem(
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     maxLines = 1,
-                    textDecoration = TextDecoration.LineThrough,
                 )
 
                 Spacer(modifier = Modifier.height(2.dp))
@@ -113,9 +130,7 @@ fun TodoDoneItem(
             // Date section (optional)
 //            if (task.startDate.isNotBlank()) {
 //                Column(
-//                    modifier = Modifier
-//                        .alpha(0.6f),
-//                    horizontalAlignment = Alignment.End
+//                    horizontalAlignment = Alignment.End,
 //                ) {
 //                    // Ex: 2026-05-04T18:00:00
 //                    // Only keeps the first 5 characters after T
@@ -125,7 +140,7 @@ fun TodoDoneItem(
 //                        text = date,
 //                        color = WhiteBackground,
 //                        fontSize = 12.sp,
-//                        fontWeight = FontWeight.Bold
+//                        fontWeight = FontWeight.Bold,
 //                    )
 //
 //                    Spacer(modifier = Modifier.height(4.dp))
@@ -136,9 +151,9 @@ fun TodoDoneItem(
 //
 //                    Text(
 //                        text = time,
-//                        color = WhiteBackground,
+//                        color = WhiteBackground.copy(alpha = 0.85f),
 //                        fontSize = 12.sp,
-//                        fontWeight = FontWeight.Bold
+//                        fontWeight = FontWeight.Bold,
 //                    )
 //                }
 //
@@ -147,7 +162,7 @@ fun TodoDoneItem(
 
             // More button
             IconButton(
-                onClick = { },
+                onClick = { showDetailPopup = true },
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.more_vert),
@@ -157,5 +172,31 @@ fun TodoDoneItem(
             }
         }
     }
-}
 
+    if (showDetailPopup) {
+        TaskDetailsPopup(
+            task = task,
+            onDismiss = { showDetailPopup = false },
+            onNameChanged = { selectedName = it },
+            onFrequencySelected = { selectedFrequency = it },
+            onCategorySelected = { selectedCategory = it },
+            onDelete = { taskId ->
+                onTaskDeleted(taskId)
+                showDetailPopup = false
+            },
+            onConfirm = {
+                val trimmedName = selectedName.trim()
+                if (trimmedName.isNotEmpty()) {
+                    onTaskModified(
+                        task.id,
+                        selectedName,
+                        selectedCategory,
+                        selectedFrequency,
+                        selectedDateTime,
+                    )
+                    showDetailPopup = false
+                }
+            }
+        )
+    }
+}

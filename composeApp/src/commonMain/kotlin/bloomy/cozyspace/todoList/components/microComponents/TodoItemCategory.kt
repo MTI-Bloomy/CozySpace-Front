@@ -1,4 +1,4 @@
-package bloomy.cozyspace.todoList.component
+package bloomy.cozyspace.todoList.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding

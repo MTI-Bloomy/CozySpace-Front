@@ -23,8 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.component.TodoDoneItem
-import bloomy.cozyspace.todoList.component.TodoItem
+import bloomy.cozyspace.todoList.components.TodoDoneItem
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Spacing
 import kotlin.collections.orEmpty

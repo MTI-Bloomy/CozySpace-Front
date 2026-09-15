@@ -1,4 +1,4 @@
-package bloomy.cozyspace.todoList.component
+package bloomy.cozyspace.todoList.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package bloomy.cozyspace.todoList.component
+package bloomy.cozyspace.todoList.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -16,10 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow
@@ -30,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.ShadowColor
 import bloomy.cozyspace.todoList.utils.Category
-import bloomy.cozyspace.todoList.utils.CategoryName
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

@@ -28,9 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.component.AddTodoButton
-import bloomy.cozyspace.todoList.component.NewTodoItem
-import bloomy.cozyspace.todoList.component.TodoItem
+import bloomy.cozyspace.todoList.components.AddTodoButton
+import bloomy.cozyspace.todoList.components.NewTodoItem
+import bloomy.cozyspace.todoList.components.TodoItem
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Frequency
 import bloomy.cozyspace.todoList.utils.Spacing

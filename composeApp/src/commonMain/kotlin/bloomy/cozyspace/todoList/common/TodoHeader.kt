@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
-import bloomy.cozyspace.todoList.component.TodoCategory
-import bloomy.cozyspace.todoList.component.TodoCorner
+import bloomy.cozyspace.todoList.components.TodoCategory
+import bloomy.cozyspace.todoList.components.TodoCorner
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Spacing
 import java.text.SimpleDateFormat

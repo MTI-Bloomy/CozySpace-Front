@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.todoList.component.FrequencyDetails
-import bloomy.cozyspace.todoList.component.TodoName
-import bloomy.cozyspace.component.LabelButton
+import bloomy.cozyspace.todoList.components.FrequencyDetails
+import bloomy.cozyspace.todoList.components.TodoName
+import bloomy.cozyspace.components.LabelButton
 import bloomy.cozyspace.todoList.utils.Category
 import bloomy.cozyspace.todoList.utils.Frequency
 import bloomy.cozyspace.utils.CustomDialogBox

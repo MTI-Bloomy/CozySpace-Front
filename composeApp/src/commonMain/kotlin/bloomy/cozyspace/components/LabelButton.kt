@@ -1,4 +1,4 @@
-package bloomy.cozyspace.component
+package bloomy.cozyspace.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
