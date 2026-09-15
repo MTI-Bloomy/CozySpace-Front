@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
+import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.navigation.AppNavHost
 import bloomy.cozyspace.navigation.DesktopNavBar
 import bloomy.cozyspace.navigation.MobileNavBar
@@ -26,6 +27,8 @@ import bloomy.cozyspace.store.Stores
 fun MobileLayout(
     navController: NavHostController,
     stores: Stores,
+    storages: Storages,
+    isOnline: Boolean,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
@@ -35,15 +38,17 @@ fun MobileLayout(
             MobileNavBar(
                 items = NavDestination.entries,
                 selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected
+                onItemSelected = onItemSelected,
             )
-        }
+        },
     ) { padding ->
 
         AppNavHost(
             navController = navController,
             stores = stores,
-            modifier = Modifier.padding(padding)
+            storages = storages,
+            isOnline = isOnline,
+            modifier = Modifier.padding(padding),
         )
     }
 }
@@ -53,21 +58,23 @@ fun MobileLayout(
 fun DesktopLayout(
     navController: NavHostController,
     stores: Stores,
+    storages: Storages,
+    isOnline: Boolean,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
 
         Box(
             modifier = Modifier.fillMaxHeight(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             DesktopNavBar(
                 items = NavDestination.entries,
                 selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected
+                onItemSelected = onItemSelected,
             )
         }
 
@@ -79,7 +86,9 @@ fun DesktopLayout(
             AppNavHost(
                 navController = navController,
                 stores = stores,
-                modifier = Modifier.padding(padding)
+                storages = storages,
+                isOnline = isOnline,
+                modifier = Modifier.padding(padding),
             )
         }
     }

@@ -10,4 +10,8 @@ class HouseRepository(
     suspend fun getHouse(): ApiResult<List<HouseDto>> {
         return api.getHouse();
     }
+
+    suspend fun saveHouse(houseId: String): ApiResult<HouseDto> {
+        return api.saveHouse(houseId)
+    }
 }
