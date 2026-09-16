@@ -10,16 +10,17 @@ interface TodoListStore : Store<TodoListStore.Intent, TodoListStore.State, TodoL
         data class CreateTodo(val todo: TodoRequestDto) : Intent
         data class CompleteTodo(val todoId: String) : Intent
         data class ModifyTodo(val todoId: String, val todo: TodoRequestDto) : Intent
-        data class DeleteTodo(val todoId: String): Intent
+        data class DeleteTodo(val todoId: String) : Intent
     }
 
     sealed interface Label {
-        data class ShowError(val message: String): Label
+        data class ShowError(val message: String) : Label
+        data class TodoCompleted(val todo: Todo) : Label
     }
 
     data class State(
         val loading: Boolean = false,
         val todoList: List<Todo> = emptyList(),
-        val error: String? = null
+        val error: String? = null,
     )
 }

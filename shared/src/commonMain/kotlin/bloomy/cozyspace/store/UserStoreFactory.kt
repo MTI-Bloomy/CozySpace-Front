@@ -111,8 +111,6 @@ class UserStoreFactory(
         private suspend fun login(request: LoginRequestDto) {
             when (val result = repository.login(request)) {
                 is ApiResult.Success -> {
-                    dispatch(Msg.Login(result.data))
-
                     storages.userStorage.save(
                         UserCache(
                             token = Token(
@@ -123,6 +121,7 @@ class UserStoreFactory(
                         ),
                     )
 
+                    dispatch(Msg.Login(result.data))
                     publish(UserStore.Label.LoginSuccess)
                 }
 

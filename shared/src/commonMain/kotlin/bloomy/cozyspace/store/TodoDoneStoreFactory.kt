@@ -16,13 +16,13 @@ import kotlinx.coroutines.launch
 class TodoDoneStoreFactory(
     private val repository: TodoDoneRepository,
     private val storage: TodoDoneStorage,
-    private val storeFactory: StoreFactory = DefaultStoreFactory()
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): TodoDoneStore {
         val cache = storage.get()
 
         val initialState = TodoDoneStore.State(
-            todoDone = cache?.todoDone ?: emptyList()
+            todoDone = cache?.todoDone ?: emptyList(),
         )
 
         return object : TodoDoneStore,
@@ -30,7 +30,7 @@ class TodoDoneStoreFactory(
                 name = "TodoDoneStore",
                 initialState = initialState,
                 executorFactory = ::ExecutorImpl,
-                reducer = ReducerImpl
+                reducer = ReducerImpl,
             ) {}
     }
 
@@ -38,6 +38,7 @@ class TodoDoneStoreFactory(
         data object Loading : Msg
         data object Offline : Msg
         data class GetTodoDoneSuccess(val todoDone: List<Todo>) : Msg
+        data class AddTodoDoneSuccess(val todo: Todo) : Msg
         data class Error(val message: String) : Msg
     }
 
@@ -46,7 +47,7 @@ class TodoDoneStoreFactory(
         Unit,
         TodoDoneStore.State,
         Msg,
-        TodoDoneStore.Label
+        TodoDoneStore.Label,
         >() {
 
         override fun executeIntent(intent: TodoDoneStore.Intent) {
@@ -59,13 +60,13 @@ class TodoDoneStoreFactory(
                             is ApiResult.Success -> {
                                 val todoDone = result.data.map { it.toDomain() }
 
-                                dispatch(Msg.GetTodoDoneSuccess(todoDone))
-
                                 storage.save(
                                     TodoDoneCache(
                                         todoDone = todoDone,
-                                    )
+                                    ),
                                 )
+
+                                dispatch(Msg.GetTodoDoneSuccess(todoDone))
                             }
 
                             is ApiResult.Error -> {
@@ -77,6 +78,18 @@ class TodoDoneStoreFactory(
                         }
                     }
                 }
+
+                is TodoDoneStore.Intent.AddTodoDone -> {
+                    scope.launch {
+                        storage.save(
+                            TodoDoneCache(
+                                todoDone = state().todoDone + intent.todo,
+                            ),
+                        )
+
+                        dispatch(Msg.AddTodoDoneSuccess(intent.todo))
+                    }
+                }
             }
         }
     }
@@ -86,7 +99,7 @@ class TodoDoneStoreFactory(
             return when (msg) {
                 Msg.Loading -> copy(
                     loading = true,
-                    error = null
+                    error = null,
                 )
 
                 Msg.Offline -> copy(
@@ -97,12 +110,16 @@ class TodoDoneStoreFactory(
                 is Msg.GetTodoDoneSuccess -> copy(
                     loading = false,
                     todoDone = msg.todoDone,
-                    error = null
+                    error = null,
+                )
+
+                is Msg.AddTodoDoneSuccess -> copy(
+                    todoDone = todoDone + msg.todo,
                 )
 
                 is Msg.Error -> copy(
                     loading = false,
-                    error = msg.message
+                    error = msg.message,
                 )
             }
         }

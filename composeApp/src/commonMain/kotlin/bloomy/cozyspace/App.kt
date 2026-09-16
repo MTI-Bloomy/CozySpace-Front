@@ -71,6 +71,8 @@ fun App() {
     }
 
     ObserveUserNavigation(stores, navController)
+    ObserveTodoListEvents(stores)
+
     ObserveErrors(stores.user, snackbarHostState, scope) { (it as? UserStore.Label.ShowError)?.message }
     ObserveErrors(stores.house, snackbarHostState, scope) { (it as? HouseStore.Label.ShowError)?.message }
     ObserveErrors(stores.room, snackbarHostState, scope) { (it as? RoomStore.Label.ShowError)?.message }
