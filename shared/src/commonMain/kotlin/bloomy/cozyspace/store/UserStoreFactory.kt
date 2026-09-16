@@ -68,6 +68,8 @@ class UserStoreFactory(
                         storages.houseStorage.clear()
                         storages.roomStorage.clear()
                         storages.rewardStorage.clear()
+                        storages.todoListStorage.clear()
+                        storages.todoDoneStorage.clear()
                         onAuthStateChanged()
 
                         dispatch(Msg.Logout)

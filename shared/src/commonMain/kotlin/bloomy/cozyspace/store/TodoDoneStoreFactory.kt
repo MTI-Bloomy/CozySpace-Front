@@ -40,6 +40,7 @@ class TodoDoneStoreFactory(
         data class GetTodoDoneSuccess(val todoDone: List<Todo>) : Msg
         data class AddTodoDoneSuccess(val todo: Todo) : Msg
         data class Error(val message: String) : Msg
+        data object Clear : Msg
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<
@@ -90,6 +91,8 @@ class TodoDoneStoreFactory(
                         dispatch(Msg.AddTodoDoneSuccess(intent.todo))
                     }
                 }
+
+                TodoDoneStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
     }
@@ -121,6 +124,8 @@ class TodoDoneStoreFactory(
                     loading = false,
                     error = msg.message,
                 )
+
+                Msg.Clear -> TodoDoneStore.State()
             }
         }
     }

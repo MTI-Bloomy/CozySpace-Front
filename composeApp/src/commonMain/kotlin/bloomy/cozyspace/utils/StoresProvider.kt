@@ -52,6 +52,8 @@ fun rememberTodoListStore(env: AppEnvironment) =
         value = TodoListStoreFactory(
             repository = TodoListRepository(ApiService(env.httpClient, env.networkMonitor)),
             storage = env.storages.todoListStorage,
+            networkMonitor = env.networkMonitor,
+            syncQueue = env.syncQueue,
         ).create().also { it.init() }
     }
 

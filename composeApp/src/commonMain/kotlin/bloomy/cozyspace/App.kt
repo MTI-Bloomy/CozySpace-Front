@@ -70,7 +70,7 @@ fun App() {
         env.forcedLogout.collect { stores.user.accept(UserStore.Intent.Logout) }
     }
 
-    ObserveUserNavigation(stores, navController)
+    ObserveUserNavigation(stores, navController, env.syncQueue)
     ObserveTodoListEvents(stores)
 
     ObserveErrors(stores.user, snackbarHostState, scope) { (it as? UserStore.Label.ShowError)?.message }

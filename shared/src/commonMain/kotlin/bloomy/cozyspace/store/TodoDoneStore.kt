@@ -7,6 +7,7 @@ interface TodoDoneStore : Store<TodoDoneStore.Intent, TodoDoneStore.State, TodoD
     sealed interface Intent {
         data object GetTodoDone : Intent
         data class AddTodoDone(val todo: Todo) : Intent
+        data object Clear : Intent
     }
 
     sealed interface Label {
