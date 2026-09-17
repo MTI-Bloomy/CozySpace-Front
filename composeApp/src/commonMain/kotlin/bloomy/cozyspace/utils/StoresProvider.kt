@@ -45,3 +45,23 @@ fun rememberRewardStore(env: AppEnvironment) =
             assetRepository = AssetRepository(env.httpClient, env.storages.assetStorage),
         ).create().also { it.init() }
     }
+
+@Composable
+fun rememberTodoListStore(env: AppEnvironment) =
+    produceState<TodoListStore?>(initialValue = null, env.httpClient) {
+        value = TodoListStoreFactory(
+            repository = TodoListRepository(ApiService(env.httpClient, env.networkMonitor)),
+            storage = env.storages.todoListStorage,
+            networkMonitor = env.networkMonitor,
+            syncQueue = env.syncQueue,
+        ).create().also { it.init() }
+    }
+
+@Composable
+fun rememberTodoDoneStore(env: AppEnvironment) =
+    produceState<TodoDoneStore?>(initialValue = null, env.httpClient) {
+        value = TodoDoneStoreFactory(
+            repository = TodoDoneRepository(ApiService(env.httpClient, env.networkMonitor)),
+            storage = env.storages.todoDoneStorage,
+        ).create().also { it.init() }
+    }

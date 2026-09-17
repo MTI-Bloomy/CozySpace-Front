@@ -10,6 +10,8 @@ import bloomy.cozyspace.cache.RoomStorage
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.SyncQueue
 import bloomy.cozyspace.cache.SyncQueueStorage
+import bloomy.cozyspace.cache.TodoDoneStorage
+import bloomy.cozyspace.cache.TodoListStorage
 import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.cache.createAssetStorage
@@ -39,6 +41,8 @@ fun rememberAppEnvironment(scope: CoroutineScope): AppEnvironment {
     val houseStorage = remember { HouseStorage(keyValueStore) }
     val roomStorage = remember { RoomStorage(keyValueStore) }
     val rewardStorage = remember { RewardStorage(keyValueStore) }
+    val todoListStorage = remember { TodoListStorage(keyValueStore) }
+    val todoDoneStorage = remember { TodoDoneStorage(keyValueStore) }
     val syncQueueStorage = remember { SyncQueueStorage(keyValueStore) }
 
     val forcedLogout = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
@@ -79,6 +83,8 @@ fun rememberAppEnvironment(scope: CoroutineScope): AppEnvironment {
                 houseStorage,
                 roomStorage,
                 rewardStorage,
+                todoListStorage,
+                todoDoneStorage,
                 syncQueueStorage,
             ),
             httpClient = httpClient,

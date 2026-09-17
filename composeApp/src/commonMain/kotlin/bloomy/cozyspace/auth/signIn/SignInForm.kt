@@ -41,10 +41,10 @@ import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.signIn_lock
-import cozyspace.composeapp.generated.resources.signIn_person
-import cozyspace.composeapp.generated.resources.signIn_visibility
-import cozyspace.composeapp.generated.resources.signIn_visibility_off
+import cozyspace.composeapp.generated.resources.lock
+import cozyspace.composeapp.generated.resources.person
+import cozyspace.composeapp.generated.resources.visibility
+import cozyspace.composeapp.generated.resources.visibility_off
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -76,7 +76,7 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
                 textStyle = TextStyle.Default.copy(fontSize = 20.sp),
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(Res.drawable.signIn_person),
+                        painter = painterResource(Res.drawable.person),
                         contentDescription = "",
                         tint = WhiteBackground,
                     )
@@ -118,7 +118,7 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
 
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(Res.drawable.signIn_lock),
+                        painter = painterResource(Res.drawable.lock),
                         contentDescription = "",
                         tint = WhiteBackground,
                     )
@@ -132,9 +132,9 @@ fun SignInForm(navController: NavHostController, stores: Stores) {
                         Icon(
                             painter = painterResource(
                                 if (passwordVisible)
-                                    Res.drawable.signIn_visibility
+                                    Res.drawable.visibility
                                 else
-                                    Res.drawable.signIn_visibility_off,
+                                    Res.drawable.visibility_off,
                             ),
                             contentDescription = null,
                             tint = WhiteBackground,

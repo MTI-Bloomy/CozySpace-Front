@@ -8,6 +8,8 @@ data class Storages(
     val houseStorage: HouseStorage,
     val roomStorage: RoomStorage,
     val rewardStorage: RewardStorage,
+    val todoListStorage: TodoListStorage,
+    val todoDoneStorage: TodoDoneStorage,
 
     val syncQueueStorage: SyncQueueStorage,
 )

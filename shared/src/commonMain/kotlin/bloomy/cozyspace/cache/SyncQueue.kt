@@ -28,6 +28,11 @@ class SyncQueue(
         persist()
     }
 
+    fun clear() {
+        _pending.update { emptyList() }
+        persist()
+    }
+
     private fun persist() {
         scope.launch { storage.save(_pending.value) }
     }

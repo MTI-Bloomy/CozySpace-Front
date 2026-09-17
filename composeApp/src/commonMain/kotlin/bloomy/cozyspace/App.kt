@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import bloomy.cozyspace.navigation.NavGraph
@@ -27,6 +26,8 @@ import bloomy.cozyspace.store.HouseStore
 import bloomy.cozyspace.store.RewardStore
 import bloomy.cozyspace.store.RoomStore
 import bloomy.cozyspace.store.Stores
+import bloomy.cozyspace.store.TodoDoneStore
+import bloomy.cozyspace.store.TodoListStore
 import bloomy.cozyspace.store.UserStore
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
@@ -37,7 +38,6 @@ import org.jetbrains.compose.resources.painterResource
 
 @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-@Preview
 fun App() {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -49,8 +49,10 @@ fun App() {
     val houseStore = rememberHouseStore(env).value
     val roomStore = rememberRoomStore(env).value
     val rewardStore = rememberRewardStore(env).value
+    val todoListStore = rememberTodoListStore(env).value
+    val todoDoneStore = rememberTodoDoneStore(env).value
 
-    if (userStore == null || houseStore == null || roomStore == null || rewardStore == null) {
+    if (userStore == null || houseStore == null || roomStore == null || rewardStore == null || todoListStore == null || todoDoneStore == null) {
         LoadingScreen()
         return
     }
@@ -60,17 +62,23 @@ fun App() {
         reward = rewardStore,
         room = roomStore,
         house = houseStore,
+        todoList = todoListStore,
+        todoDone = todoDoneStore,
     )
 
     LaunchedEffect(stores.user) {
         env.forcedLogout.collect { stores.user.accept(UserStore.Intent.Logout) }
     }
 
-    ObserveUserNavigation(stores, navController)
+    ObserveUserNavigation(stores, navController, env.syncQueue)
+    ObserveTodoListEvents(stores)
+
     ObserveErrors(stores.user, snackbarHostState, scope) { (it as? UserStore.Label.ShowError)?.message }
     ObserveErrors(stores.house, snackbarHostState, scope) { (it as? HouseStore.Label.ShowError)?.message }
     ObserveErrors(stores.room, snackbarHostState, scope) { (it as? RoomStore.Label.ShowError)?.message }
     ObserveErrors(stores.reward, snackbarHostState, scope) { (it as? RewardStore.Label.ShowError)?.message }
+    ObserveErrors(stores.todoList, snackbarHostState, scope) { (it as? TodoListStore.Label.ShowError)?.message }
+    ObserveErrors(stores.todoDone, snackbarHostState, scope) { (it as? TodoDoneStore.Label.ShowError)?.message }
 
     val isOnline by env.networkMonitor.isOnline.collectAsState()
 

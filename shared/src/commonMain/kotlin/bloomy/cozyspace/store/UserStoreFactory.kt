@@ -68,6 +68,8 @@ class UserStoreFactory(
                         storages.houseStorage.clear()
                         storages.roomStorage.clear()
                         storages.rewardStorage.clear()
+                        storages.todoListStorage.clear()
+                        storages.todoDoneStorage.clear()
                         onAuthStateChanged()
 
                         dispatch(Msg.Logout)
@@ -111,8 +113,6 @@ class UserStoreFactory(
         private suspend fun login(request: LoginRequestDto) {
             when (val result = repository.login(request)) {
                 is ApiResult.Success -> {
-                    dispatch(Msg.Login(result.data))
-
                     storages.userStorage.save(
                         UserCache(
                             token = Token(
@@ -123,6 +123,7 @@ class UserStoreFactory(
                         ),
                     )
 
+                    dispatch(Msg.Login(result.data))
                     publish(UserStore.Label.LoginSuccess)
                 }
 

@@ -71,14 +71,14 @@ class HouseStoreFactory(
                             is ApiResult.Success -> {
                                 val house = result.data.toDomain()
 
-                                dispatch(Msg.SaveHouseSuccess(house))
-
                                 storage.save(
                                     HouseCache(
                                         house = null,
                                         savedHouses = state().savedHouses + house,
                                     ),
                                 )
+
+                                dispatch(Msg.SaveHouseSuccess(house))
 
                                 getHouse()
                             }
@@ -125,14 +125,14 @@ class HouseStoreFactory(
                     } else {
                         val houses = result.data.map { it.toDomain() }
 
-                        dispatch(Msg.GetHouseSuccess(houses))
-
                         storage.save(
                             HouseCache(
                                 house = houses.find { it.saveDate == null },
                                 savedHouses = houses.filter { it.saveDate != null },
                             ),
                         )
+
+                        dispatch(Msg.GetHouseSuccess(houses))
                     }
                 }
 

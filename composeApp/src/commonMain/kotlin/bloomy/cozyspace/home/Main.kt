@@ -43,6 +43,8 @@ import bloomy.cozyspace.home.components.SavesPopup
 import bloomy.cozyspace.store.HouseStore
 import bloomy.cozyspace.store.RewardStore
 import bloomy.cozyspace.store.RoomStore
+import bloomy.cozyspace.store.TodoDoneStore
+import bloomy.cozyspace.store.TodoListStore
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.utils.CustomDialogBox
@@ -65,6 +67,8 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
     LaunchedEffect(Unit) {
         stores.house.accept(HouseStore.Intent.GetHouse)
         stores.reward.accept(RewardStore.Intent.GetRewards)
+        stores.todoList.accept(TodoListStore.Intent.GetTodoList)
+        stores.todoDone.accept(TodoDoneStore.Intent.GetTodoDone)
     }
 
     if (houseState.house != null) {

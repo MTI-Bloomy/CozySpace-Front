@@ -30,6 +30,20 @@ class RewardStorage(store: KeyValueStore) {
     suspend fun clear() = delegate.clear()
 }
 
+class TodoListStorage(store: KeyValueStore) {
+    private val delegate = JsonCacheStore(store, "todo_list_cache", TodoListCache.serializer())
+    suspend fun save(cache: TodoListCache) = delegate.save(cache)
+    suspend fun get(): TodoListCache? = delegate.get()
+    suspend fun clear() = delegate.clear()
+}
+
+class TodoDoneStorage(store: KeyValueStore) {
+    private val delegate = JsonCacheStore(store, "todo_done_cache", TodoDoneCache.serializer())
+    suspend fun save(cache: TodoDoneCache) = delegate.save(cache)
+    suspend fun get(): TodoDoneCache? = delegate.get()
+    suspend fun clear() = delegate.clear()
+}
+
 class SyncQueueStorage(store: KeyValueStore) {
     private val delegate = JsonCacheStore(
         store = store,
