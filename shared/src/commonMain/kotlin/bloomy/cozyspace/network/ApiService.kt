@@ -23,7 +23,7 @@ class ApiService(
     private val client: HttpClient,
     private val networkMonitor: NetworkMonitor,
 ) {
-    // --- / ---
+    //region /
 
     suspend fun signup(request: RegisterRequestDto): ApiResult<RegisterDto> = safeApiCall(networkMonitor) {
             client.post("${Environment.API_URL}/sign-up") {
@@ -41,7 +41,9 @@ class ApiService(
             }
         }
 
-    // --- /reward ---
+    //endregion
+
+    //region /reward
 
     suspend fun getRewards(): ApiResult<List<RewardDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/reward")
@@ -58,13 +60,17 @@ class ApiService(
         }
     }
 
-    // --- /room ---
+    //endregion
+
+    //region /room
 
     suspend fun getRooms(houseId: String): ApiResult<List<RoomDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/room?houseId=$houseId")
     }
 
-    // --- /house ---
+    //endregion
+
+    //region /house
 
     suspend fun getHouse(): ApiResult<List<HouseDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/house")
@@ -81,7 +87,9 @@ class ApiService(
         client.put("${Environment.API_URL}/house/${houseId}/save")
     }
 
-    // --- /todoList ---
+    //endregion
+
+    //region /todoList
 
     suspend fun getTodoList(): ApiResult<List<TodoDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/todoList")
@@ -109,9 +117,13 @@ class ApiService(
         client.delete("${Environment.API_URL}/todoList/$id")
     }
 
-    // --- /todoDone ---
+    //endregion
+
+    //region /todoDone
 
     suspend fun getTodoDone(): ApiResult<List<TodoDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/todoDone")
     }
+
+    //endregion
 }

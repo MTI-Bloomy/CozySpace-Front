@@ -17,6 +17,10 @@ fun ObserveTodoListEvents(stores: Stores) {
                         stores.todoDone.accept(TodoDoneStore.Intent.AddTodoDone(label.todo))
                     }
 
+                    is TodoListStore.Label.RefreshTodoDone -> {
+                        stores.todoDone.accept(TodoDoneStore.Intent.GetTodoDone)
+                    }
+
                     else -> Unit
                 }
             },

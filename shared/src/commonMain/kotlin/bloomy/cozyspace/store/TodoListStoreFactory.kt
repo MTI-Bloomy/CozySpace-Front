@@ -307,8 +307,8 @@ class TodoListStoreFactory(
 
         private fun targetKey(action: PendingAction): String = when (action) {
             is PendingAction.CreateTodo -> action.id // le todo n'existe pas encore : sa clé, c'est l'id de sa propre création
-            is PendingAction.ModifyTodo -> action.todoId
             is PendingAction.CompleteTodo -> action.todoId
+            is PendingAction.ModifyTodo -> action.todoId
             is PendingAction.DeleteTodo -> action.todoId
         }
 
@@ -331,8 +331,8 @@ class TodoListStoreFactory(
                 for (action in actions) {
                     val result = when (action) {
                         is PendingAction.CreateTodo -> repository.createTodo(action.todo)
-                        is PendingAction.ModifyTodo -> repository.modifyTodo(realId ?: action.todoId, action.todo)
                         is PendingAction.CompleteTodo -> repository.completeTodo(realId ?: action.todoId)
+                        is PendingAction.ModifyTodo -> repository.modifyTodo(realId ?: action.todoId, action.todo)
                         is PendingAction.DeleteTodo -> repository.deleteTodo(realId ?: action.todoId)
                     }
 
@@ -351,6 +351,7 @@ class TodoListStoreFactory(
             }
 
             getTodos() // le serveur redevient la source de vérité pour toute la liste, ids temporaires inclus
+            publish(TodoListStore.Label.RefreshTodoDone)
         }
     }
 

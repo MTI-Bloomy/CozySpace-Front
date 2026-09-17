@@ -17,6 +17,7 @@ interface TodoListStore : Store<TodoListStore.Intent, TodoListStore.State, TodoL
     sealed interface Label {
         data class ShowError(val message: String) : Label
         data class TodoCompleted(val todo: Todo) : Label
+        data object RefreshTodoDone : Label
     }
 
     data class State(
