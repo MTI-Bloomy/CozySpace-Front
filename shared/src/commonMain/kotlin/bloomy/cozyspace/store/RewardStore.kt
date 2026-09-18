@@ -16,6 +16,7 @@ interface RewardStore : Store<RewardStore.Intent, RewardStore.State, RewardStore
 
     sealed interface Label {
         data class ShowError(val message: String) : Label
+        data object RefreshTodoDoneNotClaimed : Label
     }
 
     data class State(

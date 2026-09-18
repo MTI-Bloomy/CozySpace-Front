@@ -150,6 +150,7 @@ class RewardStoreFactory(
                                     }
                                 )
 
+                                publish(RewardStore.Label.RefreshTodoDoneNotClaimed)
                                 dispatch(Msg.ChooseRewardSuccess(reward))
                             }
 
