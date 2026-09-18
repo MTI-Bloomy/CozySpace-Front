@@ -86,29 +86,7 @@ class TodoDoneStoreFactory(
                 TodoDoneStore.Intent.GetNotClaimedTodoDone -> {
                     dispatch(Msg.Loading)
 
-                    scope.launch {
-                        when (val result = repository.getNotClaimedTodoDone()) {
-                            is ApiResult.Success -> {
-                                val todoDone = result.data.map { it.toDomain() }
-
-                                storage.save(
-                                    TodoDoneCache(
-                                        todoDone = state().todoDone,
-                                        todoDoneNotClaimed = todoDone
-                                    ),
-                                )
-
-                                dispatch(Msg.GetNotClaimedTodoDoneSuccess(todoDone))
-                            }
-
-                            is ApiResult.Error -> {
-                                dispatch(Msg.Error(result.message))
-                                publish(TodoDoneStore.Label.ShowError(result.message))
-                            }
-
-                            ApiResult.Offline -> dispatch(Msg.Offline)
-                        }
-                    }
+                    scope.launch { getTodoDoneNotClaimed() }
                 }
 
                 is TodoDoneStore.Intent.AddTodoDone -> {
@@ -121,10 +99,36 @@ class TodoDoneStoreFactory(
                         )
 
                         dispatch(Msg.AddTodoDoneSuccess(intent.todo))
+
+                        getTodoDoneNotClaimed()
                     }
                 }
 
                 TodoDoneStore.Intent.Clear -> dispatch(Msg.Clear)
+            }
+        }
+
+        private suspend fun getTodoDoneNotClaimed() {
+            when (val result = repository.getNotClaimedTodoDone()) {
+                is ApiResult.Success -> {
+                    val todoDone = result.data.map { it.toDomain() }
+
+                    storage.save(
+                        TodoDoneCache(
+                            todoDone = state().todoDone,
+                            todoDoneNotClaimed = todoDone
+                        ),
+                    )
+
+                    dispatch(Msg.GetNotClaimedTodoDoneSuccess(todoDone))
+                }
+
+                is ApiResult.Error -> {
+                    dispatch(Msg.Error(result.message))
+                    publish(TodoDoneStore.Label.ShowError(result.message))
+                }
+
+                ApiResult.Offline -> dispatch(Msg.Offline)
             }
         }
     }
