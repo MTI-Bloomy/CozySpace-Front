@@ -23,6 +23,7 @@ class TodoDoneStoreFactory(
 
         val initialState = TodoDoneStore.State(
             todoDone = cache?.todoDone ?: emptyList(),
+            todoDoneNotClaimed = cache?.todoDoneNotClaimed ?: emptyList()
         )
 
         return object : TodoDoneStore,
@@ -39,6 +40,7 @@ class TodoDoneStoreFactory(
         data object Offline : Msg
         data class GetTodoDoneSuccess(val todoDone: List<Todo>) : Msg
         data class AddTodoDoneSuccess(val todo: Todo) : Msg
+        data class GetNotClaimedTodoDoneSuccess(val todoDone: List<Todo>) : Msg
         data class Error(val message: String) : Msg
         data object Clear : Msg
     }
@@ -64,10 +66,39 @@ class TodoDoneStoreFactory(
                                 storage.save(
                                     TodoDoneCache(
                                         todoDone = todoDone,
+                                        todoDoneNotClaimed = state().todoDoneNotClaimed
                                     ),
                                 )
 
                                 dispatch(Msg.GetTodoDoneSuccess(todoDone))
+                            }
+
+                            is ApiResult.Error -> {
+                                dispatch(Msg.Error(result.message))
+                                publish(TodoDoneStore.Label.ShowError(result.message))
+                            }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
+                        }
+                    }
+                }
+
+                TodoDoneStore.Intent.GetNotClaimedTodoDone -> {
+                    dispatch(Msg.Loading)
+
+                    scope.launch {
+                        when (val result = repository.getNotClaimedTodoDone()) {
+                            is ApiResult.Success -> {
+                                val todoDone = result.data.map { it.toDomain() }
+
+                                storage.save(
+                                    TodoDoneCache(
+                                        todoDone = state().todoDone,
+                                        todoDoneNotClaimed = todoDone
+                                    ),
+                                )
+
+                                dispatch(Msg.GetNotClaimedTodoDoneSuccess(todoDone))
                             }
 
                             is ApiResult.Error -> {
@@ -85,6 +116,7 @@ class TodoDoneStoreFactory(
                         storage.save(
                             TodoDoneCache(
                                 todoDone = state().todoDone + intent.todo,
+                                todoDoneNotClaimed = state().todoDoneNotClaimed
                             ),
                         )
 
@@ -113,6 +145,12 @@ class TodoDoneStoreFactory(
                 is Msg.GetTodoDoneSuccess -> copy(
                     loading = false,
                     todoDone = msg.todoDone,
+                    error = null,
+                )
+
+                is Msg.GetNotClaimedTodoDoneSuccess -> copy(
+                    loading = false,
+                    todoDoneNotClaimed = msg.todoDone,
                     error = null,
                 )
 

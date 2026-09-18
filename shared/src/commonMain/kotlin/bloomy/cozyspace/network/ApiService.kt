@@ -125,5 +125,9 @@ class ApiService(
         client.get("${Environment.API_URL}/todoDone")
     }
 
+    suspend fun getNotClaimedTodoDone(): ApiResult<List<TodoDto>> = safeApiCall(networkMonitor) {
+        client.get("${Environment.API_URL}/todoDone/rewards")
+    }
+
     //endregion
 }

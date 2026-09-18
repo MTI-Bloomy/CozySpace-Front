@@ -16,26 +16,27 @@ data class UserCache(
 
 @Serializable
 data class HouseCache(
-    val house: House?,
-    val savedHouses: List<House>
+    val house: House? = null,
+    val savedHouses: List<House> = emptyList()
 )
 
 @Serializable
 data class RoomCache(
-    val rooms: List<Room>
+    val rooms: List<Room> = emptyList()
 )
 
 @Serializable
 data class RewardCache(
-    val rewards: List<Reward>
+    val rewards: List<Reward> = emptyList()
 )
 
 @Serializable
 data class TodoListCache(
-    val todoList: List<Todo>
+    val todoList: List<Todo> = emptyList()
 )
 
 @Serializable
 data class TodoDoneCache(
-    val todoDone: List<Todo>
+    val todoDone: List<Todo> = emptyList(),
+    val todoDoneNotClaimed: List<Todo> = emptyList()
 )

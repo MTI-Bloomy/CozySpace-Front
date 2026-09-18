@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface TodoDoneStore : Store<TodoDoneStore.Intent, TodoDoneStore.State, TodoDoneStore.Label> {
     sealed interface Intent {
         data object GetTodoDone : Intent
+        data object GetNotClaimedTodoDone : Intent
         data class AddTodoDone(val todo: Todo) : Intent
         data object Clear : Intent
     }
@@ -17,6 +18,7 @@ interface TodoDoneStore : Store<TodoDoneStore.Intent, TodoDoneStore.State, TodoD
     data class State(
         val loading: Boolean = false,
         val todoDone: List<Todo> = emptyList(),
+        val todoDoneNotClaimed: List<Todo> = emptyList(),
         val error: String? = null,
     )
 }
