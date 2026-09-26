@@ -4,22 +4,23 @@ import bloomy.cozyspace.data.dto.LoginDto
 import bloomy.cozyspace.data.dto.LoginRequestDto
 import bloomy.cozyspace.data.dto.RegisterDto
 import bloomy.cozyspace.data.dto.RegisterRequestDto
+import bloomy.cozyspace.data.dto.UserDto
 import bloomy.cozyspace.interfaces.ApiResult
 import bloomy.cozyspace.network.ApiService
 
-class AuthentificationRepository(
+class UserRepository(
     private val api: ApiService
 ) {
 
-    suspend fun register(
-        request: RegisterRequestDto
-    ): ApiResult<RegisterDto> {
+    suspend fun register(request: RegisterRequestDto): ApiResult<RegisterDto> {
         return api.signup(request)
     }
 
-    suspend fun login(
-        request: LoginRequestDto
-    ): ApiResult<LoginDto> {
+    suspend fun login(request: LoginRequestDto): ApiResult<LoginDto> {
         return api.signin(request)
+    }
+
+    suspend fun getUser(): ApiResult<UserDto> {
+        return api.getUser()
     }
 }

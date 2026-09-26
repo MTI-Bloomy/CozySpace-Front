@@ -2,9 +2,12 @@ package bloomy.cozyspace.store
 
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.UserCache
-import bloomy.cozyspace.data.AuthentificationRepository
+import bloomy.cozyspace.data.UserRepository
 import bloomy.cozyspace.data.dto.LoginDto
 import bloomy.cozyspace.data.dto.LoginRequestDto
+import bloomy.cozyspace.data.dto.UserDto
+import bloomy.cozyspace.data.dto.toDomain
+import bloomy.cozyspace.domain.AiOptions
 import bloomy.cozyspace.domain.Token
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.interfaces.ApiResult
@@ -17,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlin.String
 
 class UserStoreFactory(
-    private val repository: AuthentificationRepository,
+    private val repository: UserRepository,
     private val storages: Storages,
     private val storeFactory: StoreFactory = DefaultStoreFactory(),
     private val onAuthStateChanged: suspend () -> Unit = {},
@@ -27,7 +30,14 @@ class UserStoreFactory(
 
         val initialState = UserStore.State(
             token = cache?.token ?: Token("", ""),
-            user = cache?.user ?: User("", "", "", null),
+            user = cache?.user ?: User(
+                "", "", "", null, null, null, null,
+                AiOptions(
+                    aiCheer = false,
+                    aiJournalPrompts = false,
+                    aiTodo = false,
+                ),
+            ),
         )
 
         return object : UserStore,
@@ -42,11 +52,10 @@ class UserStoreFactory(
     private sealed interface Msg {
         data object Loading : Msg
         data object Offline : Msg
-        data object Logout : Msg
         data object Register : Msg
-
         data class Login(val response: LoginDto) : Msg
-
+        data object Logout : Msg
+        data class GetUserSuccess(val user: User) : Msg
         data class Error(val message: String) : Msg
     }
 
@@ -62,21 +71,6 @@ class UserStoreFactory(
             intent: UserStore.Intent,
         ) {
             when (intent) {
-                is UserStore.Intent.Logout -> {
-                    scope.launch {
-                        storages.userStorage.clear()
-                        storages.houseStorage.clear()
-                        storages.roomStorage.clear()
-                        storages.rewardStorage.clear()
-                        storages.todoListStorage.clear()
-                        storages.todoDoneStorage.clear()
-                        onAuthStateChanged()
-
-                        dispatch(Msg.Logout)
-                        publish(UserStore.Label.Logout)
-                    }
-                }
-
                 is UserStore.Intent.Register -> {
                     dispatch(Msg.Loading)
 
@@ -106,6 +100,49 @@ class UserStoreFactory(
                 is UserStore.Intent.Login -> {
                     dispatch(Msg.Loading)
                     scope.launch { login(intent.request) }
+                }
+
+                UserStore.Intent.Logout -> {
+                    scope.launch {
+                        storages.userStorage.clear()
+                        storages.houseStorage.clear()
+                        storages.roomStorage.clear()
+                        storages.rewardStorage.clear()
+                        storages.todoListStorage.clear()
+                        storages.todoDoneStorage.clear()
+                        onAuthStateChanged()
+
+                        dispatch(Msg.Logout)
+                        publish(UserStore.Label.Logout)
+                    }
+                }
+
+                UserStore.Intent.GetUser -> {
+                    dispatch(Msg.Loading)
+
+                    scope.launch {
+                        when (val result = repository.getUser()) {
+                            is ApiResult.Success -> {
+                                val user = result.data.toDomain()
+
+                                storages.userStorage.save(
+                                    UserCache(
+                                        token = state().token,
+                                        user = user,
+                                    ),
+                                )
+
+                                dispatch(Msg.GetUserSuccess(user))
+                            }
+
+                            is ApiResult.Error -> {
+                                dispatch(Msg.Error(result.message))
+                                publish(UserStore.Label.ShowError(result.message))
+                            }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
+                        }
+                    }
                 }
             }
         }
@@ -151,9 +188,6 @@ class UserStoreFactory(
                     error = null,
                 )
 
-                Msg.Logout ->
-                    UserStore.State()
-
                 is Msg.Register ->
                     copy(
                         loading = false,
@@ -169,6 +203,15 @@ class UserStoreFactory(
                         ),
                         error = null,
                     )
+
+                Msg.Logout ->
+                    UserStore.State()
+
+                is Msg.GetUserSuccess -> copy(
+                    loading = false,
+                    user = msg.user,
+                    error = null,
+                )
 
                 is Msg.Error ->
                     copy(
