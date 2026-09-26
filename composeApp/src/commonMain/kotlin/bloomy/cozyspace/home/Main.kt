@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
@@ -90,7 +91,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
     var saveHouseViewMode by remember { mutableStateOf(false) }
 
     // Room actuellement affichée, trackée par id
-    var currentRoomId by remember { mutableStateOf<String?>(null) }
+    var currentRoomId by rememberSaveable { mutableStateOf<String?>(null) }
 
     // Direction de la dernière navigation : 1 = suivant (slide vers la gauche), -1 = précédent (slide vers la droite)
     var navigationDirection by remember { mutableIntStateOf(1) }
