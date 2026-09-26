@@ -1,21 +1,10 @@
 package bloomy.cozyspace.network
 
 import bloomy.cozyspace.config.Environment
-import bloomy.cozyspace.data.dto.ChooseRewardRequestDto
-import bloomy.cozyspace.data.dto.HouseDto
-import bloomy.cozyspace.data.dto.LoginRequestDto
-import bloomy.cozyspace.data.dto.RegisterRequestDto
-import bloomy.cozyspace.data.dto.RegisterDto
-import bloomy.cozyspace.data.dto.LoginDto
-import bloomy.cozyspace.data.dto.RewardDto
-import bloomy.cozyspace.data.dto.RoomDto
-import bloomy.cozyspace.data.dto.TodoDto
-import bloomy.cozyspace.data.dto.TodoRequestDto
-import bloomy.cozyspace.data.dto.createHouseRequestDto
+import bloomy.cozyspace.data.dto.*
 import bloomy.cozyspace.interfaces.ApiResult
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
-import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
@@ -123,6 +112,14 @@ class ApiService(
 
     suspend fun getTodoDone(): ApiResult<List<TodoDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/todoDone")
+    }
+
+    //endregion
+
+    //region /timer-music
+
+    suspend fun getTimersMusics(): ApiResult<List<TimerMusicDto>> = safeApiCall(networkMonitor) {
+        client.get("${Environment.API_URL}/timer-music")
     }
 
     //endregion

@@ -44,6 +44,13 @@ class TodoDoneStorage(store: KeyValueStore) {
     suspend fun clear() = delegate.clear()
 }
 
+class TimerMusicStorage(store: KeyValueStore) {
+    private val delegate = JsonCacheStore(store, "timer_music_cache", TimerMusicCache.serializer())
+    suspend fun save(cache: TimerMusicCache) = delegate.save(cache)
+    suspend fun get(): TimerMusicCache? = delegate.get()
+    suspend fun clear() = delegate.clear()
+}
+
 class SyncQueueStorage(store: KeyValueStore) {
     private val delegate = JsonCacheStore(
         store = store,

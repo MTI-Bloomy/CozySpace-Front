@@ -22,8 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import bloomy.cozyspace.store.Stores
-import bloomy.cozyspace.store.UserStore
+import bloomy.cozyspace.store.*
 import bloomy.cozyspace.utils.observeState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,11 +39,6 @@ import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.home.components.RoomView
 import bloomy.cozyspace.home.components.SavesPopup
-import bloomy.cozyspace.store.HouseStore
-import bloomy.cozyspace.store.RewardStore
-import bloomy.cozyspace.store.RoomStore
-import bloomy.cozyspace.store.TodoDoneStore
-import bloomy.cozyspace.store.TodoListStore
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.utils.CustomDialogBox
@@ -69,6 +63,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
         stores.reward.accept(RewardStore.Intent.GetRewards)
         stores.todoList.accept(TodoListStore.Intent.GetTodoList)
         stores.todoDone.accept(TodoDoneStore.Intent.GetTodoDone)
+        stores.timerMusic.accept(TimerMusicStore.Intent.GetTimersMusics)
     }
 
     if (houseState.house != null) {

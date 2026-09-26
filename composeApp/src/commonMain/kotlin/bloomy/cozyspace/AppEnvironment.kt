@@ -3,19 +3,7 @@ package bloomy.cozyspace
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import bloomy.cozyspace.cache.HouseStorage
-import bloomy.cozyspace.cache.RewardStorage
-import bloomy.cozyspace.cache.RoomStorage
-import bloomy.cozyspace.cache.Storages
-import bloomy.cozyspace.cache.SyncQueue
-import bloomy.cozyspace.cache.SyncQueueStorage
-import bloomy.cozyspace.cache.TodoDoneStorage
-import bloomy.cozyspace.cache.TodoListStorage
-import bloomy.cozyspace.cache.UserCache
-import bloomy.cozyspace.cache.UserStorage
-import bloomy.cozyspace.cache.createAssetStorage
-import bloomy.cozyspace.cache.createKeyValueStore
+import bloomy.cozyspace.cache.*
 import bloomy.cozyspace.config.Environment
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.network.NetworkMonitor
@@ -43,6 +31,7 @@ fun rememberAppEnvironment(scope: CoroutineScope): AppEnvironment {
     val rewardStorage = remember { RewardStorage(keyValueStore) }
     val todoListStorage = remember { TodoListStorage(keyValueStore) }
     val todoDoneStorage = remember { TodoDoneStorage(keyValueStore) }
+    val timerMusicStorage = remember { TimerMusicStorage(keyValueStore) }
     val syncQueueStorage = remember { SyncQueueStorage(keyValueStore) }
 
     val forcedLogout = remember { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
@@ -85,6 +74,7 @@ fun rememberAppEnvironment(scope: CoroutineScope): AppEnvironment {
                 rewardStorage,
                 todoListStorage,
                 todoDoneStorage,
+                timerMusicStorage,
                 syncQueueStorage,
             ),
             httpClient = httpClient,
