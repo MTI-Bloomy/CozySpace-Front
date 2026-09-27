@@ -37,5 +37,5 @@ data class TodoDoneCache(
 
 @Serializable
 data class TimerMusicCache(
-    val timersMusics: List<TimerMusic>
+    val timersMusics: List<TimerMusic> = emptyList()
 )
