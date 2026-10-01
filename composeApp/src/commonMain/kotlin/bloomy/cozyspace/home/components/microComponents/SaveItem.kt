@@ -33,14 +33,14 @@ fun SaveItem(
             .padding(16.dp),
     ) {
         Text(
-            text = "Sauvegarde du ${house.saveDate?.toDisplayDate() ?: "--/--/----"}",
+            text = "Save of ${house.saveDate?.toDisplayDate() ?: "--/--/----"}",
             color = WhiteBackground,
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,
         )
 
         Text(
-            text = "${house.rooms.size} pièce${if (house.rooms.size > 1) "s" else ""}",
+            text = "${house.rooms.size} Room${if (house.rooms.size > 1) "s" else ""}",
             color = WhiteBackground.copy(alpha = 0.85f),
             fontSize = 13.sp,
             modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
@@ -57,7 +57,7 @@ fun SaveItem(
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(0.6f),
         ) {
-            Text("Voir")
+            Text("Open")
         }
     }
 }
