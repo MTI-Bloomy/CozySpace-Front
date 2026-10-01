@@ -90,7 +90,7 @@ class ApiService(
     //region /todoList
 
     suspend fun getTodoList(): ApiResult<List<TodoDto>> = safeApiCall(networkMonitor) {
-        client.get("${Environment.API_URL}/todoList")
+        client.get("${Environment.API_URL}/todoList/daily")
     }
 
     suspend fun createTodo(request: TodoRequestDto): ApiResult<TodoDto> = safeApiCall(networkMonitor) {
@@ -121,6 +121,10 @@ class ApiService(
 
     suspend fun getTodoDone(): ApiResult<List<TodoDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/todoDone")
+    }
+
+    suspend fun getNotClaimedTodoDone(): ApiResult<List<TodoDto>> = safeApiCall(networkMonitor) {
+        client.get("${Environment.API_URL}/todoDone/rewards")
     }
 
     //endregion

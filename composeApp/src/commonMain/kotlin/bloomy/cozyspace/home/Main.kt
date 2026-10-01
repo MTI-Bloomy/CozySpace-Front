@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
@@ -41,9 +42,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.domain.House
+import bloomy.cozyspace.home.components.utils.toDisplayDate
+import bloomy.cozyspace.data.dto.ChooseRewardRequestDto
+import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.home.components.RoomView
 import bloomy.cozyspace.home.components.SavesPopup
-import bloomy.cozyspace.home.components.utils.toDisplayDate
+import bloomy.cozyspace.home.components.TodoCompletePopup
+import bloomy.cozyspace.home.components.utils.Placement
 import bloomy.cozyspace.store.HouseStore
 import bloomy.cozyspace.store.RewardStore
 import bloomy.cozyspace.store.RoomStore
@@ -55,6 +60,7 @@ import bloomy.cozyspace.utils.CustomDialogBox
 import bloomy.cozyspace.utils.LoadingScreen
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.arrow_forward
+import cozyspace.composeapp.generated.resources.featured_seasonal_and_gifts
 import cozyspace.composeapp.generated.resources.file_save_off
 import cozyspace.composeapp.generated.resources.logout
 import cozyspace.composeapp.generated.resources.save
@@ -66,8 +72,12 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
     val houseState = stores.house.observeState()
     val roomState = stores.room.observeState()
     val rewardState = stores.reward.observeState()
+    val todoDoneState = stores.todoDone.observeState()
 
     var showSavesPopup by remember { mutableStateOf(false) }
+    var showTodoCompletePopup by remember { mutableStateOf(false) }
+    var selectedPlacement by remember { mutableStateOf(Placement.Wall) }
+    var todoToClaim by remember { mutableStateOf<Todo?>(null) }
 
     LaunchedEffect(Unit) {
         stores.user.accept(UserStore.Intent.GetUser)
@@ -75,6 +85,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
         stores.reward.accept(RewardStore.Intent.GetRewards)
         stores.todoList.accept(TodoListStore.Intent.GetTodoList)
         stores.todoDone.accept(TodoDoneStore.Intent.GetTodoDone)
+        stores.todoDone.accept(TodoDoneStore.Intent.GetNotClaimedTodoDone)
     }
 
     if (houseState.house != null) {
@@ -87,7 +98,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
     var viewedHouse by remember { mutableStateOf<House?>(null) }
 
     // Room actuellement affichée, trackée par id
-    var currentRoomId by remember { mutableStateOf<String?>(null) }
+    var currentRoomId by rememberSaveable { mutableStateOf<String?>(null) }
 
     // Direction de la dernière navigation : 1 = suivant (slide vers la gauche), -1 = précédent (slide vers la droite)
     var navigationDirection by remember { mutableIntStateOf(1) }
@@ -165,6 +176,23 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                                     contentDescription = "Saves",
                                     tint = WhiteBackground,
                                 )
+                            }
+
+                            if (todoDoneState.todoDoneNotClaimed.isNotEmpty()) {
+                                Button(
+                                    onClick = {
+                                        todoToClaim = todoDoneState.todoDoneNotClaimed.first()
+                                        showTodoCompletePopup = true
+                                    },
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = DarkGreen)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.featured_seasonal_and_gifts),
+                                        contentDescription = "Get a reward",
+                                        tint = WhiteBackground,
+                                    )
+                                }
                             }
                         } else {
                             Button(
@@ -306,5 +334,38 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                 },
             )
         }
+    }
+
+    fun onTodoCompleted(todoDoneId: String, houseId: String, roomId: String, placement: String) {
+        val rewardRequest = ChooseRewardRequestDto(
+            todoDoneId = todoDoneId,
+            houseId = houseId,
+            roomId = roomId,
+            placement = placement,
+        )
+
+        stores.reward.accept(RewardStore.Intent.ChooseReward(rewardRequest))
+    }
+
+    if (showTodoCompletePopup) {
+        val todo = todoToClaim
+        val house = houseState.house
+
+        TodoCompletePopup(
+            selectedPlacement = selectedPlacement,
+            onPlacementSelected = { selectedPlacement = it },
+            onDismiss = {
+                showTodoCompletePopup = false
+            },
+            onConfirm = {
+                onTodoCompleted(
+                    todoDoneId = todo!!.id,
+                    houseId = house!!.id,
+                    roomId = roomState.rooms.find { it.type == todo.type }!!.id,
+                    placement = selectedPlacement.name,
+                )
+                showTodoCompletePopup = false
+            }
+        )
     }
 }
