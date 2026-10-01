@@ -1,11 +1,6 @@
 package bloomy.cozyspace.cache
 
-import bloomy.cozyspace.domain.House
-import bloomy.cozyspace.domain.Reward
-import bloomy.cozyspace.domain.Room
-import bloomy.cozyspace.domain.Todo
-import bloomy.cozyspace.domain.Token
-import bloomy.cozyspace.domain.User
+import bloomy.cozyspace.domain.*
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -39,4 +34,9 @@ data class TodoListCache(
 data class TodoDoneCache(
     val todoDone: List<Todo> = emptyList(),
     val todoDoneNotClaimed: List<Todo> = emptyList()
+)
+
+@Serializable
+data class TimerMusicCache(
+    val timersMusics: List<TimerMusic> = emptyList()
 )

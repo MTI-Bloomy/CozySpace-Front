@@ -22,13 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import bloomy.cozyspace.navigation.NavGraph
-import bloomy.cozyspace.store.HouseStore
-import bloomy.cozyspace.store.RewardStore
-import bloomy.cozyspace.store.RoomStore
-import bloomy.cozyspace.store.Stores
-import bloomy.cozyspace.store.TodoDoneStore
-import bloomy.cozyspace.store.TodoListStore
-import bloomy.cozyspace.store.UserStore
+import bloomy.cozyspace.store.*
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.utils.*
@@ -51,8 +45,9 @@ fun App() {
     val rewardStore = rememberRewardStore(env).value
     val todoListStore = rememberTodoListStore(env).value
     val todoDoneStore = rememberTodoDoneStore(env).value
+    val timerMusicStore = rememberTimerMusicStore(env).value
 
-    if (userStore == null || houseStore == null || roomStore == null || rewardStore == null || todoListStore == null || todoDoneStore == null) {
+    if (userStore == null || houseStore == null || roomStore == null || rewardStore == null || todoListStore == null || todoDoneStore == null || timerMusicStore == null) {
         LoadingScreen()
         return
     }
@@ -64,6 +59,7 @@ fun App() {
         house = houseStore,
         todoList = todoListStore,
         todoDone = todoDoneStore,
+        timerMusic = timerMusicStore,
     )
 
     LaunchedEffect(stores.user) {
@@ -80,6 +76,7 @@ fun App() {
     ObserveErrors(stores.reward, snackbarHostState, scope) { (it as? RewardStore.Label.ShowError)?.message }
     ObserveErrors(stores.todoList, snackbarHostState, scope) { (it as? TodoListStore.Label.ShowError)?.message }
     ObserveErrors(stores.todoDone, snackbarHostState, scope) { (it as? TodoDoneStore.Label.ShowError)?.message }
+    ObserveErrors(stores.timerMusic, snackbarHostState, scope) { (it as? TimerMusicStore.Label.ShowError)?.message }
 
     val isOnline by env.networkMonitor.isOnline.collectAsState()
 
