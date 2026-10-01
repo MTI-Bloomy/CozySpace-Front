@@ -10,4 +10,8 @@ class TodoDoneRepository(
     suspend fun getTodoDone(): ApiResult<List<TodoDto>> {
         return api.getTodoDone()
     }
+
+    suspend fun getNotClaimedTodoDone(): ApiResult<List<TodoDto>> {
+        return api.getNotClaimedTodoDone()
+    }
 }
