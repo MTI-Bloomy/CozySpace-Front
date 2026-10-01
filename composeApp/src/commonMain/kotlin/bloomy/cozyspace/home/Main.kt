@@ -78,8 +78,8 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
         stores.reward.accept(RewardStore.Intent.GetRewards)
         stores.todoList.accept(TodoListStore.Intent.GetTodoList)
         stores.todoDone.accept(TodoDoneStore.Intent.GetTodoDone)
-        stores.timerMusic.accept(TimerMusicStore.Intent.GetTimersMusics)
         stores.todoDone.accept(TodoDoneStore.Intent.GetNotClaimedTodoDone)
+        stores.timerMusic.accept(TimerMusicStore.Intent.GetTimersMusics)
     }
 
     if (houseState.house != null) {
