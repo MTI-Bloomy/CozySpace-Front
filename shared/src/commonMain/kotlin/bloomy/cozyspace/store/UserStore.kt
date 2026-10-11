@@ -2,6 +2,7 @@ package bloomy.cozyspace.store
 
 import bloomy.cozyspace.data.dto.LoginRequestDto
 import bloomy.cozyspace.data.dto.RegisterRequestDto
+import bloomy.cozyspace.domain.AiOptions
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.domain.Token
 import com.arkivanov.mvikotlin.core.store.Store
@@ -11,14 +12,16 @@ interface UserStore :
 
     sealed interface Intent {
         data class Register(
-            val request: RegisterRequestDto
+            val request: RegisterRequestDto,
         ) : Intent
 
         data class Login(
-            val request: LoginRequestDto
+            val request: LoginRequestDto,
         ) : Intent
 
         data object Logout : Intent
+
+        data object GetUser : Intent
     }
 
     sealed interface Label {
@@ -30,7 +33,14 @@ interface UserStore :
     data class State(
         val loading: Boolean = false,
         val token: Token = Token("", ""),
-        val user: User = User("", "", "", null),
-        val error: String? = null
+        val user: User = User(
+            "", "", "", null, null, null, null,
+            AiOptions(
+                aiCheer = false,
+                aiJournalPrompts = false,
+                aiTodo = false,
+            ),
+        ),
+        val error: String? = null,
     )
 }
