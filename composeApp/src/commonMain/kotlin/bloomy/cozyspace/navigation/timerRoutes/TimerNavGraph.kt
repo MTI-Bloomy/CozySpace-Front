@@ -36,7 +36,8 @@ fun TimerNavGraph (navController: NavHostController, stores: Stores) {
 
         composable(TimerScreen.TimerRelaxation.route) {
             TimerRelaxationScreen(
-                stores
+                stores,
+                onBack = { navController.popBackStack() }
             )
         }
     }

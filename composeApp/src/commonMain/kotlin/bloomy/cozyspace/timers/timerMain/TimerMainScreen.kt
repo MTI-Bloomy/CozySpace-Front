@@ -67,7 +67,7 @@ fun TimerMainScreen(
             icon = Res.drawable.target_check,
             iconDescription = "Concentration timer",
             title = "Concentration",
-            description = "Focused sessions with breaks",
+            description = "Stay focused with timed work sessions and breaks",
             backgroundColor = DarkGreen,
             contentColor = WhiteBackground,
             onClick = fromTimerMain_toTimerConcentration
@@ -79,7 +79,7 @@ fun TimerMainScreen(
             icon = Res.drawable.psychiatry,
             iconDescription = "Relaxation timer",
             title = "Relaxation",
-            description = "Take a breath",
+            description = "Relax with guided calming exercises",
             backgroundColor = DarkGreen,
             contentColor = WhiteBackground,
             onClick = fromTimerMain_toTimerRelaxation
