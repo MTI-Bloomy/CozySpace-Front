@@ -58,6 +58,15 @@ fun rememberTodoListStore(env: AppEnvironment) =
     }
 
 @Composable
+fun rememberTimerMusicStore(env: AppEnvironment) =
+    produceState<TimerMusicStore?>(initialValue = null, env.httpClient) {
+        value = TimerMusicStoreFactory(
+            repository = TimerMusicRepository(ApiService(env.httpClient, env.networkMonitor)),
+            storage = env.storages.timerMusicStorage,
+        ).create().also { it.init() }
+    }
+
+@Composable
 fun rememberTodoDoneStore(env: AppEnvironment) =
     produceState<TodoDoneStore?>(initialValue = null, env.httpClient) {
         value = TodoDoneStoreFactory(

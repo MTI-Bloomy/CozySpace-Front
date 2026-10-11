@@ -5,7 +5,6 @@ import bloomy.cozyspace.data.dto.*
 import bloomy.cozyspace.interfaces.ApiResult
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
-import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
@@ -125,6 +124,14 @@ class ApiService(
 
     suspend fun getNotClaimedTodoDone(): ApiResult<List<TodoDto>> = safeApiCall(networkMonitor) {
         client.get("${Environment.API_URL}/todoDone/rewards")
+    }
+
+    //endregion
+
+    //region /timer-music
+
+    suspend fun getTimersMusics(): ApiResult<List<TimerMusicDto>> = safeApiCall(networkMonitor) {
+        client.get("${Environment.API_URL}/timer-music")
     }
 
     //endregion
