@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import bloomy.cozyspace.store.Stores
+import bloomy.cozyspace.timers.timerConcentration.TimerClassicScreen
 import bloomy.cozyspace.timers.timerConcentration.TimerConcentrationScreen
 import bloomy.cozyspace.timers.timerMain.TimerMainScreen
 import bloomy.cozyspace.timers.timerRelaxation.TimerRelaxationScreen
@@ -30,7 +31,16 @@ fun TimerNavGraph (navController: NavHostController, stores: Stores) {
 
         composable(TimerScreen.TimerConcentration.route) {
             TimerConcentrationScreen(
-                stores
+                stores,
+                onOpenClassicTimer = {
+                    navController.navigate(TimerScreen.TimerClassic.route)
+                },
+            )
+        }
+
+        composable(TimerScreen.TimerClassic.route) {
+            TimerClassicScreen(
+                onStop = { navController.popBackStack() },
             )
         }
 

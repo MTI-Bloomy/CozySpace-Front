@@ -31,15 +31,19 @@ fun MobileLayout(
     isOnline: Boolean,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
+    isActiveTimerPage: Boolean,
+    onActiveTimerPageChanged: (Boolean) -> Unit,
 ) {
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
-            MobileNavBar(
-                items = NavDestination.entries,
-                selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected,
-            )
+            if (!isActiveTimerPage) {
+                MobileNavBar(
+                    items = NavDestination.entries,
+                    selectedIndex = selectedIndex,
+                    onItemSelected = onItemSelected,
+                )
+            }
         },
     ) { padding ->
 
@@ -48,6 +52,7 @@ fun MobileLayout(
             stores = stores,
             storages = storages,
             isOnline = isOnline,
+            onActiveTimerPageChanged = onActiveTimerPageChanged,
             modifier = Modifier.padding(padding),
         )
     }
@@ -62,20 +67,24 @@ fun DesktopLayout(
     isOnline: Boolean,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
+    isActiveTimerPage: Boolean,
+    onActiveTimerPageChanged: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxSize(),
     ) {
 
-        Box(
-            modifier = Modifier.fillMaxHeight(),
-            contentAlignment = Alignment.Center,
-        ) {
-            DesktopNavBar(
-                items = NavDestination.entries,
-                selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected,
-            )
+        if (!isActiveTimerPage) {
+            Box(
+                modifier = Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center,
+            ) {
+                DesktopNavBar(
+                    items = NavDestination.entries,
+                    selectedIndex = selectedIndex,
+                    onItemSelected = onItemSelected,
+                )
+            }
         }
 
         Scaffold(
@@ -88,6 +97,7 @@ fun DesktopLayout(
                 stores = stores,
                 storages = storages,
                 isOnline = isOnline,
+                onActiveTimerPageChanged = onActiveTimerPageChanged,
                 modifier = Modifier.padding(padding),
             )
         }
