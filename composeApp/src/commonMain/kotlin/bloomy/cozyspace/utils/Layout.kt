@@ -1,5 +1,8 @@
 package bloomy.cozyspace.utils
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,6 +14,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,14 +39,22 @@ fun MobileLayout(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
+    var showNavbar by remember { mutableStateOf(true) }
+
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
-            MobileNavBar(
-                items = NavDestination.entries,
-                selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected,
-            )
+            AnimatedVisibility(
+                visible = showNavbar,
+                enter = slideInVertically { it },
+                exit = slideOutVertically { it },
+            ) {
+                MobileNavBar(
+                    items = NavDestination.entries,
+                    selectedIndex = selectedIndex,
+                    onItemSelected = onItemSelected,
+                )
+            }
         },
     ) { padding ->
 
@@ -49,6 +64,7 @@ fun MobileLayout(
             storages = storages,
             isOnline = isOnline,
             modifier = Modifier.padding(padding),
+            onNavbarVisibilityChange = { showNavbar = it }
         )
     }
 }

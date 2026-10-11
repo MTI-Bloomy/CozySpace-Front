@@ -24,15 +24,15 @@ import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.timers.components.ReturnButton
 import bloomy.cozyspace.timers.components.TimerCard
 import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.psychiatry
 import cozyspace.composeapp.generated.resources.self_improvement
 import cozyspace.composeapp.generated.resources.sentiment_calm
-import cozyspace.composeapp.generated.resources.target_check
 
 
 @Composable
 fun TimerRelaxationScreen(
     stores: Stores,
+    fromTimerRelaxation_toTimerRelaxationIntrospection: () -> Unit = {},
+    fromTimerRelaxation_toTimerRelaxationSquareBreathing: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
 
@@ -77,7 +77,7 @@ fun TimerRelaxationScreen(
                 description = "Reflect on a meaningful sentence, one at a time",
                 backgroundColor = DarkGreen,
                 contentColor = WhiteBackground,
-                onClick = { },
+                onClick = fromTimerRelaxation_toTimerRelaxationIntrospection,
             )
 
             Spacer(Modifier.height(16.dp))
@@ -89,19 +89,8 @@ fun TimerRelaxationScreen(
                 description = "Breathe in, hold, out, hold: 4 seconds each",
                 backgroundColor = DarkGreen,
                 contentColor = WhiteBackground,
-                onClick = { }
+                onClick = fromTimerRelaxation_toTimerRelaxationSquareBreathing
             )
         }
-
-//        CharacterInteraction(
-//            character = Res.drawable.happyCharacter,
-//            question = "Are you feeling better ?",
-//            confirmAnswer = "Yes",
-//            cancelAnswer = "No",
-//            modifier = Modifier
-//                .align(Alignment.BottomCenter),
-//            onConfirm = { },
-//            onDismiss = { }
-//        )
     }
 }

@@ -37,7 +37,7 @@ fun CharacterInteraction(
     cancelAnswer: String,
     modifier: Modifier = Modifier,
     onConfirm: () -> Unit = {},
-    onDismiss: () -> Unit = {}
+    onCancel: () -> Unit = {}
 ) {
 
     Row (
@@ -83,7 +83,7 @@ fun CharacterInteraction(
                     contentColor = WhiteBackground,
                     backgroundColor = DarkGreen,
                     modifier = Modifier.weight(1f),
-                    onClick = onDismiss
+                    onClick = onCancel
                 )
 
                 LabelButton(
