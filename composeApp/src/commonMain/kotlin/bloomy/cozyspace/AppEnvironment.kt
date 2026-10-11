@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import bloomy.cozyspace.cache.*
 import bloomy.cozyspace.config.Environment
+import bloomy.cozyspace.domain.AiOptions
 import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.network.NetworkMonitor
 import bloomy.cozyspace.network.createHttpClient
@@ -46,7 +47,15 @@ fun rememberAppEnvironment(scope: CoroutineScope): AppEnvironment {
             },
             onTokensRefreshed = { newToken ->
                 val cache = userStorage.get()
-                userStorage.save(UserCache(token = newToken, user = cache?.user ?: User("", "", "", null)))
+                userStorage.save(
+                    UserCache(
+                        token = newToken,
+                        user = cache?.user ?: User(
+                            "", "", "", null, null, null, null,
+                            AiOptions(aiCheer = false, aiJournalPrompts = false, aiTodo = false),
+                        ),
+                    ),
+                )
             },
             onRefreshFailed = {
                 userStorage.clear()

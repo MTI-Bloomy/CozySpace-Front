@@ -15,20 +15,28 @@ class ApiService(
     //region /
 
     suspend fun signup(request: RegisterRequestDto): ApiResult<RegisterDto> = safeApiCall(networkMonitor) {
-            client.post("${Environment.API_URL}/sign-up") {
-                skipAuth()
-                contentType(ContentType.Application.Json)
-                setBody(request)
-            }
+        client.post("${Environment.API_URL}/sign-up") {
+            skipAuth()
+            contentType(ContentType.Application.Json)
+            setBody(request)
         }
+    }
 
     suspend fun signin(request: LoginRequestDto): ApiResult<LoginDto> = safeApiCall(networkMonitor) {
-            client.post("${Environment.API_URL}/sign-in") {
-                skipAuth()
-                contentType(ContentType.Application.Json)
-                setBody(request)
-            }
+        client.post("${Environment.API_URL}/sign-in") {
+            skipAuth()
+            contentType(ContentType.Application.Json)
+            setBody(request)
         }
+    }
+
+    //endregion
+
+    // region /user
+
+    suspend fun getUser(): ApiResult<UserDto> = safeApiCall(networkMonitor) {
+        client.get("${Environment.API_URL}/user")
+    }
 
     //endregion
 
