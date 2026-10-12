@@ -27,7 +27,8 @@ import cozyspace.composeapp.generated.resources.happyCharacter
 
 @Composable
 fun TimerRelaxationIntrospectionScreen(
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    onFinish: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -62,7 +63,7 @@ fun TimerRelaxationIntrospectionScreen(
                 question = "Are you feeling better ?",
                 confirmAnswer = "Yes",
                 cancelAnswer = "No",
-                onConfirm = onBack,
+                onConfirm = onFinish,
                 onCancel = { },
             )
 
