@@ -11,6 +11,7 @@ import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.timers.common.TimerEndSessionScreen
 import bloomy.cozyspace.timers.timerConcentration.TimerConcentrationScreen
 import bloomy.cozyspace.timers.timerMain.TimerMainScreen
+import bloomy.cozyspace.timers.timerRelaxation.TimerRelaxationBoxBreathingScreen
 import bloomy.cozyspace.timers.timerRelaxation.TimerRelaxationIntrospectionScreen
 import bloomy.cozyspace.timers.timerRelaxation.TimerRelaxationScreen
 
@@ -46,7 +47,7 @@ fun TimerNavGraph (navController: NavHostController, stores: Stores) {
                     navController.navigate(TimerScreen.TimerRelaxationIntrospection.route)
                 },
                 fromTimerRelaxation_toTimerRelaxationSquareBreathing = {
-                    navController.navigate(TimerScreen.TimerRelaxationSquareBreathing.route)
+                    navController.navigate(TimerScreen.TimerRelaxationBoxBreathing.route)
                 },
                 onBack = { navController.popBackStack() }
             )
@@ -61,13 +62,13 @@ fun TimerNavGraph (navController: NavHostController, stores: Stores) {
             )
         }
 
-        composable(TimerScreen.TimerRelaxationSquareBreathing.route) {
-//            TimerRelaxationSquareBreathingScreen(
-//            onBack = { navController.popBackStack() },
-//            onFinish = {
-//                navController.navigate(TimerScreen.TimerEndSession.createRoute(isConcentration = true))
-//            }
-//         )
+        composable(TimerScreen.TimerRelaxationBoxBreathing.route) {
+            TimerRelaxationBoxBreathingScreen(
+                onBack = { navController.popBackStack() },
+                onFinish = {
+                    navController.navigate(TimerScreen.TimerEndSession.createRoute(isConcentration = false))
+                }
+            )
         }
 
         composable(
