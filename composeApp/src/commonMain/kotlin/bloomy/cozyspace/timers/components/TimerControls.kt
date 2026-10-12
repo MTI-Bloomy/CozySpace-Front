@@ -26,7 +26,7 @@ import org.jetbrains.compose.resources.painterResource
 fun TimerControls(
     isRunning: Boolean,
     onPauseResume: () -> Unit,
-    onStop: () -> Unit,
+    onTimerStop: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -45,7 +45,7 @@ fun TimerControls(
             icon = painterResource(Res.drawable.stop),
             description = "Arrêter",
             enabled = true,
-            onClick = onStop,
+            onClick = onTimerStop,
         )
     }
 }

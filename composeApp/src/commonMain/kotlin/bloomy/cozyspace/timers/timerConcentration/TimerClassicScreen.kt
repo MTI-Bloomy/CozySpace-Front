@@ -31,7 +31,7 @@ import kotlinx.coroutines.delay
 private const val TIMER_DURATION_SECONDS = 15 * 60 // TODO: Retrieve time set in previous pages
 
 @Composable
-fun TimerClassicScreen(onStop: () -> Unit) {
+fun TimerClassicScreen(onTimerStop: () -> Unit) {
     var remainingSeconds by rememberSaveable { mutableIntStateOf(TIMER_DURATION_SECONDS) }
     var isRunning by rememberSaveable { mutableStateOf(true) }
 
@@ -94,9 +94,9 @@ fun TimerClassicScreen(onStop: () -> Unit) {
             TimerControls(
                 isRunning = isRunning,
                 onPauseResume = { isRunning = !isRunning },
-                onStop = {
+                onTimerStop = {
                     isRunning = false
-                    onStop()
+                    onTimerStop()
                 },
             )
         }

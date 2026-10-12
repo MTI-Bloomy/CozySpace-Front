@@ -24,7 +24,7 @@ import bloomy.cozyspace.theme.WhiteBackground
 @Composable
 fun TimerConcentrationScreen(
     stores: Stores,
-    onOpenClassicTimer: () -> Unit,
+    fromTimerConcentration_toTimerClassic: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -42,7 +42,7 @@ fun TimerConcentrationScreen(
         )
 
         Button(
-            onClick = onOpenClassicTimer,
+            onClick = fromTimerConcentration_toTimerClassic,
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 420.dp)

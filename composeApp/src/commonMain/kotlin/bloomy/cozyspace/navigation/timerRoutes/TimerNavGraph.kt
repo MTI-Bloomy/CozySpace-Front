@@ -32,7 +32,7 @@ fun TimerNavGraph (navController: NavHostController, stores: Stores) {
         composable(TimerScreen.TimerConcentration.route) {
             TimerConcentrationScreen(
                 stores,
-                onOpenClassicTimer = {
+                fromTimerConcentration_toTimerClassic = {
                     navController.navigate(TimerScreen.TimerClassic.route)
                 },
             )
@@ -40,7 +40,7 @@ fun TimerNavGraph (navController: NavHostController, stores: Stores) {
 
         composable(TimerScreen.TimerClassic.route) {
             TimerClassicScreen(
-                onStop = { navController.popBackStack() },
+                onTimerStop = { navController.popBackStack() },
             )
         }
 
