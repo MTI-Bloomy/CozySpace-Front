@@ -84,8 +84,8 @@ fun TimerRelaxationScreen(
 
             TimerCard(
                 icon = Res.drawable.sentiment_calm,
-                iconDescription = "Square breathing",
-                title = "Square breathing",
+                iconDescription = "Box breathing",
+                title = "Box breathing",
                 description = "Breathe in, hold, out, hold: 4 seconds each",
                 backgroundColor = DarkGreen,
                 contentColor = WhiteBackground,
