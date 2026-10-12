@@ -1,7 +1,11 @@
 package bloomy.cozyspace.utils
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -79,19 +83,27 @@ fun DesktopLayout(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
 ) {
+    var showNavbar by remember { mutableStateOf(true) }
+
     Row(
         modifier = Modifier.fillMaxSize(),
     ) {
 
-        Box(
-            modifier = Modifier.fillMaxHeight(),
-            contentAlignment = Alignment.Center,
+        AnimatedVisibility(
+            visible = showNavbar,
+            enter = slideInHorizontally { -it } + expandHorizontally(),
+            exit = slideOutHorizontally { -it } + shrinkHorizontally(),
         ) {
-            DesktopNavBar(
-                items = NavDestination.entries,
-                selectedIndex = selectedIndex,
-                onItemSelected = onItemSelected,
-            )
+            Box(
+                modifier = Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center,
+            ) {
+                DesktopNavBar(
+                    items = NavDestination.entries,
+                    selectedIndex = selectedIndex,
+                    onItemSelected = onItemSelected,
+                )
+            }
         }
 
         Scaffold(
@@ -105,6 +117,7 @@ fun DesktopLayout(
                 storages = storages,
                 isOnline = isOnline,
                 modifier = Modifier.padding(padding),
+                onNavbarVisibilityChange = { showNavbar = it }
             )
         }
     }
