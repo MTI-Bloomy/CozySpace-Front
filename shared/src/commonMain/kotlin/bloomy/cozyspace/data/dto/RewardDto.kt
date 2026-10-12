@@ -8,6 +8,7 @@ data class RewardDto(
     val furnitureId: String,
     val furnitureLink: String,
     val id: String,
+    val placedInARoom: Boolean,
     val todoDoneId: String,
     val type: String,
 )

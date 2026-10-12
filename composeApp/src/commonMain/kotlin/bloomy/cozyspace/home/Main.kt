@@ -16,10 +16,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.domain.House
@@ -143,31 +144,33 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(
+                        modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
                         Text(
                             text = if (saveHouseViewMode) "Saves: Currently on view mode only" else "Welcome back,",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             color = DarkGreen,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Text(
                             text = if (saveHouseViewMode) "Save of ${viewedHouse?.saveDate?.toDisplayDate() ?: "--/--/----"}" else userState.user.pseudo
                                 ?: "John Doe",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             fontWeight = FontWeight.Bold,
                         )
                     }
 
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         if (!saveHouseViewMode) {
-                            Button(
+                            FilledIconButton(
                                 onClick = {
                                     showSavesPopup = true
                                 },
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(
+                                colors = IconButtonDefaults.filledIconButtonColors(
                                     containerColor = DarkGreen,
                                 ),
                             ) {
@@ -179,13 +182,13 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                             }
 
                             if (todoDoneState.todoDoneNotClaimed.isNotEmpty()) {
-                                Button(
+                                FilledIconButton(
                                     onClick = {
                                         todoToClaim = todoDoneState.todoDoneNotClaimed.first()
                                         showTodoCompletePopup = true
                                     },
                                     shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = DarkGreen)
+                                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = DarkGreen)
                                 ) {
                                     Icon(
                                         painter = painterResource(Res.drawable.featured_seasonal_and_gifts),
@@ -195,7 +198,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                                 }
                             }
                         } else {
-                            Button(
+                            FilledIconButton(
                                 onClick = {
                                     saveHouseViewMode = false
                                     viewedHouse = null
@@ -205,7 +208,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                                     stores.room.accept(RoomStore.Intent.GetRooms(houseState.house!!.id))
                                 },
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(
+                                colors = IconButtonDefaults.filledIconButtonColors(
                                     containerColor = DarkGreen,
                                 ),
                             ) {
@@ -216,12 +219,12 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                                 )
                             }
                         }
-                        Button(
+                        FilledIconButton(
                             onClick = {
                                 stores.user.accept(UserStore.Intent.Logout)
                             },
                             shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(
+                            colors = IconButtonDefaults.filledIconButtonColors(
                                 containerColor = DarkGreen,
                             ),
                         ) {
