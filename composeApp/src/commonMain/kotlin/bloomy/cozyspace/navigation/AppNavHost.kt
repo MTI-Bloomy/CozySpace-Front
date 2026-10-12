@@ -33,7 +33,6 @@ fun AppNavHost(
     stores: Stores,
     storages: Storages,
     isOnline: Boolean,
-    onActiveTimerPageChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -42,10 +41,7 @@ fun AppNavHost(
         modifier = modifier,
     ) {
         composable<Timers> {
-            TimersMain(
-                stores,
-                onActiveTimerPageChanged,
-            )
+            TimersMain(stores)
         }
 
         composable<Home> {
