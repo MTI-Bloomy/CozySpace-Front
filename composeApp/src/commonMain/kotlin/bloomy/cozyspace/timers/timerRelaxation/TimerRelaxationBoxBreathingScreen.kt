@@ -31,6 +31,7 @@ import bloomy.cozyspace.timers.components.CharacterInteraction
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.happyCharacter
 import kotlinx.coroutines.delay
+import kotlin.math.max
 import kotlin.time.Duration.Companion.minutes
 
 private val QUESTION_INTERVAL = 1.minutes // TODO => change to 5.minutes
@@ -63,7 +64,7 @@ fun TimerRelaxationBoxBreathingScreen(
     ) {
         BoxBreathingComponent(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
         )
 
         Column(
