@@ -109,7 +109,7 @@ fun createHttpClient(
         }
 
         install(Logging) {
-            level = LogLevel.ALL
+            level = LogLevel.NONE
             logger = Logger.DEFAULT
         }
     }
