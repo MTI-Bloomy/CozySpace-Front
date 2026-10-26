@@ -5,21 +5,25 @@ import bloomy.cozyspace.cache.RewardStorage
 import bloomy.cozyspace.cache.RoomStorage
 import bloomy.cozyspace.cache.Storages
 import bloomy.cozyspace.cache.SyncQueueStorage
+import bloomy.cozyspace.cache.TimerMusicStorage
 import bloomy.cozyspace.cache.TodoDoneStorage
 import bloomy.cozyspace.cache.TodoListStorage
+import bloomy.cozyspace.cache.UserCache
 import bloomy.cozyspace.cache.UserStorage
 import bloomy.cozyspace.cache.createAssetStorage
 import bloomy.cozyspace.cache.createKeyValueStore
-import bloomy.cozyspace.data.AuthentificationRepository
+import bloomy.cozyspace.config.Environment
+import bloomy.cozyspace.data.UserRepository
 import bloomy.cozyspace.data.dto.LoginRequestDto
 import bloomy.cozyspace.data.dto.RegisterRequestDto
+import bloomy.cozyspace.domain.AiOptions
+import bloomy.cozyspace.domain.User
 import bloomy.cozyspace.network.ApiService
 import bloomy.cozyspace.network.NetworkMonitor
 import bloomy.cozyspace.network.clearBearerCache
 import bloomy.cozyspace.network.createHttpClient
-import bloomy.cozyspace.store.UserStore
-import bloomy.cozyspace.store.UserStoreFactory
 import com.arkivanov.mvikotlin.core.rx.observer
+import io.ktor.client.plugins.auth.providers.BearerTokens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -98,21 +102,25 @@ fun createUserStore(): Promise<UserStoreJs> {
             rewardStorage = RewardStorage(keyValueStore),
             todoListStorage = TodoListStorage(keyValueStore),
             todoDoneStorage = TodoDoneStorage(keyValueStore),
+            timerMusicStorage = TimerMusicStorage(keyValueStore),
             syncQueueStorage = SyncQueueStorage(keyValueStore),
         )
         val httpClient = createHttpClient(
-            baseUrl = bloomy.cozyspace.config.Environment.API_URL,
+            baseUrl = Environment.API_URL,
             loadTokens = {
                 storages.userStorage.get()?.token
                     ?.takeIf { it.idToken.isNotBlank() }
-                    ?.let { io.ktor.client.plugins.auth.providers.BearerTokens(it.idToken, it.refreshToken) }
+                    ?.let { BearerTokens(it.idToken, it.refreshToken) }
             },
             onTokensRefreshed = { token ->
                 val cache = storages.userStorage.get()
                 storages.userStorage.save(
-                    bloomy.cozyspace.cache.UserCache(
+                    UserCache(
                         token = token,
-                        user = cache?.user ?: bloomy.cozyspace.domain.User("", "", "", null),
+                        user = cache?.user ?: User(
+                            "", "", "", null, null, null, null,
+                            AiOptions(aiCheer = false, aiJournalPrompts = false, aiTodo = false),
+                        ),
                     ),
                 )
             },
@@ -122,7 +130,7 @@ fun createUserStore(): Promise<UserStoreJs> {
         )
         val networkMonitor = NetworkMonitor(httpClient, scope)
         UserStoreFactory(
-            repository = AuthentificationRepository(ApiService(httpClient, networkMonitor)),
+            repository = UserRepository(ApiService(httpClient, networkMonitor)),
             storages = storages,
             onAuthStateChanged = { httpClient.clearBearerCache() },
         ).create().also { it.init() }.let(::UserStoreJs)
