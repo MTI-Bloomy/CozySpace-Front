@@ -41,7 +41,7 @@ fun AppNavHost(
         modifier = modifier,
     ) {
         composable<Timers> {
-            TimersMain()
+            TimersMain(stores)
         }
 
         composable<Home> {

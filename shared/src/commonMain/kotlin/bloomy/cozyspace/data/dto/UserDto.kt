@@ -1,5 +1,7 @@
 package bloomy.cozyspace.data.dto
 
+import bloomy.cozyspace.domain.AiOptions
+import bloomy.cozyspace.domain.User
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -62,4 +64,38 @@ data class RefreshDto(
 data class RefreshRequestDto(
     @SerialName("grant_type") val grantType: String = "refresh_token",
     @SerialName("refresh_token") val refreshToken: String
+)
+
+@Serializable
+data class ParsedAiOptions(
+    @SerialName("ai_cheer") val aiCheer: Boolean,
+    @SerialName("ai_journal_prompts") val aiJournalPrompts: Boolean,
+    @SerialName("ai_todo") val aiTodo: Boolean,
+)
+
+@Serializable
+data class UserDto(
+    val charaId: String?,
+    val curHouseId: String?,
+    val email: String,
+    val houseSaveDelay: Int?,
+    val id: String,
+    val parsedAiOptions: ParsedAiOptions,
+    val pseudo: String?,
+    val retroDelay: Int?,
+)
+
+fun UserDto.toDomain(): User = User(
+    id = id,
+    email = email,
+    pseudo = pseudo,
+    charaId = charaId,
+    curHouseId = curHouseId,
+    houseSaveDelay = houseSaveDelay,
+    retroDelay = retroDelay,
+    aiOptions = AiOptions(
+        aiCheer = parsedAiOptions.aiCheer,
+        aiJournalPrompts = parsedAiOptions.aiJournalPrompts,
+        aiTodo = parsedAiOptions.aiTodo,
+    )
 )

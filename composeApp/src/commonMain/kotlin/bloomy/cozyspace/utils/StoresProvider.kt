@@ -12,7 +12,7 @@ import bloomy.cozyspace.store.*
 fun rememberUserStore(env: AppEnvironment) =
     produceState<UserStore?>(initialValue = null, env.httpClient) {
         value = UserStoreFactory(
-            repository = AuthentificationRepository(ApiService(env.httpClient, env.networkMonitor)),
+            repository = UserRepository(ApiService(env.httpClient, env.networkMonitor)),
             storages = env.storages,
             onAuthStateChanged = { env.httpClient.clearBearerCache() },
         ).create().also { it.init() }
@@ -54,6 +54,15 @@ fun rememberTodoListStore(env: AppEnvironment) =
             storage = env.storages.todoListStorage,
             networkMonitor = env.networkMonitor,
             syncQueue = env.syncQueue,
+        ).create().also { it.init() }
+    }
+
+@Composable
+fun rememberTimerMusicStore(env: AppEnvironment) =
+    produceState<TimerMusicStore?>(initialValue = null, env.httpClient) {
+        value = TimerMusicStoreFactory(
+            repository = TimerMusicRepository(ApiService(env.httpClient, env.networkMonitor)),
+            storage = env.storages.timerMusicStorage,
         ).create().also { it.init() }
     }
 

@@ -7,4 +7,5 @@ data class Stores (
     val house: HouseStore,
     val todoList: TodoListStore,
     val todoDone: TodoDoneStore,
+    val timerMusic: TimerMusicStore,
 )

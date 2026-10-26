@@ -10,6 +10,7 @@ data class Storages(
     val rewardStorage: RewardStorage,
     val todoListStorage: TodoListStorage,
     val todoDoneStorage: TodoDoneStorage,
+    val timerMusicStorage: TimerMusicStorage,
 
     val syncQueueStorage: SyncQueueStorage,
 )
