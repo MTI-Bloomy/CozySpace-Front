@@ -3,9 +3,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CustomButton } from '@ui/components/custom-button/custom-button';
 import { CustomTextInput } from '@ui/components/custom-text-input/custom-text-input';
-import { LoginRequestDto } from '../utils/auth.dto';
+import type { LoginRequestDto } from '../utils/auth.dto';
 import { AuthHeader } from '../components/auth-header/auth-header';
 import { AuthLayout } from '../components/auth-layout/auth-layout';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ import { AuthLayout } from '../components/auth-layout/auth-layout';
 })
 export class Login {
   private readonly fb = inject(FormBuilder).nonNullable;
+  private readonly auth = inject(AuthService);
 
   protected readonly form = this.fb.group({
     identifier: ['', [Validators.required]],
@@ -38,7 +40,6 @@ export class Login {
     const { identifier, password } = this.form.getRawValue();
     const dto: LoginRequestDto = { email: identifier, password };
 
-    // TODO: équivalent de stores.user.accept(UserStore.Intent.Login(dto))
-    console.log('login', dto);
+    this.auth.login(dto.email, dto.password);
   }
 }

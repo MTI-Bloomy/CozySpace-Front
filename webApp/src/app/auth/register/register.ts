@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { CustomButton } from '@ui/components/custom-button/custom-button';
 import { CustomTextInput } from '@ui/components/custom-text-input/custom-text-input';
-import { RegisterRequestDto } from '../utils/auth.dto';
+import type { RegisterRequestDto } from '../utils/auth.dto';
 import {
   isEmailValid,
   isPasswordConfirmationValid,
@@ -15,6 +15,7 @@ import {
 import { AuthHeader } from '../components/auth-header/auth-header';
 import { AuthLayout } from '../components/auth-layout/auth-layout';
 import { PasswordStrengthBar } from '../components/password-strength-bar/password-strength-bar';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -33,6 +34,7 @@ import { PasswordStrengthBar } from '../components/password-strength-bar/passwor
 })
 export class Register {
   private readonly fb = inject(FormBuilder).nonNullable;
+  private readonly auth = inject(AuthService);
 
   protected readonly form = this.fb.group({
     username: [''],
@@ -70,7 +72,6 @@ export class Register {
     const { email, password } = this.form.getRawValue();
     const dto: RegisterRequestDto = { email, password };
 
-    // TODO: équivalent de stores.user.accept(UserStore.Intent.Register(dto))
-    console.log('register', dto);
+    this.auth.register(dto.email, dto.password);
   }
 }
