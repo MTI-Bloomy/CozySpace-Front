@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background: var(--card-background);
+}
+
+.submit {
+  margin-top: 1.25rem;
+}
+
+.switch {
+  align-self: center;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--green-dark);
+  text-align: center;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+}
