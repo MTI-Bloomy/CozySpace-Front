@@ -41,12 +41,16 @@ fun TimerNavGraph (navController: NavHostController, stores: Stores) {
                 fromTimerConcentration_toTimerClassic = {
                     navController.navigate(TimerScreen.TimerClassic.route)
                 },
+                onBack = { navController.popBackStack() },
             )
         }
 
         composable(TimerScreen.TimerClassic.route) {
             TimerClassicScreen(
                 onTimerStop = { navController.popBackStack() },
+                onFinish = {
+                    navController.navigate(TimerScreen.TimerEndSession.createRoute(isConcentration = true))
+                },
             )
         }
 

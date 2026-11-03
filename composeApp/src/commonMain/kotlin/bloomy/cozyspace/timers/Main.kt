@@ -22,6 +22,7 @@ fun TimersMain(
     val navTimerController = rememberNavController()
     val backStackEntry by navTimerController.currentBackStackEntryAsState()
     val hiddenRoutes = listOf(
+        TimerScreen.TimerClassic.route,
         TimerScreen.TimerRelaxationIntrospection.route,
         TimerScreen.TimerRelaxationBoxBreathing.route
     )
