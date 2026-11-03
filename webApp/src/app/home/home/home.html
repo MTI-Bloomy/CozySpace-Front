@@ -1,1 +1,63 @@
-<p>home works!</p>
+<section class="home">
+    <h1>Home (debug stores)</h1>
+    <button type="button" (click)="refresh()">Refresh</button>
+
+    <!-- HOUSE -->
+    <h2>House @if (houses.loading()) { <small>(loading...)</small> }</h2>
+    @if (houses.error(); as err) {
+        <p class="error">{{ err }}</p>
+    }
+    @if (houses.house(); as house) {
+        <p>
+            <strong>{{ house.name }}</strong> (id: {{ house.id }})
+        </p>
+        <p>Rooms ids: {{ house.rooms.join(', ') || '—' }}</p>
+    } @else if (!houses.loading()) {
+        <p>No current house.</p>
+    }
+
+    <h3>Saved houses ({{ houses.savedHouses().length }})</h3>
+    <ul>
+        @for (saved of houses.savedHouses(); track saved.id) {
+            <li>{{ saved.name }} (id: {{ saved.id }}) — saved on {{ saved.saveDate }}</li>
+        } @empty {
+            <li>None</li>
+        }
+    </ul>
+
+    <!-- ROOMS -->
+    <h2>Rooms ({{ rooms.rooms().length }}) @if (rooms.loading()) { <small>(loading...)</small> }</h2>
+    @if (rooms.error(); as err) {
+        <p class="error">{{ err }}</p>
+    }
+    <ul>
+        @for (room of rooms.rooms(); track room.id) {
+            <li>
+                <strong>{{ room.type }}</strong> — id: {{ room.id }}, capacity:
+                {{ room.furniture.length }}/{{ room.maxCapacity }}
+                @if (room.furniture.length) {
+                    <br />Furniture: {{ room.furniture.join(', ') }}
+                }
+            </li>
+        } @empty {
+            <li>None</li>
+        }
+    </ul>
+
+    <!-- REWARDS -->
+    <h2>Rewards ({{ rewards.rewards().length }}) @if (rewards.loading()) { <small>(loading...)</small> }</h2>
+    @if (rewards.error(); as err) {
+        <p class="error">{{ err }}</p>
+    }
+    <ul>
+        @for (reward of rewards.rewards(); track reward.id) {
+            <li>
+                id: {{ reward.id }} — furniture: {{ reward.furnitureId }} — todoDone:
+                {{ reward.todoDoneId }}
+                <br /><a [href]="reward.furnitureLink" target="_blank" rel="noopener">link</a>
+            </li>
+        } @empty {
+            <li>None</li>
+        }
+    </ul>
+</section>
