@@ -6,6 +6,10 @@
     "webApp",
     "shared/build/dist/js/developmentLibrary"
   ],
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
+  },
   "scripts": {
     "build": "cd webApp && npm run build",
     "start": "cd webApp && npm run start",
