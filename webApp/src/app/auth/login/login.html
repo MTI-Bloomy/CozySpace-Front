@@ -1,0 +1,33 @@
+<app-auth-layout>
+    <app-auth-header authHeader heading="Welcome back !" />
+
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <app-custom-text-input
+            formControlName="identifier"
+            icon="pi-user"
+            type="text"
+            placeholder="Username / Email"
+            ariaLabel="Username or email"
+            autocomplete="username"
+            [required]="true"
+            [error]="showError('identifier')"
+            [small]="showError('identifier') ? 'Please enter your username or email' : undefined"
+        />
+
+        <app-custom-text-input
+            formControlName="password"
+            icon="pi-lock"
+            type="password"
+            placeholder="Password"
+            ariaLabel="Password"
+            autocomplete="current-password"
+            [required]="true"
+            [error]="showError('password')"
+            [small]="showError('password') ? 'Please enter your password' : undefined"
+        />
+
+        <app-custom-button class="submit" type="submit" label="Login" [fluid]="true" />
+
+        <a class="switch" routerLink="/register">Don't have an account ? Register</a>
+    </form>
+</app-auth-layout>

@@ -1,0 +1,86 @@
+/*
+  Équivalent de AuthLayout.kt
+  - < 600dp  : colonne (header en haut, formulaire dessous, 50/50)
+  - >= 600dp : ligne (header 1.5 / formulaire 1, formulaire limité à 500px)
+  - Clavier ouvert (Kotlin : WindowInsets.ime) : approximé par "un champ a le focus"
+    sur un écran tactile étroit, ce qui réduit le logo.
+*/
+
+:host {
+  --auth-logo-size: min(45vw, 26rem);
+
+  display: block;
+  min-height: 100dvh;
+  background: var(--white-background);
+}
+
+:host(.sign-up) {
+  --auth-logo-size: min(40vw, 24rem);
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 100dvh;
+  padding: 0 1.25rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 1rem 0;
+  flex: 1 1 0;
+  transition: flex-grow 0.25s ease;
+}
+
+.content {
+  box-sizing: border-box;
+  width: 100%;
+  flex: 1 1 0;
+  padding-bottom: 1.5rem;
+}
+
+/* "Clavier ouvert" sur mobile */
+@media (max-width: 37.4375rem) and (pointer: coarse) {
+  :host(:has(input:focus)) {
+    --auth-logo-size: 22vw;
+  }
+
+  :host(.sign-up:has(input:focus)) {
+    --auth-logo-size: 18vw;
+  }
+
+  :host(:has(input:focus)) .header {
+    flex-grow: 0.4;
+  }
+}
+
+/* Grand écran : header à gauche, formulaire à droite */
+@media (min-width: 37.5rem) {
+  .layout {
+    flex-direction: row;
+    justify-content: center;
+    gap: clamp(2rem, 6vw, 6rem);
+    max-width: 75rem;
+    margin-inline: auto;
+    padding: 1.25rem;
+  }
+
+  .header {
+    flex: 1.5 1 0;
+    padding: 0;
+  }
+
+  .content {
+    flex: 1 1 0;
+    width: auto;
+    max-width: 31.25rem;
+    padding-bottom: 0;
+  }
+}

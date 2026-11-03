@@ -1,0 +1,82 @@
+:host {
+  display: inline-block;
+}
+
+:host(.fluid) {
+  display: block;
+  width: 100%;
+
+  .btn {
+    width: 100%;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  min-height: 3.5rem;
+  padding: 0 1.5rem;
+  border: 0;
+  border-radius: 0.75rem;
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.05s ease;
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--green-light);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: var(--green-dark);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: var(--green-mid-dark);
+    }
+
+    /* Valeurs désactivées de Material 3, comme dans le Kotlin */
+    &:disabled {
+      background: rgb(28 27 31 / 12%);
+      color: rgb(28 27 31 / 38%);
+    }
+  }
+
+  &--secondary {
+    background: var(--green-light);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: var(--green-mid-light);
+    }
+  }
+
+  &--text {
+    background: transparent;
+    color: var(--green-dark);
+
+    &:hover:not(:disabled) {
+      background: rgb(46 120 90 / 10%);
+    }
+  }
+
+  &--secondary:disabled,
+  &--text:disabled {
+    opacity: 0.5;
+  }
+}

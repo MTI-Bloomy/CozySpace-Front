@@ -6,6 +6,7 @@ import bloomy.cozyspace.domain.Token
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.authProvider
 import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -14,7 +15,6 @@ import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.plugin
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -34,11 +34,8 @@ fun HttpRequestBuilder.skipAuth() {
     attributes.put(SkipAuthAttributeKey, true)
 }
 
-suspend fun HttpClient.clearBearerCache() {
-    plugin(Auth).providers
-        .filterIsInstance<BearerAuthProvider>()
-        .firstOrNull()
-        ?.clearToken()
+fun HttpClient.clearBearerCache() {
+    authProvider<BearerAuthProvider>()?.clearToken()
 }
 
 val AppJson = Json {
@@ -112,7 +109,7 @@ fun createHttpClient(
         }
 
         install(Logging) {
-            level = LogLevel.ALL
+            level = LogLevel.NONE
             logger = Logger.DEFAULT
         }
     }

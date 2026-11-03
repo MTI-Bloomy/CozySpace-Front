@@ -31,15 +31,14 @@ Ce projet Kotlin Multiplatform est organisé en plusieurs modules :
 | **`/composeApp`** | Code partagé pour toutes les applications Compose Multiplatform (Android, Desktop, iOS) |
 | **`/shared`** | Code partagé entre toutes les targets incluant le code Kotlin/JS pour le web |
 | **`/webApp`** | Application web Angular (utilise la librairie Kotlin/JS du module `shared`) |
-| **`/iosApp`** | Point d'entrée pour l'application iOS (SwiftUI) |
+| **`/iosApp`** | Point d'entrée pour l'application iOS (SwiftUI) [Non implémenté] |
 | **`/gradle`** | Configuration Gradle et versions des dépendances |
 
 ### Structure du code partagé
 
 #### Dans `/composeApp/src`
-- **`commonMain`** → Code partagé pour toutes les targets
+- **`commonMain`** → Code partagé pour toutes les deux targets
 - **`androidMain`** → Code spécifique Android
-- **`iosMain`** → Code spécifique iOS
 - **`jvmMain`** → Code spécifique Desktop (JVM)
 
 #### Dans `/shared/src`
@@ -164,6 +163,22 @@ npm run start
 ```
 
 L'application sera accessible sur `http://localhost:4200`
+
+> ⚠️ **Important :** Pour recompiler la lib, il faut tout clean avant (sinon npm ne détecte pas les changements)
+> ```bash
+> # Windows
+> rm nodes_modules
+> rm package-lock.json
+> .\gradlew.bat clean :shared:jsBrowserDevelopmentLibraryDistribution
+> npm install
+> npm run start
+> 
+> # macOS/Linux
+> rm -rf nodes_modules/ package-lock.json
+> ./gradlew clean :shared:jsBrowserDevelopmentLibraryDistribution
+> npm install
+> npm run start
+> ```
 
 ### iOS (macOS uniquement)
 
