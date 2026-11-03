@@ -53,7 +53,7 @@ Ce projet Kotlin Multiplatform est organisé en plusieurs modules :
 Avant de commencer, assurez-vous d'avoir installé :
 
 - **Java Development Kit (JDK) 21**
-- **Node.js** (pour les applications web et npm)
+- **Node.js (>=v24)** (pour les applications web et npm (>=v11))
 - **Xcode** (pour le développement iOS sur macOS)
 - **Android Studio** ou **Android SDK** (pour Android)
 
