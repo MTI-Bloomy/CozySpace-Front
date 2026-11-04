@@ -1,10 +1,13 @@
 package bloomy.cozyspace.timers.timerRelaxation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,7 +40,8 @@ import cozyspace.composeapp.generated.resources.happyCharacter
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.minutes
 
-private val QUESTION_INTERVAL = 1.minutes // TODO => change to 5.minutes
+private val QUESTION_INTERVAL = 5.minutes
+private val SENTENCE_INTERVAL = 2.minutes
 
 @Composable
 fun TimerRelaxationIntrospectionScreen(
@@ -45,6 +49,24 @@ fun TimerRelaxationIntrospectionScreen(
     onFinish: () -> Unit = {}
 ) {
     var showQuestion by remember { mutableStateOf(false) }
+
+    var sentences by remember { mutableStateOf<List<String>>(emptyList()) }
+    var sentenceIndex by remember { mutableStateOf(0) }
+
+    // Load json
+    LaunchedEffect(Unit) {
+        sentences = loadIntrospectionSentences().shuffled()
+    }
+
+    // Changes the sentence
+    LaunchedEffect(sentences) {
+        if (sentences.size > 1) {
+            while (true) {
+                delay(SENTENCE_INTERVAL)
+                sentenceIndex = (sentenceIndex + 1) % sentences.size
+            }
+        }
+    }
 
     // showQuestion changes :
     // - at the start of the exercise (false) => waiting for 5 minutes, then showing the popup
@@ -65,18 +87,28 @@ fun TimerRelaxationIntrospectionScreen(
             .padding(horizontal = 24.dp, vertical = 16.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = "Think of 5 positive statements about yourself.\n" +
-                "Then, repeat them out loud.",
-            color = DarkGreen,
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-            lineHeight = 42.sp,
-            textAlign = TextAlign.Center,
+        AnimatedContent(
+            targetState = sentences.getOrNull(sentenceIndex).orEmpty(),
+            transitionSpec = {
+                fadeIn(tween(800)) togetherWith fadeOut(tween(800))
+            },
             modifier = Modifier
                 .align(Alignment.Center)
-                .fillMaxWidth()
-        )
+                .fillMaxWidth(),
+            label = "introspectionSentence"
+        ) { sentence ->
+            Text(
+                text = sentence,
+                color = DarkGreen,
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+                lineHeight = 42.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
+            )
+        }
 
         Column(
             modifier = Modifier
