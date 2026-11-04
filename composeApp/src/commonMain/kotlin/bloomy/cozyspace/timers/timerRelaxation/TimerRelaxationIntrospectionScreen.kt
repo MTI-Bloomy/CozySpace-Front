@@ -41,7 +41,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.minutes
 
 private val QUESTION_INTERVAL = 5.minutes
-private val SENTENCE_INTERVAL = 2.minutes
+private val SENTENCE_INTERVAL = 1.minutes
 
 @Composable
 fun TimerRelaxationIntrospectionScreen(
