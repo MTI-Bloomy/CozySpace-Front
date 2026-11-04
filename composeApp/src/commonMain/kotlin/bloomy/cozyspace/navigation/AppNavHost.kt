@@ -34,6 +34,7 @@ fun AppNavHost(
     storages: Storages,
     isOnline: Boolean,
     modifier: Modifier = Modifier,
+    onNavbarVisibilityChange: (Boolean) -> Unit = {}
 ) {
     NavHost(
         navController = navController,
@@ -41,7 +42,7 @@ fun AppNavHost(
         modifier = modifier,
     ) {
         composable<Timers> {
-            TimersMain(stores)
+            TimersMain(stores, onNavbarVisibilityChange)
         }
 
         composable<Home> {

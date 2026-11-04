@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,15 +21,12 @@ import androidx.compose.ui.unit.sp
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.store.TodoListStore
 import bloomy.cozyspace.theme.DarkGreen
-import bloomy.cozyspace.theme.LightGreen
 import bloomy.cozyspace.theme.WhiteBackground
-import bloomy.cozyspace.timers.timerMain.components.TimerCard
+import bloomy.cozyspace.timers.components.TimerCard
 import bloomy.cozyspace.utils.observeState
 import cozyspace.composeapp.generated.resources.Res
-import cozyspace.composeapp.generated.resources.add
 import cozyspace.composeapp.generated.resources.psychiatry
 import cozyspace.composeapp.generated.resources.target_check
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun TimerMainScreen(
@@ -72,7 +67,7 @@ fun TimerMainScreen(
             icon = Res.drawable.target_check,
             iconDescription = "Concentration timer",
             title = "Concentration",
-            description = "Focused sessions with breaks",
+            description = "Stay focused with timed work sessions and breaks",
             backgroundColor = DarkGreen,
             contentColor = WhiteBackground,
             onClick = fromTimerMain_toTimerConcentration
@@ -84,7 +79,7 @@ fun TimerMainScreen(
             icon = Res.drawable.psychiatry,
             iconDescription = "Relaxation timer",
             title = "Relaxation",
-            description = "Take a breath",
+            description = "Relax with guided calming exercises",
             backgroundColor = DarkGreen,
             contentColor = WhiteBackground,
             onClick = fromTimerMain_toTimerRelaxation
