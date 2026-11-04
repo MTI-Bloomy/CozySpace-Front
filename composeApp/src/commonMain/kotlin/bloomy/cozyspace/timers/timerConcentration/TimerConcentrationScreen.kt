@@ -2,15 +2,14 @@ package bloomy.cozyspace.timers.timerConcentration
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,57 +17,62 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.theme.DarkGreen
 import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.timers.components.ReturnButton
+import bloomy.cozyspace.timers.components.TimerCard
+import cozyspace.composeapp.generated.resources.Res
+import cozyspace.composeapp.generated.resources.psychiatry
+import cozyspace.composeapp.generated.resources.target_check
 
 @Composable
 fun TimerConcentrationScreen(
-    stores: Stores,
-    fromTimerConcentration_toTimerClassic: () -> Unit,
+    onPomodoro: () -> Unit,
+    onWorkTimer: () -> Unit,
     onBack: () -> Unit = {},
 ) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(WhiteBackground)
-            .padding(24.dp),
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
-        ReturnButton(
-            text = "Back",
-            onClick = onBack,
-            modifier = Modifier.align(Alignment.TopStart),
+        ReturnButton(text = "Back", onClick = onBack, modifier = Modifier.align(Alignment.Start))
+        Spacer(Modifier.weight(1f))
+        Text(
+            text = "Choose a focus method",
+            color = DarkGreen,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Black,
         )
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
-        ) {
-            Text(
-                text = "Concentration",
-                color = DarkGreen,
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-            )
-
-            Button(
-                onClick = fromTimerConcentration_toTimerClassic,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .widthIn(max = 420.dp)
-                    .heightIn(min = 72.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = DarkGreen,
-                    contentColor = WhiteBackground,
-                ),
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Timer classique", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-                    Text("Compte à rebours simple", fontSize = 14.sp)
-                }
-            }
-        }
+        Text(
+            text = "Set up the kind of work session that suits you.",
+            color = DarkGreen.copy(alpha = 0.7f),
+            fontSize = 15.sp,
+        )
+        Spacer(Modifier.height(32.dp))
+        TimerCard(
+            icon = Res.drawable.target_check,
+            iconDescription = "Pomodoro focus method",
+            title = "Pomodoro",
+            description = "Focus sessions with restorative breaks",
+            backgroundColor = DarkGreen,
+            contentColor = WhiteBackground,
+            onClick = onPomodoro,
+        )
+        Spacer(Modifier.height(16.dp))
+        TimerCard(
+            icon = Res.drawable.psychiatry,
+            iconDescription = "Simple work timer method",
+            title = "Work timer",
+            description = "A simple work session with your own task list",
+            backgroundColor = DarkGreen,
+            contentColor = WhiteBackground,
+            onClick = onWorkTimer,
+        )
+        Spacer(Modifier.weight(1f))
     }
 }

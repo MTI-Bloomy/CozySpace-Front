@@ -9,12 +9,14 @@ import androidx.navigation.navArgument
 import androidx.savedstate.read
 import bloomy.cozyspace.store.Stores
 import bloomy.cozyspace.timers.timerConcentration.TimerClassicScreen
+import bloomy.cozyspace.timers.timerConcentration.TimerPomodoroSetupScreen
 import bloomy.cozyspace.timers.common.TimerEndSessionScreen
 import bloomy.cozyspace.timers.timerConcentration.TimerConcentrationScreen
 import bloomy.cozyspace.timers.timerMain.TimerMainScreen
 import bloomy.cozyspace.timers.timerRelaxation.TimerRelaxationBoxBreathingScreen
 import bloomy.cozyspace.timers.timerRelaxation.TimerRelaxationIntrospectionScreen
 import bloomy.cozyspace.timers.timerRelaxation.TimerRelaxationScreen
+import bloomy.cozyspace.timers.timerWork.TimerWorkScreen
 
 @Composable
 fun TimerNavGraph (navController: NavHostController, stores: Stores) {
@@ -37,20 +39,47 @@ fun TimerNavGraph (navController: NavHostController, stores: Stores) {
 
         composable(TimerScreen.TimerConcentration.route) {
             TimerConcentrationScreen(
-                stores,
-                fromTimerConcentration_toTimerClassic = {
-                    navController.navigate(TimerScreen.TimerClassic.route)
-                },
+                onPomodoro = { navController.navigate(TimerScreen.TimerPomodoroSetup.route) },
+                onWorkTimer = { navController.navigate(TimerScreen.TimerWork.route) },
                 onBack = { navController.popBackStack() },
             )
         }
 
-        composable(TimerScreen.TimerClassic.route) {
+        composable(TimerScreen.TimerPomodoroSetup.route) {
+            TimerPomodoroSetupScreen(
+                onBack = { navController.popBackStack() },
+                onStartTimer = { durationMinutes ->
+                    navController.navigate(TimerScreen.TimerClassic.createRoute(durationMinutes))
+                },
+            )
+        }
+
+        composable(TimerScreen.TimerWork.route) {
+            TimerWorkScreen(
+                onBack = { navController.popBackStack() },
+                onStartTimer = { durationMinutes ->
+                    navController.navigate(TimerScreen.TimerClassic.createRoute(durationMinutes))
+                },
+            )
+        }
+
+        composable(
+            route = TimerScreen.TimerClassic.route,
+            arguments = listOf(
+                navArgument(TimerScreen.TimerClassic.DURATION_ARG) {
+                    type = NavType.IntType
+                    defaultValue = 15
+                },
+            ),
+        ) { entry ->
             TimerClassicScreen(
                 onTimerStop = { navController.popBackStack() },
                 onFinish = {
                     navController.navigate(TimerScreen.TimerEndSession.createRoute(isConcentration = true))
                 },
+                durationMinutes = entry.arguments?.read {
+                    getInt(TimerScreen.TimerClassic.DURATION_ARG)
+                } ?: 15,
             )
         }
 

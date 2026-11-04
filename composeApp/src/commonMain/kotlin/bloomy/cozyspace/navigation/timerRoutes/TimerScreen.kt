@@ -3,7 +3,12 @@ package bloomy.cozyspace.navigation.timerRoutes
 sealed class TimerScreen(val route: String) {
     data object TimerMain : TimerScreen("timer_main")
     data object TimerConcentration : TimerScreen("timer_concentration")
-    data object TimerClassic : TimerScreen("timer_classic")
+    data object TimerPomodoroSetup : TimerScreen("timer_pomodoro_setup")
+    data object TimerWork : TimerScreen("timer_work")
+    data object TimerClassic : TimerScreen("timer_classic/{durationMinutes}") {
+        const val DURATION_ARG = "durationMinutes"
+        fun createRoute(durationMinutes: Int) = "timer_classic/$durationMinutes"
+    }
     data object TimerRelaxation : TimerScreen("timer_relaxation")
     data object TimerRelaxationIntrospection : TimerScreen("timer_relaxation_introspection")
     data object TimerRelaxationBoxBreathing : TimerScreen("timer_relaxation_box_breathing")

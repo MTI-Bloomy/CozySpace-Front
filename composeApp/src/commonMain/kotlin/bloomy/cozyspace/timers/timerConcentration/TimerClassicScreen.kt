@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -27,20 +26,23 @@ import bloomy.cozyspace.theme.WhiteBackground
 import bloomy.cozyspace.timers.components.TimerCircle
 import bloomy.cozyspace.timers.components.TimerControls
 import kotlinx.coroutines.delay
-
-private const val TIMER_DURATION_SECONDS = 15 * 60 // TODO: Retrieve time set in previous pages
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun TimerClassicScreen(
     onTimerStop: () -> Unit,
     onFinish: () -> Unit = {},
+    durationMinutes: Int = 15,
 ) {
-    var remainingSeconds by rememberSaveable { mutableIntStateOf(TIMER_DURATION_SECONDS) }
+    val timerDurationSeconds = durationMinutes.coerceAtLeast(1) * 60
+    var remainingSeconds by rememberSaveable(durationMinutes) {
+        androidx.compose.runtime.mutableIntStateOf(timerDurationSeconds)
+    }
     var isRunning by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(isRunning) {
         while (isRunning && remainingSeconds > 0) {
-            delay(1_000)
+            delay(1_000.milliseconds)
             if (isRunning && remainingSeconds > 0) remainingSeconds -= 1
         }
         if (remainingSeconds == 0) {
@@ -50,7 +52,7 @@ fun TimerClassicScreen(
     }
 
     val elapsedProgress =
-        (TIMER_DURATION_SECONDS - remainingSeconds).toFloat() / TIMER_DURATION_SECONDS
+        (timerDurationSeconds - remainingSeconds).toFloat() / timerDurationSeconds
     val minutes = remainingSeconds / 60
     val seconds = remainingSeconds % 60
 
