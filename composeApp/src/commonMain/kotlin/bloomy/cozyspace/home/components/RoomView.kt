@@ -14,6 +14,7 @@ import bloomy.cozyspace.domain.RoomType
 import coil3.compose.AsyncImage
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.kitchen_base
+import cozyspace.composeapp.generated.resources.work_base
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Duration.Companion.seconds
@@ -24,7 +25,7 @@ fun RoomView(roomType: RoomType, rewards: List<Reward>, storages: Storages) {
         // Room Background
         val background = when (roomType) {
             RoomType.GARDEN -> /* FIXME */ Res.drawable.kitchen_base
-            RoomType.WORK -> /* FIXME */ Res.drawable.kitchen_base
+            RoomType.WORK -> Res.drawable.work_base
             RoomType.BEDROOM -> /* FIXME */ Res.drawable.kitchen_base
             RoomType.BATHROOM -> /* FIXME */ Res.drawable.kitchen_base
             RoomType.KITCHEN -> Res.drawable.kitchen_base

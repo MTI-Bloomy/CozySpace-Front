@@ -1,0 +1,47 @@
+:root {
+  --white-background: #ede8d0;
+
+  --green-dark: #2e785a;
+  --green-mid-dark: #3b8362;
+  --green-mid-light: #549772;
+  --green-light: #60a17a;
+
+  --shadow-color: rgb(0 0 0 / 25%);
+
+  /* Password strength */
+  --strength-neutral: #d3d3d3;
+  --strength-red: #ff0000;
+  --strength-orange: #ffa000;
+
+  /* Formulaires d'auth (reprend les alphas du Kotlin) */
+  --card-background: rgb(255 255 255 / 60%);
+  --input-background: color-mix(in srgb, var(--green-light) 85%, transparent);
+  --input-background-focus: var(--green-light);
+  --input-foreground: var(--white-background);
+  --input-placeholder: color-mix(in srgb, var(--white-background) 70%, transparent);
+
+  /* Bubbles : cuisine */
+  --bubble-yellow-dark: #fcc419;
+  --bubble-yellow-light: #f6eac5;
+  --bubble-yellow-transparent: #fcc419;
+
+  /* Salle de bain */
+  --bubble-blue-dark: #339af0;
+  --bubble-blue-light: #bfd8ee;
+  --bubble-blue-transparent: #7cbbef;
+
+  /* Chambre */
+  --bubble-red-dark: #fa5252;
+  --bubble-red-light: #f5c7c7;
+  --bubble-red-transparent: #e58080;
+
+  /* Jardin */
+  --bubble-green-dark: #20c997;
+  --bubble-green-light: #cbe3dc;
+  --bubble-green-transparent: #5ebea2;
+
+  /* Travail */
+  --bubble-purple-dark: #cc5de8;
+  --bubble-purple-light: #e4c1ed;
+  --bubble-purple-transparent: #d189e3;
+}

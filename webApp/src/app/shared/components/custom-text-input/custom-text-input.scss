@@ -1,0 +1,101 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.required {
+  color: var(--strength-red);
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-sizing: border-box;
+  min-height: 3.5rem;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  background: var(--input-background);
+  color: var(--input-foreground);
+  transition: background-color 0.15s ease;
+
+  &:focus-within {
+    background: var(--input-background-focus);
+  }
+
+  &--error {
+    outline: 2px solid var(--strength-red);
+  }
+
+  &--disabled {
+    opacity: 0.6;
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+
+  &--success {
+    color: var(--green-dark);
+  }
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 1rem 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 1.25rem;
+  color: var(--input-foreground);
+  caret-color: var(--green-dark);
+  outline: none;
+
+  &::placeholder {
+    color: var(--input-placeholder);
+    opacity: 1;
+  }
+}
+
+.control:focus-within .input::placeholder {
+  color: var(--input-foreground);
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--green-dark);
+  }
+}
+
+.small {
+  font-size: 0.8rem;
+  color: var(--green-dark);
+
+  &--error {
+    color: var(--strength-red);
+  }
+}

@@ -1,0 +1,56 @@
+<div class="field">
+    @if (label()) {
+        <label [attr.for]="inputId" class="label">
+            {{ label() }}
+            @if (required()) {
+                <span class="required" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div
+        class="control"
+        [class.control--error]="error()"
+        [class.control--success]="success()"
+        [class.control--disabled]="disabled()"
+    >
+        @if (success()) {
+            <i class="pi pi-check icon icon--success" aria-hidden="true"></i>
+        } @else if (icon()) {
+            <i class="pi icon" [class]="icon()" aria-hidden="true"></i>
+        }
+
+        <input
+            class="input"
+            [id]="inputId"
+            [type]="effectiveType()"
+            [placeholder]="placeholder()"
+            [value]="value()"
+            [disabled]="disabled()"
+            [required]="required()"
+            [attr.autocomplete]="autocomplete()"
+            [attr.aria-label]="ariaLabel() ?? label() ?? placeholder()"
+            [attr.aria-describedby]="small() ? smallId : null"
+            [attr.aria-invalid]="error()"
+            (input)="onInput($event)"
+            (blur)="onTouched()"
+        />
+
+        @if (type() === 'password' && toggleMask()) {
+            <button
+                type="button"
+                class="toggle"
+                [attr.aria-label]="visible() ? 'Hide password' : 'Show password'"
+                [attr.aria-pressed]="visible()"
+                [disabled]="disabled()"
+                (click)="toggleVisibility()"
+            >
+                <i class="pi" [class.pi-eye-slash]="!visible()" [class.pi-eye]="visible()" aria-hidden="true"></i>
+            </button>
+        }
+    </div>
+
+    @if (small()) {
+        <small [id]="smallId" class="small" [class.small--error]="error()">{{ small() }}</small>
+    }
+</div>

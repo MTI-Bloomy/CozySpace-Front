@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background: var(--card-background);
+}
+
+/* 8px autour de la barre au lieu de 10px */
+.strength {
+  margin-block: -0.125rem;
+}
+
+.submit {
+  margin-top: 1.875rem;
+}
+
+.switch {
+  align-self: center;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--green-dark);
+  text-align: center;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+}
