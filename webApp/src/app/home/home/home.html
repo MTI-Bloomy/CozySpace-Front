@@ -1,63 +1,56 @@
 <section class="home">
-    <h1>Home (debug stores)</h1>
-    <button type="button" (click)="refresh()">Refresh</button>
+    <header class="home-header">
+        <div>
+            <span class="eyebrow">CozySpace</span>
+            <h1>{{ houses.house()?.name ?? 'Ma maison' }}</h1>
+        </div>
+        <button class="logout-button" type="button" aria-label="Se déconnecter" (click)="auth.logout()">
+            <i class="pi pi-sign-out" aria-hidden="true"></i>
+            <span>Déconnexion</span>
+        </button>
+    </header>
 
-    <!-- HOUSE -->
-    <h2>House @if (houses.loading()) { <small>(loading...)</small> }</h2>
-    @if (houses.error(); as err) {
-        <p class="error">{{ err }}</p>
-    }
-    @if (houses.house(); as house) {
-        <p>
-            <strong>{{ house.name }}</strong> (id: {{ house.id }})
-        </p>
-        <p>Rooms ids: {{ house.rooms.join(', ') || '—' }}</p>
-    } @else if (!houses.loading()) {
-        <p>No current house.</p>
+    @if (houses.error() || rooms.error() || rewards.error(); as error) {
+        <p class="error" role="alert">{{ error }}</p>
     }
 
-    <h3>Saved houses ({{ houses.savedHouses().length }})</h3>
-    <ul>
-        @for (saved of houses.savedHouses(); track saved.id) {
-            <li>{{ saved.name }} (id: {{ saved.id }}) — saved on {{ saved.saveDate }}</li>
-        } @empty {
-            <li>None</li>
-        }
-    </ul>
+    <main class="room-viewer" aria-label="Visualiseur de la maison">
+        <button
+            class="room-arrow"
+            type="button"
+            aria-label="Pièce précédente"
+            [disabled]="rooms.rooms().length < 2"
+            (click)="showPreviousRoom()"
+        >
+            <i class="pi pi-chevron-left" aria-hidden="true"></i>
+        </button>
 
-    <!-- ROOMS -->
-    <h2>Rooms ({{ rooms.rooms().length }}) @if (rooms.loading()) { <small>(loading...)</small> }</h2>
-    @if (rooms.error(); as err) {
-        <p class="error">{{ err }}</p>
-    }
-    <ul>
-        @for (room of rooms.rooms(); track room.id) {
-            <li>
-                <strong>{{ room.type }}</strong> — id: {{ room.id }}, capacity:
-                {{ room.furniture.length }}/{{ room.maxCapacity }}
-                @if (room.furniture.length) {
-                    <br />Furniture: {{ room.furniture.join(', ') }}
+        <div class="room-stage">
+            @for (room of displayedRoom(); track room.id) {
+                <div class="room-images" [class.room-images--next]="roomDirection() === 'next'" [class.room-images--previous]="roomDirection() === 'previous'">
+                    <img class="room-background" [src]="roomBackground(room.type)" alt=" " />
+                    @for (reward of furnitureForCurrentRoom(); track reward.id) {
+                        <img class="furniture" [src]="reward.furnitureLink" alt=" " />
+                    }
+                </div>
+                <p class="room-name">{{ room.type }}</p>
+            } @empty {
+                @if (rooms.loading() || houses.loading()) {
+                    <p class="status">Chargement de votre maison...</p>
+                } @else {
+                    <p class="status">Aucune pièce à afficher.</p>
                 }
-            </li>
-        } @empty {
-            <li>None</li>
-        }
-    </ul>
+            }
+        </div>
 
-    <!-- REWARDS -->
-    <h2>Rewards ({{ rewards.rewards().length }}) @if (rewards.loading()) { <small>(loading...)</small> }</h2>
-    @if (rewards.error(); as err) {
-        <p class="error">{{ err }}</p>
-    }
-    <ul>
-        @for (reward of rewards.rewards(); track reward.id) {
-            <li>
-                id: {{ reward.id }} — furniture: {{ reward.furnitureId }} — todoDone:
-                {{ reward.todoDoneId }}
-                <br /><a [href]="reward.furnitureLink" target="_blank" rel="noopener">link</a>
-            </li>
-        } @empty {
-            <li>None</li>
-        }
-    </ul>
+        <button
+            class="room-arrow"
+            type="button"
+            aria-label="Pièce suivante"
+            [disabled]="rooms.rooms().length < 2"
+            (click)="showNextRoom()"
+        >
+            <i class="pi pi-chevron-right" aria-hidden="true"></i>
+        </button>
+    </main>
 </section>
