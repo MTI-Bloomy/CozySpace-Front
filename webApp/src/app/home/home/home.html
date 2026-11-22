@@ -2,7 +2,7 @@
     <header class="home-header">
         <div>
             <span class="eyebrow">CozySpace</span>
-            <h1>{{ houses.house()?.name === "string" ? 'My house' : houses.house()?.name ?? 'My house' }}</h1>
+            <h1>Bienvenue {{ auth.pseudo() ?? 'John Doe' }}</h1>
         </div>
         <button class="logout-button" type="button" aria-label="Log out" (click)="auth.logout()">
             <i class="pi pi-sign-out" aria-hidden="true"></i>

@@ -43,6 +43,7 @@ export class Home implements OnInit {
   }
 
   ngOnInit(): void {
+    this.auth.getUser();
     void this.houses.getHouse();
     void this.rewards.getRewards();
   }
