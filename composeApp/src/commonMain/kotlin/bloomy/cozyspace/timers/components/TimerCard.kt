@@ -1,4 +1,4 @@
-package bloomy.cozyspace.timers.timerMain.components
+package bloomy.cozyspace.timers.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.LocalIndication
