@@ -2,11 +2,11 @@
     <header class="home-header">
         <div>
             <span class="eyebrow">CozySpace</span>
-            <h1>{{ houses.house()?.name ?? 'Ma maison' }}</h1>
+            <h1>{{ houses.house()?.name === "string" ? 'My house' : houses.house()?.name ?? 'My house' }}</h1>
         </div>
-        <button class="logout-button" type="button" aria-label="Se déconnecter" (click)="auth.logout()">
+        <button class="logout-button" type="button" aria-label="Log out" (click)="auth.logout()">
             <i class="pi pi-sign-out" aria-hidden="true"></i>
-            <span>Déconnexion</span>
+            <span>Log out</span>
         </button>
     </header>
 
@@ -14,11 +14,11 @@
         <p class="error" role="alert">{{ error }}</p>
     }
 
-    <main class="room-viewer" aria-label="Visualiseur de la maison">
+    <main class="room-viewer" aria-label="House viewer">
         <button
             class="room-arrow"
             type="button"
-            aria-label="Pièce précédente"
+            aria-label="Previous room"
             [disabled]="rooms.rooms().length < 2"
             (click)="showPreviousRoom()"
         >
@@ -36,9 +36,9 @@
                 <p class="room-name">{{ room.type }}</p>
             } @empty {
                 @if (rooms.loading() || houses.loading()) {
-                    <p class="status">Chargement de votre maison...</p>
+                    <p class="status">Your house is loading...</p>
                 } @else {
-                    <p class="status">Aucune pièce à afficher.</p>
+                    <p class="status">No room to display.</p>
                 }
             }
         </div>
@@ -46,7 +46,7 @@
         <button
             class="room-arrow"
             type="button"
-            aria-label="Pièce suivante"
+            aria-label="Next room"
             [disabled]="rooms.rooms().length < 2"
             (click)="showNextRoom()"
         >
