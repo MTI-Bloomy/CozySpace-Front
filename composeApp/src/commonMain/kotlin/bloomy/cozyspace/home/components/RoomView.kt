@@ -15,6 +15,9 @@ import coil3.compose.AsyncImage
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.kitchen_base
 import cozyspace.composeapp.generated.resources.work_base
+import cozyspace.composeapp.generated.resources.garden_base
+import cozyspace.composeapp.generated.resources.bedroom_base
+import cozyspace.composeapp.generated.resources.bathroom_base
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Duration.Companion.seconds
@@ -24,10 +27,10 @@ fun RoomView(roomType: RoomType, rewards: List<Reward>, storages: Storages) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Room Background
         val background = when (roomType) {
-            RoomType.GARDEN -> /* FIXME */ Res.drawable.kitchen_base
+            RoomType.GARDEN -> Res.drawable.garden_base
             RoomType.WORK -> Res.drawable.work_base
-            RoomType.BEDROOM -> /* FIXME */ Res.drawable.kitchen_base
-            RoomType.BATHROOM -> /* FIXME */ Res.drawable.kitchen_base
+            RoomType.BEDROOM -> Res.drawable.bedroom_base
+            RoomType.BATHROOM -> Res.drawable.bathroom_base
             RoomType.KITCHEN -> Res.drawable.kitchen_base
         }
         Image(

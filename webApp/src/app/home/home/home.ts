@@ -74,6 +74,13 @@ export class Home implements OnInit {
   }
 
   protected roomBackground(type: string): string {
-    return type === 'WORK' ? 'assets/work_base.png' : 'assets/kitchen_base.png';
+    switch (type) {
+      case 'KITCHEN' : return 'assets/kitchen_base.png';
+      case 'WORK' : return 'assets/work_base.png';
+      case 'GARDEN' : return 'assets/garden_base.png';
+      case 'BEDROOM' : return 'assets/bedroom_base.png';
+      case 'BATHROOM' : return 'assets/bathroom_base.png';
+      default : return 'assets/kitchen_base.png';
+    }
   }
 }
