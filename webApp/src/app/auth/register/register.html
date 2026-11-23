@@ -1,0 +1,57 @@
+<app-auth-layout [signUp]="true">
+    <app-auth-header authHeader heading="Welcome to CozySpace !" />
+
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <app-custom-text-input
+            formControlName="username"
+            icon="pi-user"
+            type="text"
+            placeholder="Username"
+            ariaLabel="Username"
+            autocomplete="username"
+            [success]="usernameValid()"
+        />
+
+        <app-custom-text-input
+            formControlName="email"
+            icon="pi-envelope"
+            type="email"
+            placeholder="Email"
+            ariaLabel="Email"
+            autocomplete="email"
+            [success]="emailValid()"
+        />
+
+        <app-custom-text-input
+            formControlName="password"
+            icon="pi-lock"
+            type="password"
+            placeholder="Password"
+            ariaLabel="Password"
+            autocomplete="new-password"
+            [success]="passwordValid()"
+        />
+
+        <app-password-strength-bar class="strength" [password]="values().password" />
+
+        <app-custom-text-input
+            formControlName="passwordConfirmation"
+            icon="pi-lock"
+            type="password"
+            placeholder="Password confirmation"
+            ariaLabel="Password confirmation"
+            autocomplete="new-password"
+            [success]="confirmationValid()"
+        />
+
+        <app-custom-button
+            class="submit"
+            type="submit"
+            label="Let's get started !"
+            [fluid]="true"
+            [disabled]="!formValid()"
+        />
+
+        <a class="switch" routerLink="/login">Already an account ? Sign in</a>
+    </form>
+</app-auth-layout>

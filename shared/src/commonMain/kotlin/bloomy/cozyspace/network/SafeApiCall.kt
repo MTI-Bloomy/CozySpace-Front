@@ -49,7 +49,7 @@ suspend inline fun <reified T> safeApiCall(
     } catch (e: Exception) {
         networkMonitor.refreshNow() // l'appel a échoué -> on revérifie tout de suite
         ApiResult.Error(
-            message = e.message ?: "Unknown error"
+            message = e.message ?: e.toString().ifBlank { "Network request failed" }
         )
     }
 }

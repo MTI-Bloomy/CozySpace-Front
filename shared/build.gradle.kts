@@ -72,6 +72,10 @@ kotlin {
             implementation(libs.ktor.client.js)
         }
     }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
 }
 
 android {
