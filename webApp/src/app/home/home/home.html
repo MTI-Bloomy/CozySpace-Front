@@ -1,1 +1,56 @@
-<p>home works!</p>
+<section class="home">
+    <header class="home-header">
+        <div>
+            <span class="eyebrow">Welcome Back</span>
+            <h1>{{ auth.pseudo() ?? 'John Doe' }}</h1>
+        </div>
+        <button class="logout-button" type="button" aria-label="Log out" (click)="auth.logout()">
+            <i class="pi pi-sign-out" aria-hidden="true"></i>
+            <span>Log out</span>
+        </button>
+    </header>
+
+    @if (houses.error() || rooms.error() || rewards.error(); as error) {
+        <p class="error" role="alert">{{ error }}</p>
+    }
+
+    <main class="room-viewer" aria-label="House viewer">
+        <button
+            class="room-arrow"
+            type="button"
+            aria-label="Previous room"
+            [disabled]="rooms.rooms().length < 2"
+            (click)="showPreviousRoom()"
+        >
+            <i class="pi pi-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="room-stage">
+            @for (room of displayedRoom(); track room.id) {
+                <div class="room-images" [class.room-images--next]="roomDirection() === 'next'" [class.room-images--previous]="roomDirection() === 'previous'">
+                    <img class="room-background" [src]="roomBackground(room.type)" alt=" " />
+                    @for (reward of furnitureForCurrentRoom(); track reward.id) {
+                        <img class="furniture" [src]="reward.furnitureLink" alt=" " />
+                    }
+                </div>
+                <p class="room-name">{{ room.type }}</p>
+            } @empty {
+                @if (rooms.loading() || houses.loading()) {
+                    <p class="status">Your house is loading...</p>
+                } @else {
+                    <p class="status">No room to display.</p>
+                }
+            }
+        </div>
+
+        <button
+            class="room-arrow"
+            type="button"
+            aria-label="Next room"
+            [disabled]="rooms.rooms().length < 2"
+            (click)="showNextRoom()"
+        >
+            <i class="pi pi-chevron-right" aria-hidden="true"></i>
+        </button>
+    </main>
+</section>

@@ -9,16 +9,17 @@ export class AuthService {
   private readonly toast = inject(MessageService);
   private store: UserStoreJs | null = null;
 
-  private readonly state = signal({ loading: true, isLoggedIn: false });
+  private readonly state = signal({ loading: true, isLoggedIn: false, pseudo: null as string | null });
   readonly loading = computed(() => this.state().loading);
   readonly isLoggedIn = computed(() => this.state().isLoggedIn);
+  readonly pseudo = computed(() => this.state().pseudo);
 
   async init(): Promise<void> {
     const store = await createUserStore();
     this.store = store;
 
     store.subscribeState((state) =>
-      this.state.set({ loading: state.loading, isLoggedIn: state.isLoggedIn }),
+      this.state.set({ loading: state.loading, isLoggedIn: state.isLoggedIn, pseudo: state.pseudo ?? null }),
     );
 
     store.subscribeLabels((label) => {
@@ -46,6 +47,10 @@ export class AuthService {
 
   logout(): void {
     this.requireStore().logout();
+  }
+
+  getUser(): void {
+    this.requireStore().getUser();
   }
 
   private requireStore(): UserStoreJs {

@@ -37,6 +37,7 @@ import kotlin.js.Promise
 class UserStateJs(
     val loading: Boolean,
     val isLoggedIn: Boolean,
+    val pseudo: String?,
     val error: String?,
 )
 
@@ -64,6 +65,10 @@ class UserStoreJs internal constructor(
         store.accept(UserStore.Intent.Logout)
     }
 
+    fun getUser() {
+        store.accept(UserStore.Intent.GetUser)
+    }
+
     fun subscribeState(onState: (UserStateJs) -> Unit): () -> Unit {
         val disposable = store.states(observer { onState(it.toJs()) })
         return { disposable.dispose() }
@@ -78,6 +83,7 @@ class UserStoreJs internal constructor(
 private fun UserStore.State.toJs() = UserStateJs(
     loading = loading,
     isLoggedIn = token.idToken.isNotBlank(),
+    pseudo = user.pseudo,
     error = error,
 )
 

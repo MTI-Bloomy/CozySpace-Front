@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class RewardStoreFactory(
     private val repository: RewardRepository,
     private val storage: RewardStorage,
-    private val assetRepository: AssetRepository,
+    private val assetRepository: AssetRepository? = null,
     private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
     suspend fun create(): RewardStore {
@@ -65,7 +65,7 @@ class RewardStoreFactory(
                                 val rewards = result.data.map {
                                     launch {
                                         try {
-                                            assetRepository.getAsset(it.furnitureId, it.furnitureLink)
+                                            assetRepository?.getAsset(it.furnitureId, it.furnitureLink)
                                         } catch (e: Exception) {
                                             // TODO: To handle, but not necessary for now
                                         }
@@ -113,7 +113,7 @@ class RewardStoreFactory(
 
                                 launch {
                                     try {
-                                        assetRepository.getAsset(reward.furnitureId, reward.furnitureLink)
+                                        assetRepository?.getAsset(reward.furnitureId, reward.furnitureLink)
                                     } catch (e: Exception) {
                                         // TODO: To handle, but not necessary for now
                                     }
