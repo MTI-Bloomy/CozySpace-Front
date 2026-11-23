@@ -1,8 +1,8 @@
 <section class="home">
     <header class="home-header">
         <div>
-            <span class="eyebrow">CozySpace</span>
-            <h1>Bienvenue {{ auth.pseudo() ?? 'John Doe' }}</h1>
+            <span class="eyebrow">Welcome Back</span>
+            <h1>{{ auth.pseudo() ?? 'John Doe' }}</h1>
         </div>
         <button class="logout-button" type="button" aria-label="Log out" (click)="auth.logout()">
             <i class="pi pi-sign-out" aria-hidden="true"></i>
