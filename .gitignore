@@ -147,3 +147,4 @@ Environment.*.kt
 
 app_cache.json
 assets_cache
+/composeApp/src/debug/
