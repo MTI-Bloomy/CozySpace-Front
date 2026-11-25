@@ -78,6 +78,8 @@ class TimerMusicStoreFactory(
                         }
                     }
                 }
+
+                TimerMusicStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
     }

@@ -9,6 +9,7 @@ import bloomy.cozyspace.store.HouseStore
 import bloomy.cozyspace.store.RewardStore
 import bloomy.cozyspace.store.RoomStore
 import bloomy.cozyspace.store.Stores
+import bloomy.cozyspace.store.TimerMusicStore
 import bloomy.cozyspace.store.TodoDoneStore
 import bloomy.cozyspace.store.TodoListStore
 import bloomy.cozyspace.store.UserStore
@@ -26,6 +27,7 @@ fun ObserveUserNavigation(stores: Stores, navController: NavController, syncQueu
                         stores.reward.accept(RewardStore.Intent.Clear)
                         stores.todoList.accept(TodoListStore.Intent.Clear)
                         stores.todoDone.accept(TodoDoneStore.Intent.Clear)
+                        stores.timerMusic.accept(TimerMusicStore.Intent.Clear)
 
                         syncQueue.clear()
 

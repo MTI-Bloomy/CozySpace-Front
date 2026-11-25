@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 interface TimerMusicStore : Store<TimerMusicStore.Intent, TimerMusicStore.State, TimerMusicStore.Label> {
     sealed interface Intent {
         data object GetTimersMusics : Intent
+        data object Clear : Intent
     }
 
     sealed interface Label {
