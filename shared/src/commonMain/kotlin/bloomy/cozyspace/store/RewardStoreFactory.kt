@@ -25,6 +25,7 @@ class RewardStoreFactory(
 
         val initialState = RewardStore.State(
             rewards = cache?.rewards ?: emptyList(),
+            inventory = cache?.inventory ?: emptyList(),
         )
 
         return object : RewardStore,
@@ -74,7 +75,12 @@ class RewardStoreFactory(
                                     it.toDomain()
                                 }
 
-                                storage.save(RewardCache(rewards))
+                                storage.save(
+                                    RewardCache(
+                                        rewards.filter { it.placedInARoom }.sortedBy { it.layer },
+                                        rewards.filterNot { it.placedInARoom }
+                                    )
+                                )
 
                                 dispatch(Msg.GetRewardsSuccess(rewards))
                             }
@@ -97,17 +103,7 @@ class RewardStoreFactory(
                             is ApiResult.Success -> {
                                 val reward = result.data.toDomain()
 
-                                val cache = storage.get()
-
-                                storage.save(
-                                    if (cache?.rewards.isNullOrEmpty()) {
-                                        RewardCache(listOf(reward))
-                                    } else {
-                                        RewardCache(
-                                            if (cache.rewards.any { it.id == reward.id }) cache.rewards.map { if (it.id == reward.id) reward else it } else cache.rewards + reward
-                                        )
-                                    }
-                                )
+                                updateReward(reward)
 
                                 dispatch(Msg.GetRewardSuccess(reward))
 
@@ -138,17 +134,7 @@ class RewardStoreFactory(
                             is ApiResult.Success -> {
                                 val reward = result.data.toDomain()
 
-                                val cache = storage.get()
-
-                                storage.save(
-                                    if (cache?.rewards.isNullOrEmpty()) {
-                                        RewardCache(listOf(reward))
-                                    } else {
-                                        RewardCache(
-                                            if (cache.rewards.any { it.id == reward.id }) cache.rewards.map { if (it.id == reward.id) reward else it } else cache.rewards + reward
-                                        )
-                                    }
-                                )
+                                updateReward(reward)
 
                                 publish(RewardStore.Label.RefreshTodoDoneNotClaimed)
                                 dispatch(Msg.ChooseRewardSuccess(reward))
@@ -166,6 +152,25 @@ class RewardStoreFactory(
 
                 RewardStore.Intent.Clear -> dispatch(Msg.Clear)
             }
+        }
+
+        private suspend fun updateReward(reward: Reward) {
+            val cache = storage.get()
+
+            storage.save(
+                RewardCache(
+                    rewards = if (reward.placedInARoom) {
+                        (cache?.rewards.orEmpty().filterNot { it.id == reward.id } + reward).sortedBy { it.layer }
+                    } else {
+                        cache?.rewards.orEmpty()
+                    },
+                    inventory = if (!reward.placedInARoom) {
+                        cache?.inventory.orEmpty().filterNot { it.id == reward.id } + reward
+                    } else {
+                        cache?.inventory.orEmpty()
+                    }
+                )
+            )
         }
     }
 
@@ -185,21 +190,24 @@ class RewardStoreFactory(
 
                 is Msg.GetRewardsSuccess -> copy(
                     loading = false,
-                    rewards = msg.rewards,
+                    rewards = msg.rewards.filter { it.placedInARoom }.sortedBy { it.layer },
+                    inventory = msg.rewards.filterNot { it.placedInARoom },
                     error = null,
                 )
 
-                is Msg.GetRewardSuccess -> copy(
-                    loading = false,
-                    rewards = if (rewards.any { it.id == msg.reward.id }) rewards.map { if (it.id == msg.reward.id) msg.reward else it } else rewards + msg.reward,
-                    error = null,
-                )
+                is Msg.GetRewardSuccess, is Msg.ChooseRewardSuccess -> {
+                    val reward = when (msg) {
+                        is Msg.GetRewardSuccess -> msg.reward
+                        is Msg.ChooseRewardSuccess -> msg.reward
+                    }
 
-                is Msg.ChooseRewardSuccess -> copy(
-                    loading = false,
-                    rewards = if (rewards.any { it.id == msg.reward.id }) rewards.map { if (it.id == msg.reward.id) msg.reward else it } else rewards + msg.reward,
-                    error = null,
-                )
+                    copy(
+                        loading = false,
+                        rewards = if (reward.placedInARoom) { (rewards.filterNot { it.id == reward.id } + reward).sortedBy { it.layer } } else { rewards },
+                        inventory = if (!reward.placedInARoom) { inventory.filterNot { it.id == reward.id } + reward } else { inventory },
+                        error = null,
+                    )
+                }
 
                 is Msg.Error ->
                     copy(

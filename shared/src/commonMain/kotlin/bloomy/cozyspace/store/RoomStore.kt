@@ -9,11 +9,24 @@ interface RoomStore : Store<RoomStore.Intent, RoomStore.State, RoomStore.Label> 
             val houseId: String,
             val saveMode: Boolean = false,
         ) : Intent
+        data class PlaceItem(
+            val houseId: String,
+            val roomId: String,
+            val rewardId: String,
+            val saveMode: Boolean = false,
+        ) : Intent
+        data class RemoveItem(
+            val houseId: String,
+            val roomId: String,
+            val rewardId: String,
+            val saveMode: Boolean = false,
+        ) : Intent
         data object Clear : Intent
     }
 
     sealed interface Label {
         data class ShowError(val message: String) : Label
+        data class RefreshRoom(val rewards : List<String>) : Label
     }
 
     data class State(

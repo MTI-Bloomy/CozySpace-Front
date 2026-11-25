@@ -38,6 +38,8 @@ class RoomStoreFactory(
         data object Loading : Msg
         data object Offline : Msg
         data class GetRoomsSuccess(val rooms: List<Room>) : Msg
+        data class PlaceItemSuccess(val room: Room) : Msg
+        data class RemoveItemSuccess(val room: Room) : Msg
         data class Error(val message: String) : Msg
         data object Clear : Msg
     }
@@ -75,6 +77,54 @@ class RoomStoreFactory(
                     }
                 }
 
+                is RoomStore.Intent.PlaceItem -> {
+                    dispatch(Msg.Loading)
+
+                    scope.launch {
+                        when (val result = repository.placeItem(intent.houseId, intent.roomId, intent.rewardId)) {
+                            is ApiResult.Success -> {
+                                val room = result.data.toDomain()
+
+                                if (!intent.saveMode) storage.save(RoomCache(state().rooms.map { if (it.id == room.id) room else it }))
+
+                                publish(RoomStore.Label.RefreshRoom(room.furniture))
+                                dispatch(Msg.PlaceItemSuccess(room))
+                            }
+
+                            is ApiResult.Error -> {
+                                dispatch(Msg.Error(result.message))
+                                publish(RoomStore.Label.ShowError(result.message))
+                            }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
+                        }
+                    }
+                }
+
+                is RoomStore.Intent.RemoveItem -> {
+                    dispatch(Msg.Loading)
+
+                    scope.launch {
+                        when (val result = repository.removeItem(intent.houseId, intent.roomId, intent.rewardId)) {
+                            is ApiResult.Success -> {
+                                val room = result.data.toDomain()
+
+                                if (!intent.saveMode) storage.save(RoomCache(state().rooms.map { if (it.id == room.id) room else it }))
+
+                                publish(RoomStore.Label.RefreshRoom(room.furniture))
+                                dispatch(Msg.RemoveItemSuccess(room))
+                            }
+
+                            is ApiResult.Error -> {
+                                dispatch(Msg.Error(result.message))
+                                publish(RoomStore.Label.ShowError(result.message))
+                            }
+
+                            ApiResult.Offline -> dispatch(Msg.Offline)
+                        }
+                    }
+                }
+
                 RoomStore.Intent.Clear -> dispatch(Msg.Clear)
             }
         }
@@ -96,6 +146,18 @@ class RoomStoreFactory(
                 is Msg.GetRoomsSuccess -> copy(
                     loading = false,
                     rooms = msg.rooms,
+                    error = null,
+                )
+
+                is Msg.PlaceItemSuccess -> copy(
+                    loading = false,
+                    rooms = rooms.map { if (it.id == msg.room.id) msg.room else it },
+                    error = null,
+                )
+
+                is Msg.RemoveItemSuccess -> copy(
+                    loading = false,
+                    rooms = rooms.map { if (it.id == msg.room.id) msg.room else it },
                     error = null,
                 )
 

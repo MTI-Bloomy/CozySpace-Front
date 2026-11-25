@@ -22,6 +22,7 @@ interface RewardStore : Store<RewardStore.Intent, RewardStore.State, RewardStore
     data class State(
         val loading: Boolean = false,
         val rewards: List<Reward> = emptyList(),
+        val inventory: List<Reward> = emptyList(),
         val error: String? = null,
     )
 }

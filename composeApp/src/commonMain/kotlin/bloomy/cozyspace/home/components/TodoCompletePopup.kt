@@ -71,7 +71,7 @@ fun TodoCompletePopup(
             )
 
             Text(
-                text = "Choose a decoration to place",
+                text = "Choose a decoration to claim",
                 color = DarkGreen,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
@@ -128,7 +128,7 @@ fun TodoCompletePopup(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 LabelButton(
-                    text = "Add to the room !",
+                    text = "Claim reward!",
                     contentColor = WhiteBackground,
                     backgroundColor = DarkGreen,
                     modifier = Modifier.weight(1f),

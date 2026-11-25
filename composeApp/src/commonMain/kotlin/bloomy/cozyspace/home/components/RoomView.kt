@@ -23,8 +23,8 @@ import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun RoomView(roomType: RoomType, rewards: List<Reward>, storages: Storages) {
-    Box(modifier = Modifier.fillMaxSize()) {
+fun RoomView(roomType: RoomType, rewards: List<Reward>, storages: Storages, modifier: Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
         // Room Background
         val background = when (roomType) {
             RoomType.GARDEN -> Res.drawable.garden_base

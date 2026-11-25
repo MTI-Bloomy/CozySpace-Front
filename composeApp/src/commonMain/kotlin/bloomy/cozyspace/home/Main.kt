@@ -46,6 +46,7 @@ import bloomy.cozyspace.home.components.utils.toDisplayDate
 import bloomy.cozyspace.data.dto.ChooseRewardRequestDto
 import bloomy.cozyspace.domain.Todo
 import bloomy.cozyspace.home.components.RoomView
+import bloomy.cozyspace.home.components.InventoryPopup
 import bloomy.cozyspace.home.components.SavesPopup
 import bloomy.cozyspace.home.components.TodoCompletePopup
 import bloomy.cozyspace.home.components.utils.Placement
@@ -60,6 +61,7 @@ import bloomy.cozyspace.utils.CustomDialogBox
 import bloomy.cozyspace.utils.LoadingScreen
 import cozyspace.composeapp.generated.resources.Res
 import cozyspace.composeapp.generated.resources.arrow_forward
+import cozyspace.composeapp.generated.resources.chair
 import cozyspace.composeapp.generated.resources.featured_seasonal_and_gifts
 import cozyspace.composeapp.generated.resources.file_save_off
 import cozyspace.composeapp.generated.resources.logout
@@ -76,6 +78,7 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
 
     var showSavesPopup by remember { mutableStateOf(false) }
     var showTodoCompletePopup by remember { mutableStateOf(false) }
+    var showInventoryPopup by remember { mutableStateOf(false) }
     var selectedPlacement by remember { mutableStateOf(Placement.Wall) }
     var todoToClaim by remember { mutableStateOf<Todo?>(null) }
 
@@ -177,6 +180,20 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                                 Icon(
                                     painter = painterResource(Res.drawable.save),
                                     contentDescription = "Saves",
+                                    tint = WhiteBackground,
+                                )
+                            }
+
+                            FilledIconButton(
+                                onClick = { showInventoryPopup = true },
+                                shape = RoundedCornerShape(12.dp),
+                                colors = IconButtonDefaults.filledIconButtonColors(
+                                    containerColor = DarkGreen,
+                                ),
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.chair),
+                                    contentDescription = "Inventory",
                                     tint = WhiteBackground,
                                 )
                             }
@@ -293,10 +310,16 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
                     ) { targetRoomId ->
                         val room = roomState.rooms.firstOrNull { it.id == targetRoomId }
                         if (room != null) {
+                            val availableRewards =
+                                if (saveHouseViewMode) rewardState.rewards
+                                else rewardState.rewards + rewardState.inventory
                             RoomView(
                                 roomType = room.type,
-                                rewards = rewardState.rewards.filter { reward -> room.furniture.contains(reward.id) },
+                                rewards = availableRewards
+                                    .distinctBy { it.id }
+                                    .filter { reward -> room.furniture.contains(reward.id) },
                                 storages = storages,
+                                modifier = Modifier
                             )
                         }
                     }
@@ -339,11 +362,43 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
         }
     }
 
-    fun onTodoCompleted(todoDoneId: String, houseId: String, roomId: String, placement: String) {
+    if (showInventoryPopup && currentRoom != null && !saveHouseViewMode) {
+        val houseId = houseState.house?.id
+        InventoryPopup(
+            room = currentRoom,
+            rooms = roomState.rooms,
+            rewards = rewardState.rewards,
+            inventory = rewardState.inventory,
+            storages = storages,
+            onDismiss = { showInventoryPopup = false },
+            onPlaceItem = { rewardId ->
+                if (houseId != null) {
+                    stores.room.accept(
+                        RoomStore.Intent.PlaceItem(
+                            houseId = houseId,
+                            roomId = currentRoom.id,
+                            rewardId = rewardId,
+                        ),
+                    )
+                }
+            },
+            onRemoveItem = { rewardId ->
+                if (houseId != null) {
+                    stores.room.accept(
+                        RoomStore.Intent.RemoveItem(
+                            houseId = houseId,
+                            roomId = currentRoom.id,
+                            rewardId = rewardId,
+                        ),
+                    )
+                }
+            },
+        )
+    }
+
+    fun onTodoCompleted(todoDoneId: String, placement: String) {
         val rewardRequest = ChooseRewardRequestDto(
             todoDoneId = todoDoneId,
-            houseId = houseId,
-            roomId = roomId,
             placement = placement,
         )
 
@@ -363,8 +418,6 @@ fun HomeMain(stores: Stores, storages: Storages, isOnline: Boolean) {
             onConfirm = {
                 onTodoCompleted(
                     todoDoneId = todo!!.id,
-                    houseId = house!!.id,
-                    roomId = roomState.rooms.find { it.type == todo.type }!!.id,
                     placement = selectedPlacement.name,
                 )
                 showTodoCompletePopup = false

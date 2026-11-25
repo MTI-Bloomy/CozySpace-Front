@@ -65,6 +65,14 @@ class ApiService(
         client.get("${Environment.API_URL}/room?houseId=$houseId")
     }
 
+    suspend fun placeItem(houseId: String, roomId: String, rewardId: String) : ApiResult<RoomDto> = safeApiCall((networkMonitor)) {
+        client.put("${Environment.API_URL}/room/$roomId/placeReward/$rewardId?houseId=$houseId")
+    }
+
+    suspend fun removeItem(houseId: String, roomId: String, rewardId: String) : ApiResult<RoomDto> = safeApiCall((networkMonitor)) {
+        client.put("${Environment.API_URL}/room/$roomId/removeReward/$rewardId?houseId=$houseId")
+    }
+
     //endregion
 
     //region /house

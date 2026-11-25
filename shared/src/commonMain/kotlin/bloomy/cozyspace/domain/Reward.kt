@@ -8,4 +8,7 @@ data class Reward(
     val furnitureId: String,
     val furnitureLink: String,
     val todoDoneId: String,
+    val layer: Int,
+    val placedInARoom: Boolean,
+    val roomType: RoomType,
 )

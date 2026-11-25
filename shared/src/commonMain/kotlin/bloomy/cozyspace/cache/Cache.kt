@@ -22,7 +22,8 @@ data class RoomCache(
 
 @Serializable
 data class RewardCache(
-    val rewards: List<Reward> = emptyList()
+    val rewards: List<Reward> = emptyList(),
+    val inventory: List<Reward> = emptyList()
 )
 
 @Serializable
