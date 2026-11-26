@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { createRoomStore, type RoomStateJs, type RoomStoreJs } from 'shared';
+import { RewardService } from './reward.service';
 
 @Injectable({ providedIn: 'root' })
 export class RoomService {
@@ -13,6 +14,8 @@ export class RoomService {
   readonly rooms = computed(() => this.state()?.rooms ?? []);
   readonly error = computed(() => this.state()?.error ?? null);
 
+  private readonly rewardService = inject(RewardService);
+
   /** Idempotent : peut être appelé plusieurs fois, le store n'est créé qu'une seule fois. */
   init(): Promise<void> {
     return (this.initPromise ??= this.doInit());
@@ -21,6 +24,14 @@ export class RoomService {
   async getRooms(houseId: string, saveMode = false): Promise<void> {
     (await this.ready()).getRooms(houseId, saveMode);
   }
+
+  async placeItem(houseId: string, roomId: string, rewardId: string, saveMode = false) {
+  (await this.ready()).placeItem(houseId, roomId, rewardId, saveMode);
+}
+
+async removeItem(houseId: string, roomId: string, rewardId: string, saveMode = false) {
+  (await this.ready()).removeItem(houseId, roomId, rewardId, saveMode);
+}
 
   async clear(): Promise<void> {
     (await this.ready()).clear();
@@ -33,8 +44,13 @@ export class RoomService {
     store.subscribeState((state) => this.state.set(state));
 
     store.subscribeLabels((label) => {
-      if (label.type === 'ERROR') {
-        this.toast.add({ severity: 'error', detail: label.message ?? undefined });
+      switch (label.type) {
+        case 'ERROR':
+          this.toast.add({ severity: 'error', detail: label.message ?? undefined });
+          break;
+        case 'REFRESH_ROOM':
+          label.rewards?.forEach((id) => void this.rewardService.getReward(id));
+          break;
       }
     });
   }

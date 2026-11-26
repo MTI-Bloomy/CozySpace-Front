@@ -41,8 +41,8 @@ export class AuthService {
     this.requireStore().login(email, password);
   }
 
-  register(email: string, password: string): void {
-    this.requireStore().register(email, password);
+  register(email: string, password: string, username: string): void {
+    this.requireStore().register(email, password, username);
   }
 
   logout(): void {

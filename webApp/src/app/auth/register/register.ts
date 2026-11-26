@@ -69,9 +69,9 @@ export class Register {
       return;
     }
 
-    const { email, password } = this.form.getRawValue();
-    const dto: RegisterRequestDto = { email, password };
+    const { email, password, username } = this.form.getRawValue();
+    const dto: RegisterRequestDto = { email, password, username };
 
-    this.auth.register(dto.email, dto.password);
+    this.auth.register(dto.email, dto.password, dto.username);
   }
 }

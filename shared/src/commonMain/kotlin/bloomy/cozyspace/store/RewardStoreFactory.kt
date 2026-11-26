@@ -162,12 +162,12 @@ class RewardStoreFactory(
                     rewards = if (reward.placedInARoom) {
                         (cache?.rewards.orEmpty().filterNot { it.id == reward.id } + reward).sortedBy { it.layer }
                     } else {
-                        cache?.rewards.orEmpty()
+                        cache?.rewards.orEmpty().filterNot { it.id == reward.id }
                     },
                     inventory = if (!reward.placedInARoom) {
                         cache?.inventory.orEmpty().filterNot { it.id == reward.id } + reward
                     } else {
-                        cache?.inventory.orEmpty()
+                        cache?.inventory.orEmpty().filterNot { it.id == reward.id }
                     }
                 )
             )
@@ -203,8 +203,16 @@ class RewardStoreFactory(
 
                     copy(
                         loading = false,
-                        rewards = if (reward.placedInARoom) { (rewards.filterNot { it.id == reward.id } + reward).sortedBy { it.layer } } else { rewards },
-                        inventory = if (!reward.placedInARoom) { inventory.filterNot { it.id == reward.id } + reward } else { inventory },
+                        rewards = if (reward.placedInARoom) {
+                            (rewards.filterNot { it.id == reward.id } + reward).sortedBy { it.layer }
+                        } else {
+                            rewards.filterNot { it.id == reward.id }
+                        },
+                        inventory = if (!reward.placedInARoom) {
+                            inventory.filterNot { it.id == reward.id } + reward
+                        } else {
+                            inventory.filterNot { it.id == reward.id }
+                        },
                         error = null,
                     )
                 }

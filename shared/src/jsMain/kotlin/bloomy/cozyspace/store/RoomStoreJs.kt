@@ -52,6 +52,7 @@ class RoomStateJs(
 class RoomLabelJs(
     val type: String,
     val message: String?,
+    val rewards: Array<String>?,
 )
 
 @OptIn(ExperimentalJsExport::class)
@@ -61,6 +62,14 @@ class RoomStoreJs internal constructor(
 ) {
     fun getRooms(houseId: String, saveMode: Boolean = false) {
         store.accept(RoomStore.Intent.GetRooms(houseId, saveMode))
+    }
+
+    fun placeItem(houseId: String, roomId: String, rewardId: String, saveMode: Boolean = false) {
+        store.accept(RoomStore.Intent.PlaceItem(houseId, roomId, rewardId, saveMode))
+    }
+
+    fun removeItem(houseId: String, roomId: String, rewardId: String, saveMode: Boolean = false) {
+        store.accept(RoomStore.Intent.RemoveItem(houseId, roomId, rewardId, saveMode))
     }
 
     fun clear() {
@@ -92,7 +101,8 @@ private fun RoomStore.State.toJs() = RoomStateJs(
 )
 
 private fun RoomStore.Label.toJs() = when (this) {
-    is RoomStore.Label.ShowError -> RoomLabelJs("ERROR", message)
+    is RoomStore.Label.ShowError -> RoomLabelJs("ERROR", message, null)
+    is RoomStore.Label.RefreshRoom -> RoomLabelJs("REFRESH_ROOM", null, rewards.toTypedArray())
 }
 
 @OptIn(ExperimentalJsExport::class)

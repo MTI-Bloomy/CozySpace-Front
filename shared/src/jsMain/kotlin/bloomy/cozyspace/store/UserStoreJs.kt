@@ -57,8 +57,8 @@ class UserStoreJs internal constructor(
         store.accept(UserStore.Intent.Login(LoginRequestDto(email, password)))
     }
 
-    fun register(email: String, password: String) {
-        store.accept(UserStore.Intent.Register(RegisterRequestDto(email, password)))
+    fun register(email: String, password: String, username: String) {
+        store.accept(UserStore.Intent.Register(RegisterRequestDto(email, password, username)))
     }
 
     fun logout() {

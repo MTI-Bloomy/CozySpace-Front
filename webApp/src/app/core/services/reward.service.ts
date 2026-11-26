@@ -13,6 +13,7 @@ export class RewardService {
   private readonly state = signal<RewardStateJs | null>(null);
   readonly loading = computed(() => this.state()?.loading ?? false);
   readonly rewards = computed(() => this.state()?.rewards ?? []);
+  readonly inventory = computed(() => this.state()?.inventory ?? []);
   readonly error = computed(() => this.state()?.error ?? null);
 
   /** Émet quand un reward a été choisi : à écouter pour recharger les "todo done" non réclamés. */
@@ -32,7 +33,7 @@ export class RewardService {
   }
 
   async chooseReward(dto: ChooseRewardRequestDto): Promise<void> {
-    (await this.ready()).chooseReward(dto.todoDoneId, dto.houseId, dto.roomId, dto.placement);
+    (await this.ready()).chooseReward(dto.todoDoneId, dto.placement);
   }
 
   async clear(): Promise<void> {

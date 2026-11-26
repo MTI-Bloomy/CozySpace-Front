@@ -87,7 +87,7 @@ class RoomStoreFactory(
 
                                 if (!intent.saveMode) storage.save(RoomCache(state().rooms.map { if (it.id == room.id) room else it }))
 
-                                publish(RoomStore.Label.RefreshRoom(room.furniture))
+                                publish(RoomStore.Label.RefreshRoom((room.furniture + intent.rewardId).distinct()))
                                 dispatch(Msg.PlaceItemSuccess(room))
                             }
 
@@ -111,7 +111,7 @@ class RoomStoreFactory(
 
                                 if (!intent.saveMode) storage.save(RoomCache(state().rooms.map { if (it.id == room.id) room else it }))
 
-                                publish(RoomStore.Label.RefreshRoom(room.furniture))
+                                publish(RoomStore.Label.RefreshRoom((room.furniture + intent.rewardId).distinct()))
                                 dispatch(Msg.RemoveItemSuccess(room))
                             }
 

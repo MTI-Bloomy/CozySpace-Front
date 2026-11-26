@@ -299,6 +299,7 @@ fun SignUpForm(navController: NavHostController, stores: Stores) {
                             RegisterRequestDto(
                                 email = email,
                                 password = password,
+                                username = username,
                             ),
                         ),
                     )

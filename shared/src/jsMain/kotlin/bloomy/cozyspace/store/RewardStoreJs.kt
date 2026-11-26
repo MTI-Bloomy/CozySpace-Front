@@ -39,6 +39,9 @@ class RewardJs(
     val furnitureId: String,
     val furnitureLink: String,
     val todoDoneId: String,
+    val layer: Int,
+    val placedInARoom: Boolean,
+    val roomType: String,
 )
 
 @OptIn(ExperimentalJsExport::class)
@@ -46,6 +49,7 @@ class RewardJs(
 class RewardStateJs(
     val loading: Boolean,
     val rewards: Array<RewardJs>,
+    val inventory: Array<RewardJs>,
     val error: String?,
 )
 
@@ -69,10 +73,10 @@ class RewardStoreJs internal constructor(
         store.accept(RewardStore.Intent.GetReward(id))
     }
 
-    fun chooseReward(todoDoneId: String, houseId: String, roomId: String, placement: String) {
+    fun chooseReward(todoDoneId: String, placement: String) {
         store.accept(
             RewardStore.Intent.ChooseReward(
-                ChooseRewardRequestDto(todoDoneId, houseId, roomId, placement),
+                ChooseRewardRequestDto(todoDoneId, placement),
             ),
         )
     }
@@ -97,11 +101,15 @@ private fun Reward.toJs() = RewardJs(
     furnitureId = furnitureId,
     furnitureLink = furnitureLink,
     todoDoneId = todoDoneId,
+    layer = layer,
+    placedInARoom = placedInARoom,
+    roomType = roomType.name,
 )
 
 private fun RewardStore.State.toJs() = RewardStateJs(
     loading = loading,
     rewards = rewards.map { it.toJs() }.toTypedArray(),
+    inventory = inventory.map { it.toJs() }.toTypedArray(),
     error = error,
 )
 
